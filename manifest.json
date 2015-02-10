@@ -1,0 +1,22 @@
+{
+  "name": "Bible Reading Plan",
+  "description": "Bible Reading Plan",
+  "permissions": [
+    "storage",
+//    "http://nameless-taiga-4427.herokuapp.com/high_scores"
+    "http://localhost:3000/verses"
+  ],
+  "background": {
+    "scripts": ["background.js"],
+    "persistent": false
+  },
+  "version": "0.0.1",
+  "chrome_url_overrides": {
+    "newtab": "redirect.html"
+  },
+  "web_accessible_resources": [
+//        "images/web.png",
+   "reading_plan.js"
+  ],
+  "manifest_version": 2
+}
