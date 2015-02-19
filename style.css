@@ -1,35 +1,203 @@
-#plans {
+body {
+    margin: 0px;
+}
+
+#plans-show {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    color: white;
+    display: block;
+    text-decoration: none;
+    font-size: 18px;
+}
+
+#plans-show span {
+    display: none;
+}
+
+#helps-container ul {
+    list-style-type: none;
+}
+
+#helps-container li {
+    font-family: 'Lato', sans-serif;
+    font-size: 18px;
+    float: left;
+    margin: 0 10px;
+    color: #ffffff;
+    text-decoration: none;
+}
+
+
+#helps-container li.title {
+    font-weight: bold;
+}
+
+#helps-container li a {
+    font-weight: 300;
+    color: #ffffff;
+    text-decoration: none;
+}
+
+#helps-container li a:hover{
+    color: #ffffff;
+    text-decoration: underline;
+}
+
+#helps-container {
+    /*position: absolute;*/
+    /*bottom: 0px;*/
+    /*left: 0px;*/
+    overflow: hidden;
+    background-color: rgba(255,255,255,0.3);
+    width: 100%;
+    z-index: 100;
+    color: white;
+    padding-bottom: 10px;
+}
+
+/* Plan */
+#plans-container {
     position: absolute;
     top: 10px;
     left: 10px;
+    width: 80%;
+    margin: 0px 10%;
+    display: none;
+    background-color: white;
+    padding: 20px;
+    z-index: 999;
 }
 
-.planName {
-    /*display: block;*/
-    font-size: 22px;
-    color: white;
+.plan-container {
+    clear: both;
 }
 
-.planDescription {
+.plan-right {
+    margin-left: 70px;
+}
+
+.plan-right .inner-therm span {
+    font-size: 15px;
+    padding-right: 5px;
+}
+
+.plan-right .outer-therm {
+    margin: 10px 0 0 0;
+}
+
+.plan-badge {
+    float:left;
+    width:65px;
+    position: relative;
+}
+
+.overlay-icon {
+    position: absolute;
+    z-index: 2;
+    bottom: -5px;
+    right: -2px;
+    display: none;
+}
+
+.verses-done-icon {
+    position: absolute;
+    z-index: 2;
+    bottom: -5px;
+    right: -2px;
+}
+
+.plan-name {
+    font-family: 'Lustria', serif;
+    font-size: 18px;
+}
+
+.plan-description {
+    font-size: 14px;
+    padding: 10px 0px;
+}
+
+.plan-meta {
+    color: #928d81;
     font-size: 14px;
 }
 
-.planDay {
-    font-size: 16px;
-    margin: 0 7px;
+/* Middle */
+#passages {
+    /*font-family: 'Courgette', cursive;*/
+    font-size: 24px;
+    /*font-style: italic;*/
+    color: white;
+    text-align: center;
+    width: 75%;
+    margin: 150px auto 0 auto;
+}
+
+#passage-plan-name {
+    color: #44c767;
+}
+
+#passages p {
+    font-weight: 700;
+}
+
+.scripture {
+    font-size: 14px;
+    display: block;
+}
+
+#bottom {
+    position: absolute;
+    bottom: 0px;
+    left: 0px;
+    width: 100%;
+}
+
+#bottom .plan-container {
+    float: left;
+    clear: none;
+    width: 300px;
+    margin-right: 10px;
+}
+/* Left column */
+#left-column {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    width: 250px;
+}
+
+#left-column > div {
+    margin-bottom: 20px;
+}
+
+.calBox {
+    clear: both;
+}
+
+.verses-done-icon {
+    display: none;
+}
+
+.plan-done-today {
+    text-decoration: line-through;
+}
+
+#added-plans, #current-verses, completed-plans {
+    font-size: 18px;
     color: white;
 }
 
-#passages {
-    font-family: 'Courgette', cursive;
-    font-size: 30px;
-    color: white;
-    text-align: center;
-    width: 50%;
-    margin: 200px auto 0 auto;
+#added-plans {
+    padding: 20px;
+    overflow: hidden;
 }
+
 .maincontainer
 {
+    font-family: 'Lato', sans-serif;
+    font-weight: 300;
     background-color: rgba(0, 0, 0, 0.20);
     background-attachment: fixed;
     width:      101%;
@@ -40,6 +208,35 @@
     position:   absolute;
 }
 
-#left-column {
-    float: right
+#finish-button {
+    display: none;
+}
+
+.myButton {
+    background-color:#44c767;
+    -moz-border-radius:28px;
+    -webkit-border-radius:28px;
+    border-radius:28px;
+    border:1px solid #18ab29;
+    display:inline-block;
+    cursor:pointer;
+    color:#ffffff;
+    font-family:arial;
+    font-size:17px;
+    padding:16px 31px;
+    text-decoration:none;
+    text-shadow:0px 1px 0px #2f6627;
+}
+.myButton:hover {
+    background-color:#5cbf2a;
+}
+.myButton:active {
+    position:relative;
+    top:1px;
+}
+
+.debug {
+    position: absolute;
+    bottom: 0px;
+    right: 0px;
 }

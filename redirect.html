@@ -1,26 +1,75 @@
 <html>
 <head>
-    <link href='http://fonts.googleapis.com/css?family=Courgette' rel='stylesheet' type='text/css'>
+    <!--<link href='http://fonts.googleapis.com/css?family=Lato:300,400' rel='stylesheet' type='text/css'>-->
+    <link href='http://fonts.googleapis.com/css?family=Lustria|Lato:300,400,700italic|Courgette' rel='stylesheet' type='text/css'>
     <link href='style.css' rel='stylesheet' type='text/css'>
     <script src="jquery.js" type="text/javascript"></script>
-    <script src="reading_plan.js" type="text/javascript"></script>
+    <script src="reading_plan2.js" type="text/javascript"></script>
+    <script src="jqmeter.min.js" type="text/javascript"></script>
     <title>Bible reading plan</title>
 
-    <link rel=stylesheet href="jquery.calendarPicker.css" type="text/css" media="screen">
+    <!--<link rel=stylesheet href="jquery.calendarPicker.css" type="text/css" media="screen">-->
     <script type="text/javascript" src="jquery.calendarPicker.js"></script>
 
 </head>
 <body style="zoom: 1; background-image: url(learning.jpg); position: relative;">
 
 <div class='maincontainer'>
-    <div id='plans'></div>
-    <div id='passages'>Thank You</div>
+    <a id='plans-show' href='#'>
+        <img src='images/bible.png' style='vertical-align:middle'>
+        <span>Show Plans</span>
+    </a>
 
-    <div id='left-column'>
+    <div id='plans-container'></div>
+
+    <!--<div id='helps-container'>-->
+        <!--<ul class='helps'>-->
+            <!--<li class='title'>HELP IN TIME OF NEEDS</li>-->
+            <!--<li><a id='anger' href='#'>Anger</a></li>-->
+            <!--<li><a id='Anxiety' href='#'>Anxiety</a></li>-->
+            <!--<li><a id='Depression' href='#'>Depression</a></li>-->
+            <!--<li><a id='Fear' href='#'>Fear</a></li>-->
+            <!--<li><a id='Temptation' href='#'>Temptation</a></li>-->
+            <!--<li><a id='Stress' href='#'>Stress</a></li>-->
+            <!--<li><a id='Jealousy' href='#'>Jealousy</a></li>-->
+            <!--<li><a id='Lonely' href='#'>Lonely</a></li>-->
+            <!--<li><a id='Worried' href='#'>Worried</a></li>-->
+        <!--</ul>-->
+    <!--</div>-->
+
+    <div id='passages'>Select a plan</div>
+    <div style='text-align:center;padding-top:45px;'><a id='finish-button' class="myButton" href='#'>Finish</a></div>
+
+
+    <div id='bottom'>
         <div id='added-plans'></div>
 
-        <div id="dsel1" style="width:240px"></div><br>
-        <span id="wtf"></span>
+        <!--<div id="dsel1" style="width:240px"></div>-->
+        <!--<div id='current-verses'></div>-->
+        <div id='completed-plans'></div>
+
+        <p class='debug'>
+            <a id='clean-storage' href='#'>Clean storage</a>
+            <a id='show-storage' href='#'>Show storage</a>
+            <a id='add-day' href='#'>Add day</a>
+        </p>
+
+        <div style='clear:both'></div>
+        <div id='helps-container'>
+            <ul class='helps'>
+                <li class='title'>HELP IN TIME OF NEEDS</li>
+                <li><a id='anger' href='#'>Anger</a></li>
+                <li><a id='Anxiety' href='#'>Anxiety</a></li>
+                <li><a id='Depression' href='#'>Depression</a></li>
+                <li><a id='Fear' href='#'>Fear</a></li>
+                <li><a id='Temptation' href='#'>Temptation</a></li>
+                <li><a id='Stress' href='#'>Stress</a></li>
+                <li><a id='Jealousy' href='#'>Jealousy</a></li>
+                <li><a id='Lonely' href='#'>Lonely</a></li>
+                <li><a id='Worried' href='#'>Worried</a></li>
+            </ul>
+        </div>
+
     </div>
 </div>
 </body>

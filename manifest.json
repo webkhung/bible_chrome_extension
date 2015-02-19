@@ -3,7 +3,7 @@
   "description": "Bible Reading Plan",
   "permissions": [
     "storage",
-//    "http://nameless-taiga-4427.herokuapp.com/high_scores"
+    "http://nameless-taiga-4427.herokuapp.com/verses",
     "http://localhost:3000/verses"
   ],
   "background": {
@@ -16,7 +16,8 @@
   },
   "web_accessible_resources": [
 //        "images/web.png",
-   "reading_plan.js"
+    "reading_plan.js",
+    "jqmeter.min.js"
   ],
   "manifest_version": 2
 }
