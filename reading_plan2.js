@@ -91,6 +91,7 @@ function HTMLRender(){
 
     this.renderNextVerse = function(){
 //        $('.plan-current').removeClass('plan-current');
+
         for(var planId in objPlans){
             var plan = objPlans[planId];
             if(plan.added && !plan.allDone()){
@@ -100,9 +101,10 @@ function HTMLRender(){
                     $('#finish-button').data('planId', planId);
                     return;
                 }
-                else {
+                else { // DONE PLAN
                     $('#added-plan-' + plan.id).addClass('plan-done-today');
-                    $('#added-plan-' + plan.id + ' .today-done-icon').show();
+                    $('#added-plan-' + plan.id + ' .circle').removeClass('circle' + plan.id).addClass('circle' + plan.id + '-solid');
+//                    $('#added-plan-' + plan.id + ' .today-done-icon').show();
                 }
             }
         }
@@ -115,18 +117,21 @@ function HTMLRender(){
             }
         }
 
-        $('#passages').text("Please select a plan");
+        $('#passages').html("<a href='#' id='plans-show-2'>Good Morning! Please select a Bible reading plan!</a>");
     }
 
     this.renderAddedPlans = function(){
         $plan = $('#added-plans');
         $plan.empty();
+        var index = 1;
         for(var planId in objPlans){
             var plan = objPlans[planId];
             if(plan.added && !plan.allDone()){
                 $container = $("<div class='plan-container'>")
                 $container.attr('id', 'added-plan-' + plan.id);
-                $container.append("<div class='plan-badge'><img src='" + plan.badge+ "'><img class='today-done-icon overlay-icon' src='images/check.png'></div>");
+
+                $container.append("<div class='plan-badge'><div class='circle circle" + index++ + "'></div></div>");
+//                $container.append("<div class='plan-badge'><img src='" + plan.badge+ "'><img class='today-done-icon overlay-icon' src='images/check.png'></div>");
                 $rightCol = $("<div class='plan-right'>");
 
                 $addedPlan = $('<div>');
@@ -140,8 +145,9 @@ function HTMLRender(){
                     raised : plan.completedOn.length.toString(),
                     width : '220px',
                     height : '16px',
-                    bgColor : '#aaaaaa',
-                    barColor : '#44c767'
+                    bgColor : '#bbb',
+                    barColor : '#666',
+                    displayTotal: false
                 });
                 $rightCol.append($jqmeter);
 
@@ -159,7 +165,7 @@ function HTMLRender(){
             var plan = objPlans[planId];
 
             $container = $("<div class='plan-container'>")
-            $container.append("<div class='plan-badge'><img src='" + plan.badge+ "'><img src='images/check.png' class='overlay-icon'></div>");
+//            $container.append("<div class='plan-badge'><img src='" + plan.badge+ "'><img src='images/check.png' class='overlay-icon'></div>");
             $rightCol = $("<div class='plan-right'>");
             $rightCol.append("<div class='plan-name'>" + plan.name + "</div>");
             $rightCol.append("<div class='plan-description'>" + plan.description + "</div>");
@@ -262,7 +268,7 @@ $( document ).ready(function() {
         })
     });
 
-    $('#plans-show').click(function(){
+    $('.maincontainer').on('click', '#plans-show, #plans-show-2', function(){
         htmlRender.renderAllPlans();
         $('#plans-container').show();
     });
@@ -287,7 +293,7 @@ $( document ).ready(function() {
         htmlRender.renderNextVerse();
     });
 
-    $('#plans-show, #help-need').hover(
+    $('#plans-show').hover(
         function(){
             $(this).find('span').show();
         },

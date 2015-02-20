@@ -72,6 +72,7 @@ body {
 
 .plan-container {
     clear: both;
+    padding-bottom: 20px;
 }
 
 .plan-right {
@@ -99,6 +100,8 @@ body {
     bottom: -5px;
     right: -2px;
     display: none;
+    width: 24px;
+    height: 24px;
 }
 
 .verses-done-icon {
@@ -131,11 +134,13 @@ body {
     color: white;
     text-align: center;
     width: 75%;
-    margin: 150px auto 0 auto;
+    margin: 110px auto 0 auto;
 }
 
 #passage-plan-name {
     color: #44c767;
+    font-size: 30px;
+    font-weight: bold;
 }
 
 #passages p {
@@ -240,3 +245,23 @@ body {
     bottom: 0px;
     right: 0px;
 }
+
+.circle {
+    border-radius: 50%;
+    display: inline-block;
+    margin-right: 20px;
+    width: 60px;
+    height: 60px;
+}
+
+.circle1 { border: 2px solid #59ff5b; }
+.circle1-solid { background-color: #59ff5b; }
+
+.circle2 { border: 2px solid #ff65f0; }
+.circle2-solid { background-color: #ff65f0; }
+
+.circle3 { border: 2px solid #4e6ac3; }
+.circle3-solid { background-color: #4e6ac3; }
+
+.circle4 { border: 2px solid #ff4939; }
+.circle4-solid { background-color: #ff4939; }
