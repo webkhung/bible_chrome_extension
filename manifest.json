@@ -4,7 +4,9 @@
   "permissions": [
     "storage",
     "http://nameless-taiga-4427.herokuapp.com/verses",
-    "http://localhost:3000/verses"
+    "http://www.ourmanna.com/verses/api/js/",
+    "http://localhost:3000/verses",
+    "http://localhost:3001/verses"
   ],
   "background": {
     "scripts": ["background.js"],
@@ -15,7 +17,6 @@
     "newtab": "redirect.html"
   },
   "web_accessible_resources": [
-//        "images/web.png",
     "reading_plan.js",
     "jqmeter.min.js"
   ],
