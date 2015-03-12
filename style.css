@@ -3,13 +3,18 @@ body {
 }
 
 #add-new-plan {
-    color: #FFADF8;
+    color: #ffffff;
     text-decoration: none;
     font-size:30px;
 
 
     font-weight: 300;
     text-shadow: 1px 1px 1px #333;
+}
+
+
+#add-new-plan:hover {
+    color: #bbbbbb;
 }
 
 #add-new-plan span {
@@ -58,7 +63,7 @@ body {
 }
 
 /* Plan */
-#plans-container {
+#plans-selector {
     position: absolute;
     top: 20px;
     left: 10px;
@@ -73,7 +78,7 @@ body {
     z-index: 999;
 }
 
-#plans-container h1 {
+#plans-selector h1 {
     text-align: center;
     margin: 30px 0;
     color: #fff;
@@ -81,12 +86,12 @@ body {
     font-size: 30px;
 }
 
-#plans-container .plan-right {
+#plans-selector .plan-right {
     /*margin-left: 82px;*//* For the side circle*/
     margin-left: 0px;
 }
 
-#plans-container .plan-container {
+#plans-selector .plan-container {
     padding-bottom: 20px;
 }
 
@@ -143,8 +148,11 @@ body {
 }
 
 .plan-meta {
-    color: #928d81;
+    padding-left: 10px;
+    color: #FFCC00;
     font-size: 14px;
+    font-weight: bold;
+    text-transform: uppercase;
 }
 
 /* Middle */
@@ -159,10 +167,15 @@ body {
     padding-top: 30px;
 }
 
+.text-hidden:hover {
+    background-color: transparent;
+}
+
 .text-hidden {
-    background-color: #44c767;
+    background-color: #C748B1;
+    font-weight: bold;
     text-shadow: none;
-    color:  #44c767;
+    color:  #C748B1;
 }
 
 #passages {
@@ -262,7 +275,7 @@ body {
     position:   absolute;
 }
 
-#finish-button, #reveal-button {
+#finish-button, #reveal-button-container {
     display: none;
 }
 
@@ -341,7 +354,6 @@ body {
 }
 
 .myButtonSmallLink {
-    margin-left:10px;
     color: #59EF0D;
     font-weight: bold;
 }
@@ -376,8 +388,8 @@ body {
 .circle4, .circle-solid-4 { border: 2px solid #ffa496; }
 .circle-solid-4 { background-color: #ffa496; }
 
-.circle5, .circle-solid-5 { border: 2px solid #fffa90; }
-.circle-solid-5 { background-color: #fffa90; }
+.circle5, .circle-solid-5 { border: 2px solid #fffd33; }
+.circle-solid-5 { background-color: #FFFD33; }
 
 .circle6, .circle-solid-6 { border: 2px solid #88eeff; }
 .circle-solid-6 { background-color: #88eeff; }
@@ -413,7 +425,51 @@ body {
     height: 100%;
     -webkit-transition: opacity 5s;
     -moz-transition: opacity 5s;
-    transition: opacity 5s;
+    transition: opacity 7s;
 }
 
 .hidden { opacity: 0; }
+
+.tick {
+    font-size: 36px;
+    position: relative;
+    left: 16px;
+    top: 8px;
+}
+
+#sidebar {
+    position: absolute;
+    top: 30px;
+    left: 30px;
+}
+
+.progress-circle {
+    width: 100px;
+    display: inline-block;
+    position: relative;
+    text-align: center;
+    line-height: 1.2;
+    margin-bottom: 20px;
+}
+
+.progress-circle strong {
+    position: absolute;
+    top: 15px;
+    left: 0;
+    width: 100%;
+    text-align: center;
+    line-height: 40px;
+    font-size: 25px;
+}
+
+.progress-circle strong i {
+    font-style: normal;
+    font-size: 0.6em;
+    font-weight: normal;
+}
+
+.progress-circle span {
+    display: block;
+    color: #333;
+    margin-top: 5px;
+}

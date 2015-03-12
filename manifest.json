@@ -3,8 +3,7 @@
   "description": "Bible Reading Plan",
   "permissions": [
     "storage",
-    "http://nameless-taiga-4427.herokuapp.com/verses",
-    "http://www.ourmanna.com/verses/api/js/",
+    "http://biblereadingplans.herokuapp.com/verses",
     "http://localhost:3000/verses",
     "http://localhost:3001/verses"
   ],
@@ -17,8 +16,9 @@
     "newtab": "redirect.html"
   },
   "web_accessible_resources": [
-    "reading_plan.js",
-    "jqmeter.min.js"
+    "reading_plan2.js",
+    "jqmeter.min.js",
+    "circle-progress.js"
   ],
   "manifest_version": 2
 }
