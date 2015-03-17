@@ -434,7 +434,7 @@ body {
     -webkit-transition: opacity 5s;
     -moz-transition: opacity 5s;
     transition: opacity 7s;
-    opacity: 0.8;
+    /*opacity: 0.8;*/
 }
 
 .hidden { opacity: 0; }

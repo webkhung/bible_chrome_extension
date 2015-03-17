@@ -1,15 +1,20 @@
 var today = formatDate(new Date());
 var objPlans = {};
+var userId = '';
 var htmlRender = new HTMLRender();
 var DAILY_MEMORIZED_GOAL = 20;
+//var HOST = 'biblereadingplans.herokuapp.com';
+var HOST = 'localhost:3001';
 var questions = [
-    'How does it apply to your life today?',
-    'What does it mean to your?'
+    'How Does This Passage Apply To Your Life Today?',
+    'What Does This Passage Mean To You?'
 ]
 
 var quotes = [
-    'How Does The Passage Apply To Your life Today?',
-    'What Does The Passage Mean To You?',
+    'Like This App? Rate It On Chrome Store',
+    'I Appreciate Your Feedback! Leave a Feedback on Chrome Store',
+    'How Does This Passage Apply To Your life Today?',
+    'What Does This Passage Mean To You?',
     'Take a Short Break',
     'Hello, Nice To See You Again!',
     'I Am Grateful!',
@@ -30,7 +35,7 @@ var readingPlans = [
         "name": "14 Days on The Power Of Being Thankful",
         "badge": "images/greystyle_08_badge.png",
         "description": "",
-        "days": ["1Chronicles.23:30","John.14:27","2 Corinthians.12:10"]//,"1 Timothy.6:12","Luke.4:32","Philippians.2:14","Romans.5:5","Isaiah.43:19","Titus.2:12","2Corinthians.5:21","2Corinthians.10:5","Matthew.6:26","1Samuel.17:45","Isaiah.61:3"]
+        "days": ["1Chronicles.23:30","John.14:27","2 Corinthians.12:10","1 Timothy.6:12","Luke.4:32","Philippians.2:14","Romans.5:5","Isaiah.43:19","Titus.2:12","2Corinthians.5:21","2Corinthians.10:5","Matthew.6:26","1Samuel.17:45","Isaiah.61:3"]
     },
     {
         "id": "2",
@@ -51,7 +56,7 @@ var readingPlans = [
         "name": "7 Days on Temptation",
         "badge": "images/greenstyle_08_badge.png",
         "description": "",
-        "days": ["James.1:14", "Hebrews.2.18"]//, "Hebrews.4.15", "James.4.7", "Romans.6.6-13", "Ephesians6.10-11", "1Peter.5:8-9"]
+        "days": ["James.1:14", "Hebrews.2.18", "Hebrews.4.15", "James.4.7", "Romans.6.6-13", "Ephesians6.10-11", "1Peter.5:8-9"]
     },
     {
         "id": "5",
@@ -151,6 +156,7 @@ function saveData(){
             userData["plans"][plan.id.toString()] = plan.completedOn;
         }
     }
+    userData['userId'] =  userId;
     chrome.storage.sync.set(userData);
 }
 
@@ -269,9 +275,9 @@ function HTMLRender(){
         for(var planId in objPlans){
             var plan = objPlans[planId];
             if(plan.added && !plan.completed() && plan.lastCompletedDate() != today) {
-                fetchVerses(planId, plan.numDaysFinished()+1);
-                $('#finish-button').data('planId', planId);
-//                $('#message').hide();
+                var day = plan.numDaysFinished()+1;
+                fetchVerses(planId, day);
+                $('#finish-button').data('planId', planId).data('day', day);
                 return;
             }
         }
@@ -447,7 +453,7 @@ function replaceVerses(data){
 }
 
 function fetchVerses(planId, day, hideWords){
-    $.get('http://biblereadingplans.herokuapp.com/verses', { plan_id: planId, day: day }, function(data){
+    $.get('http://' + HOST + '/verses', { plan_id: planId, day: day, user_id: userId }, function(data){
         var $passage = $('#passages');
         var verses;
         if(hideWords) {
@@ -457,6 +463,7 @@ function fetchVerses(planId, day, hideWords){
         else {
             verses = data
             $('#reveal-button-container').hide();
+            $('#reveal-button').data('planId', planId).data('day', day);
         }
         $passage
             .hide()
@@ -495,8 +502,8 @@ function addPlan(event){
     htmlRender.showNextVerse();
     $('#plans-selector').hide();
     $('#passages-container').show();
-    saveData();
     drawPlansCircle();
+    saveData();
 }
 
 function rollBg() {
@@ -506,7 +513,7 @@ function rollBg() {
     $('.bg').toggleClass('hidden');
 }
 
-function newGradient2() {
+function newGradient() {
     var c1 = {
         r: Math.floor(Math.random()*175) + 80,
         g: Math.floor(Math.random()*175) + 80,
@@ -522,7 +529,7 @@ function newGradient2() {
     return 'radial-gradient(at top left, '+c1.rgb+', '+c2.rgb+')';
 }
 
-function newGradient() {
+function newGradient2() {
     var c1 = {
         r: Math.floor(Math.random()*255),
         g: Math.floor(Math.random()*255),
@@ -551,27 +558,41 @@ function numPlansAdded(){
 
 function finishClicked(){
     drawVersesCircle($('#passages').find('sup').length);
-
     $(this).hide();
     var lastPlanId = $(this).data('planId');
+    var day = $(this).data('day');
     var plan = objPlans[lastPlanId];
     plan.dayCompleted();
     saveData();
 
     htmlRender.updatePlanProgressMeter(lastPlanId);
     htmlRender.showNextVerse();
-
     rollBg();
+
+    $.get('http://' + HOST + '/finished', { plan_id: lastPlanId, day: day, user_id: userId }, function(data){});
 }
 
 function revealClicked(){
-    $('#reveal-button-container').fadeOut();
+    $('#reveal-button-container, #message').fadeOut();
     drawMemorizedCircle(true);
     $('.text-hidden').css('transition', 'background-color 2s').css('background-color', 'transparent');
     rollBg();
+
+    $.get('http://' + HOST + '/answered', { plan_id: $(this).data('planId'), day: $(this).data('day'), user_id: userId }, function(data){});
+
     setTimeout(function(){
         htmlRender.showNextVerse(true);
-    }, 5000);
+    }, 8000);
+}
+
+function randomString(length, chars) {
+    var result = '';
+    for (var i = length; i > 0; --i) result += chars[Math.round(Math.random() * (chars.length - 1))];
+    return result;
+}
+
+function generateUserId(){
+    return randomString(30, '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ');
 }
 
 $( document ).ready(function() {
@@ -585,6 +606,13 @@ $( document ).ready(function() {
 
         if (userData === undefined){
             return;
+        }
+
+        if(userData['userId'] === undefined) {
+            userId = generateUserId();
+        }
+        else {
+            userId = userData['userId'];
         }
 
         for(var planId in userData["plans"]){
@@ -647,8 +675,6 @@ $( document ).ready(function() {
 
     rollBg();
     setTimeout(rollBg, 0.5);
-
-
 });
 
 //$('#jqmeter-horizontal').jQMeter({goal:'$10,000',raised:'$6,600',width:'300px'});
