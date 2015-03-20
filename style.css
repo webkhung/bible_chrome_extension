@@ -80,10 +80,18 @@ body {
 
 #plans-selector h1 {
     text-align: center;
-    margin: 30px 0;
+    margin: 10px 0;
     color: #fff;
     font-weight: 300;
     font-size: 30px;
+}
+
+#plans-selector h2 {
+    text-align: center;
+    margin: 10px 0;
+    color: #333;
+    font-weight: 300;
+    font-size: 25px;
 }
 
 #plans-selector .plan-right {
@@ -92,7 +100,7 @@ body {
 }
 
 #plans-selector .plan-container {
-    padding-bottom: 20px;
+    padding-bottom: 18px;
 }
 
 .plan-container {
@@ -162,9 +170,11 @@ body {
 }
 
 #message {
-    color: #60D8D7;
+    color: #FFF856;
+    text-shadow: 1px 1px 1px #333;
     font-weight: 300;
-    font-size: 16px;
+    font-size: 18px;
+    font-weight: bold;
     text-align: center;
     width: 100%;
     margin: 0px auto 0 auto;
