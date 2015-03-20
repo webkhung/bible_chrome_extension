@@ -13,10 +13,10 @@
   },
   "version": "0.0.1",
   "chrome_url_overrides": {
-    "newtab": "redirect.html"
+    "newtab": "main.html"
   },
   "web_accessible_resources": [
-    "reading_plan2.js",
+    "reading_plan.js",
     "jqmeter.min.js",
     "circle-progress.js"
   ],
