@@ -181,6 +181,14 @@ body {
     padding-top: 15px;
 }
 
+#message a {
+    color: #FFF856;
+}
+
+#message a:hover {
+    color: #ffdb27;
+}
+
 .text-hidden:hover {
     text-shadow: 1px 1px 1px #333;
     color: #fff;
@@ -239,7 +247,7 @@ body {
     clear: none;
     width: 300px;
     height: 80px;
-    margin-right: 10px;
+    margin-right: 8px;
 }
 
 #copyright { padding: 0px 5px; }
@@ -444,7 +452,7 @@ body {
     -webkit-transition: opacity 5s;
     -moz-transition: opacity 5s;
     transition: opacity 7s;
-    /*opacity: 0.8;*/
+    opacity: 0.8;
 }
 
 .hidden { opacity: 0; }

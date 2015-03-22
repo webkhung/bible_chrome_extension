@@ -1,6 +1,6 @@
 {
-  "name": "Bible Reading Plan",
-  "description": "Bible Reading Plan",
+  "name": "Bible Reading Plans",
+  "description": "Bible Reading Plans",
   "permissions": [
     "storage",
     "http://biblereadingplans.herokuapp.com/verses",
@@ -11,7 +11,7 @@
     "scripts": ["background.js"],
     "persistent": false
   },
-  "version": "0.0.1",
+  "version": "0.2",
   "chrome_url_overrides": {
     "newtab": "main.html"
   },

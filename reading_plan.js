@@ -12,13 +12,13 @@ var questions = [
 ]
 
 var quotes = [
-    'Like This App? Rate It On Chrome Store',
+    'Like This App? <a href=\'https://chrome.google.com/webstore/detail/bible-reading-plans/jogajkcgclkfedbhdcopmpmeeophkkji?authuser=1\' target=\'_blank\'>Rate It On Chrome Store</a>',
     'I Appreciate Your Feedback! Leave a Feedback on Chrome Store',
     'How Does This Passage Apply To Your life Today?',
     'What Does This Passage Mean To You?',
-    'Take a Short Break',
+    'Read it out loud help you memorize the verses',
+    'Memorize verses fix God\'s words in your heart and mind',
     'Hello, Nice To See You Again!',
-    'I Am Grateful!',
     'You Are Doing A Good Job!',
     'You Are Doing A Nice Work!',
     'Great Effort!',
@@ -399,7 +399,7 @@ function HTMLRender(){
         }
         var addPlansText = '';
         if(numPlansAdded == 0){
-            addPlansText = '<h1>Make God\'s Word Part Of Your Day! Add Your 1st Plan Now!</h1><h2>You can add additional plans later</h2>';
+            addPlansText = '<h1>Make God\'s Word Part Of Your Day! Add Your 1st Plan Now!</h1><h2>(You can add additional plans later)</h2>';
         }
         else if(numPlansAdded == 1){
             addPlansText = '<h1>Add Your 2nd Plan Now!</h1>';
@@ -492,8 +492,11 @@ function processVerses(data, planId, day, hideWords){
     if(hideWords) {
         var message = '';
         var memorized = parseInt($('#memorized-circle strong').text());
-        if(memorized < 2){
+        if(memorized < 1){
             message = "Memorize verses fix God's words in your heart and mind";
+        }
+        else if(memorized < 2){
+            message = "Read it out loud help you memorize the verses";
         }
         else if(numPlansAdded() == 1){
             message = 'You Can Add Another Bible Reading Plan Below';
@@ -549,14 +552,14 @@ function rollBg() {
 
 function newGradient() {
     var c1 = {
-        r: Math.floor(Math.random()*175) + 80,
-        g: Math.floor(Math.random()*175) + 80,
-        b: Math.floor(Math.random()*175) + 80
+        r: Math.floor(Math.random()*155) + 100,
+        g: Math.floor(Math.random()*155) + 100,
+        b: Math.floor(Math.random()*155) + 100
     };
     var c2 = {
-        r: Math.floor(Math.random()*175) + 80,
-        g: Math.floor(Math.random()*175) + 80,
-        b: Math.floor(Math.random()*175) + 80
+        r: Math.floor(Math.random()*255) + 0,
+        g: Math.floor(Math.random()*255) + 0,
+        b: Math.floor(Math.random()*255) + 0
     };
     c1.rgb = 'rgb('+c1.r+','+c1.g+','+c1.b+')';
     c2.rgb = 'rgb('+c2.r+','+c2.g+','+c2.b+')';
