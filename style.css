@@ -500,3 +500,19 @@ body {
     color: #333;
     margin-top: 5px;
 }
+
+#passages input {
+    font-size: 14px;
+    height: 24px;
+    position: relative;
+    top: -5px;
+    padding-left: 4px;
+}
+
+input.correct {
+    background-color: rgb(251, 255, 115);;
+}
+
+input.wrong {
+    background-color: rgb(255, 147, 147);
+}

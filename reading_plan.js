@@ -2,7 +2,7 @@ var today = formatDate(new Date());
 var objPlans = {};
 var userId = '';
 var htmlRender = new HTMLRender();
-var DAILY_MEMORIZED_GOAL = 20;
+var DAILY_MEMORIZED_GOAL = 10;
 var memorizedCount = 0;
 var HOST = 'biblereadingplans.herokuapp.com';
 //var HOST = 'localhost:3001';
@@ -416,6 +416,7 @@ function HTMLRender(){
     }
 }
 
+// max is based of '1'
 function getRandom(pick, max) {
     var arr = []
     while(arr.length < pick){
@@ -430,23 +431,44 @@ function getRandom(pick, max) {
 }
 
 function hideWords(text){
+    // DAILY_MEMORIZED_GOAL is 10
+    // if memorizedCount = 0,1, ratio = 5
+    // if memorizedCount = 2,3, ratio = 4
+    // if memorizedCount = 9,10, ratio = 1
     var ratio = Math.max(1,(DAILY_MEMORIZED_GOAL-memorizedCount)/2);
     var txttmp = text.split(/\s+/);
     var randoms = getRandom(txttmp.length, txttmp.length);
-    var toPick = Math.ceil(txttmp.length/ratio);
-    console.log('ratio' + ratio);
+    var toPick = Math.floor(txttmp.length/ratio);
+    console.log('text ' + text);
     console.log('txttmp.length' + txttmp.length);
-    console.log('to pick' + toPick);
+    console.log('ratio' + ratio);
+    console.log('toPick' + toPick);
     var picked = 0;
     var i=0;
     while(picked < toPick && i < randoms.length){
+        var currWord = txttmp[randoms[i]-1]
         if(txttmp[randoms[i]-1].length >= 4){
-            txttmp[randoms[i]-1] = ' <span class=text-hidden>' + txttmp[randoms[i]-1] + '</span> '
+            // txttmp[randoms[i]-1] = ' <span class=text-hidden>' + txttmp[randoms[i]-1] + '</span> '
+            txttmp[randoms[i]-1] = ' <input class=missingWord type=text data-answer=\'' + currWord + '\' placeholder=\'' + maskWord(currWord, 7-ratio) + '\'>';
             picked++;
         }
         i++;
     }
     return txttmp.join(' ');
+}
+
+function replaceOneCharacter(word, index, character) {
+    return word.substr(0, index) + character + word.substr(index+character.length);
+}
+
+function maskWord(word, every_n_chars_1_char_reveals){
+    var wordLen = word.length;
+    var maskedWord = Array(wordLen+1).join("*")
+    var ran = getRandom(Math.floor(wordLen/every_n_chars_1_char_reveals), wordLen);
+    for(var i=0; i<ran.length; i++){
+        maskedWord = replaceOneCharacter(maskedWord, ran[i]-1, word.charAt(ran[i]-1))
+    }
+    return maskedWord;
 }
 
 function replaceVerses(data){
@@ -480,7 +502,7 @@ function processVerses(data, planId, day, hideWords){
     }
     else {
         verses = data
-        $('#reveal-button-container').hide();
+        $('#reveal-button').hide();
         $('#reveal-button').data('planId', planId).data('day', day);
     }
     $passage
@@ -505,7 +527,7 @@ function processVerses(data, planId, day, hideWords){
             message= quotes[getRandom(1,quotes.length)[0] -1];
         }
         $('#message').empty().append(message).fadeIn('slow');
-        $('#reveal-button-container').fadeIn('slow');
+        $('#reveal-button-container, #reveal-button').fadeIn('slow');
     }
     else {
         var message= questions[getRandom(1,questions.length)[0] -1];
@@ -610,10 +632,34 @@ function finishClicked(){
     $.get('http://' + HOST + '/finished', { plan_id: lastPlanId, day: day, user_id: userId }, function(data){});
 }
 
+String.prototype.removePunctuation = function(){
+    return this.replace(/[\.,-\/#!$%\^&\*;:{}=\-_`~()]/g,"")
+}
+
 function revealClicked(){
-    $('#reveal-button-container, #message').fadeOut();
-    drawMemorizedCircle(true);
-    $('.text-hidden').css('transition', 'background-color 2s').css('background-color', 'transparent');
+    $('#reveal-button, #message').fadeOut();
+
+    var bAllCorrect = true;
+    $('.missingWord').each(function(e){
+        if($(this).val().toLowerCase().removePunctuation() == $(this).data('answer').toLowerCase().removePunctuation()){
+            $(this).addClass('correct');
+        }
+        else {
+            bAllCorrect = false;
+            $(this).val($(this).data('answer'));
+            $(this).addClass('wrong');
+        }
+    });
+
+    if(bAllCorrect){
+        $('#message').empty().append('Good Job! You Got It Right!').fadeIn('slow');
+        drawMemorizedCircle(true);
+    }
+    else {
+        $('#message').empty().append('No Worries! You Will Only Get Better!').fadeIn('slow');
+    }
+
+//    $('.text-hidden').css('transition', 'background-color 2s').css('background-color', 'transparent');
     rollBg();
 
     $.get('http://' + HOST + '/answered', { plan_id: $(this).data('planId'), day: $(this).data('day'), user_id: userId }, function(data){});
