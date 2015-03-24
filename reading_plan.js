@@ -173,6 +173,7 @@ function drawPlansCircle(){
 }
 
 function drawMemorizedCircle(increment){
+    var dailyGoal = numUnfinishedPlans() * DAILY_MEMORIZED_GOAL;
     var key = 'memorized' + today;
     chrome.storage.sync.get(key, function (data) {
         if (data !== undefined && data[key] !== undefined){
@@ -615,6 +616,17 @@ function numPlansAdded(){
     return numPlansAdded;
 }
 
+function numUnfinishedPlans(){
+    var numPlansAdded = 0;
+    for(var planId in objPlans){
+        var plan = objPlans[planId];
+        if(plan.added && !plan.completed()){
+            numPlansAdded++;
+        }
+    }
+    return numPlansAdded;
+}
+
 function finishClicked(){
     drawVersesCircle($('#passages').find('sup').length);
     $(this).hide();
@@ -666,7 +678,7 @@ function revealClicked(){
 
     setTimeout(function(){
         htmlRender.showNextVerse(true);
-    }, 4000);
+    }, 6000);
 }
 
 function randomString(length, chars) {
