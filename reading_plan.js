@@ -161,7 +161,7 @@ function saveData(){
 }
 
 function drawPlansCircle(){
-    numPlansAdded()
+    numPlansAdded();
     $('#plans-circle').circleProgress({
         value: Math.min(1,numPlansAdded() / 7),
         size: 70,
@@ -431,26 +431,33 @@ function getRandom(pick, max) {
     return arr;
 }
 
+function getDifficulty(){
+    var ratio = Math.max(1,(DAILY_MEMORIZED_GOAL-memorizedCount)/2);
+    var difficulty = 6 - Math.ceil(ratio); // from 1 to 5
+    return difficulty;
+}
+
 function hideWords(text){
     // DAILY_MEMORIZED_GOAL is 10
     // if memorizedCount = 0,1, ratio = 5
     // if memorizedCount = 2,3, ratio = 4
     // if memorizedCount = 9,10, ratio = 1
     var ratio = Math.max(1,(DAILY_MEMORIZED_GOAL-memorizedCount)/2);
+    var difficulty = getDifficulty();
     var txttmp = text.split(/\s+/);
     var randoms = getRandom(txttmp.length, txttmp.length);
-    var toPick = Math.floor(txttmp.length/ratio);
+    var toPick = Math.floor(txttmp.length/(ratio+1));
     console.log('text ' + text);
-    console.log('txttmp.length' + txttmp.length);
-    console.log('ratio' + ratio);
-    console.log('toPick' + toPick);
+    console.log('txttmp.length ' + txttmp.length);
+    console.log('ratio ' + ratio);
+    console.log('toPick ' + toPick);
+    console.log('difficulty' + difficulty) ;
     var picked = 0;
     var i=0;
     while(picked < toPick && i < randoms.length){
         var currWord = txttmp[randoms[i]-1]
         if(txttmp[randoms[i]-1].length >= 4){
-            // txttmp[randoms[i]-1] = ' <span class=text-hidden>' + txttmp[randoms[i]-1] + '</span> '
-            txttmp[randoms[i]-1] = ' <input class=missingWord type=text data-answer=\'' + currWord + '\' placeholder=\'' + maskWord(currWord, 7-ratio) + '\'>';
+            txttmp[randoms[i]-1] = ' <input class=missingWord type=text data-answer=\'' + currWord + '\' placeholder=\'' + maskWord(currWord, difficulty) + '\'>';
             picked++;
         }
         i++;
@@ -462,10 +469,30 @@ function replaceOneCharacter(word, index, character) {
     return word.substr(0, index) + character + word.substr(index+character.length);
 }
 
-function maskWord(word, every_n_chars_1_char_reveals){
+function maskWord(word, difficulty){
     var wordLen = word.length;
     var maskedWord = Array(wordLen+1).join("*")
+
+    var every_n_chars_1_char_reveals = 1;
+    if(difficulty == 5){
+        every_n_chars_1_char_reveals = wordLen;
+    }
+    else if(difficulty == 4){
+        every_n_chars_1_char_reveals = 5;
+    }
+    else if(difficulty == 3){
+        every_n_chars_1_char_reveals = 4;
+    }
+    else if(difficulty == 2){
+        every_n_chars_1_char_reveals = 3;
+    }
+    else if(difficulty == 1){
+        every_n_chars_1_char_reveals = 2;
+        maskedWord = replaceOneCharacter(maskedWord, 0, word.charAt(0))
+    }
+
     var ran = getRandom(Math.floor(wordLen/every_n_chars_1_char_reveals), wordLen);
+
     for(var i=0; i<ran.length; i++){
         maskedWord = replaceOneCharacter(maskedWord, ran[i]-1, word.charAt(ran[i]-1))
     }
@@ -475,9 +502,53 @@ function maskWord(word, every_n_chars_1_char_reveals){
 function replaceVerses(data){
     $p = $(data);
     var final = '';
+
+    var totalSentence = 0;
     $p.contents().each(function(){
         if(this.nodeType == 3 && $(this).parent().prop('className') != 'scripture') {
-            final += hideWords($(this).text());
+            totalSentence++;
+        }
+        else {
+            if ($(this).parent().prop('className') == 'scripture'){
+            }
+            else if($(this).prop('className') == 'v'){
+            }
+            else {
+                totalSentence++;
+            }
+        }
+    });
+
+    var hideSentence = 0;
+    var difficulty = getDifficulty();
+    if(difficulty == 1){
+        hideSentence = 1;
+    }
+    else if(difficulty == 2){
+        hideSentence = 1;
+    }
+    else if(difficulty == 3){
+        hideSentence = Math.max(2,Math.floor(totalSentence/2));
+    }
+    else if(difficulty == 4){
+        hideSentence = totalSentence-1;
+    }
+    else if(difficulty == 5){
+        hideSentence = totalSentence;
+    }
+
+    var ran = getRandom(hideSentence, totalSentence)
+
+    var sentenceCounter = 0;
+    $p.contents().each(function(){
+        if(this.nodeType == 3 && $(this).parent().prop('className') != 'scripture') {
+            sentenceCounter++;
+            if(numInArray(sentenceCounter, ran)){
+                final += hideWords($(this).text());
+            }
+            else {
+                final += $(this).text();
+            }
         }
         else {
             if ($(this).parent().prop('className') == 'scripture'){
@@ -487,11 +558,26 @@ function replaceVerses(data){
                 final +=$(this).prop('outerHTML');
             }
             else {
-                final += hideWords($(this).text());
+                sentenceCounter++;
+                if(numInArray(sentenceCounter, ran)){
+                    final += hideWords($(this).text());
+                }
+                else {
+                    final += $(this).text();
+                }
             }
         }
     });
     return final;
+}
+
+function numInArray(num, array){
+    for(var i=0; i<array.length; i++){
+        if(array[i] == num){
+            return true;
+        }
+    }
+    return false;
 }
 
 function processVerses(data, planId, day, hideWords){
@@ -499,7 +585,7 @@ function processVerses(data, planId, day, hideWords){
     var verses;
     if(hideWords) {
         verses  = replaceVerses(data);
-        $('#finish-button, #message').hide();
+        $('#finish-button-container, #message').hide();
     }
     else {
         verses = data
@@ -533,7 +619,7 @@ function processVerses(data, planId, day, hideWords){
     else {
         var message= questions[getRandom(1,questions.length)[0] -1];
         $('#message').empty().append(message).fadeIn('slow');
-        $('#finish-button').show('slow');
+        $('#finish-button-container, #finish-button').show('slow');
     }
 }
 
@@ -664,21 +750,20 @@ function revealClicked(){
     });
 
     if(bAllCorrect){
-        $('#message').empty().append('Good Job! You Got It Right!').fadeIn('slow');
+        $('#message').empty().append('Good Job! You Got It Right! (Next Game Will Be In 5 Seconds)').fadeIn('slow');
         drawMemorizedCircle(true);
     }
     else {
-        $('#message').empty().append('No Worries! You Will Only Get Better!').fadeIn('slow');
+        $('#message').empty().append('No Worries! You Will Only Get Better! (Next Game Will Be In 5 Seconds)').fadeIn('slow');
     }
 
-//    $('.text-hidden').css('transition', 'background-color 2s').css('background-color', 'transparent');
     rollBg();
 
     $.get('http://' + HOST + '/answered', { plan_id: $(this).data('planId'), day: $(this).data('day'), user_id: userId }, function(data){});
 
     setTimeout(function(){
         htmlRender.showNextVerse(true);
-    }, 6000);
+    }, 5000);
 }
 
 function randomString(length, chars) {

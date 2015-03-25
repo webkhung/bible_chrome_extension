@@ -189,19 +189,6 @@ body {
     color: #ffdb27;
 }
 
-.text-hidden:hover {
-    text-shadow: 1px 1px 1px #333;
-    color: #fff;
-    background-color: transparent;
-}
-
-.text-hidden {
-    background-color: #224bab;
-    /*font-weight: bold;*/
-    text-shadow: none;
-    color:  #224bab;
-}
-
 #passages {
     font-size: 26px;
     color: white;
