@@ -209,8 +209,14 @@ body {
     font-weight: bold;
 }
 
+#passages h2, #passages h3 {
+    display: none;
+}
+
 #passages p {
     font-weight: 700;
+    display: inline-block;
+    margin: 10px 0;
 }
 
 #passages a {

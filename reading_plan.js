@@ -294,7 +294,7 @@ function HTMLRender(){
             return;
         }
         else if(bHasNextVerse) {
-            $('#finish-button').text('Done! Try a Memorization Game');
+            $('#finish-button').text('Done! Try a Game');
             return;
         }
 
@@ -446,7 +446,7 @@ function hideWords(text){
     var difficulty = getDifficulty();
     var txttmp = text.split(/\s+/);
     var randoms = getRandom(txttmp.length, txttmp.length);
-    var toPick = Math.floor(txttmp.length/(ratio+1));
+    var toPick = Math.floor(txttmp.length/ Math.min(txttmp.length,ratio+1));
     console.log('text ' + text);
     console.log('txttmp.length ' + txttmp.length);
     console.log('ratio ' + ratio);
@@ -541,7 +541,11 @@ function replaceVerses(data){
 
     var sentenceCounter = 0;
     $p.contents().each(function(){
-        if(this.nodeType == 3 && $(this).parent().prop('className') != 'scripture') {
+        if($(this).parent() && ($(this).parent().prop("tagName").toLowerCase() == 'h2' || $(this).parent().prop("tagName").toLowerCase() == 'h3')){
+
+        }
+        else if(this.nodeType == 3 && $(this).parent().prop('className') != 'scripture') {
+//            final += hideWords($(this).text()) + ' ';
             sentenceCounter++;
             if(numInArray(sentenceCounter, ran)){
                 final += hideWords($(this).text());
@@ -558,6 +562,7 @@ function replaceVerses(data){
                 final +=$(this).prop('outerHTML');
             }
             else {
+//                final += hideWords($(this).text()) + ' ';;
                 sentenceCounter++;
                 if(numInArray(sentenceCounter, ran)){
                     final += hideWords($(this).text());
@@ -567,6 +572,7 @@ function replaceVerses(data){
                 }
             }
         }
+        final = final + ' ';
     });
     return final;
 }
@@ -750,11 +756,11 @@ function revealClicked(){
     });
 
     if(bAllCorrect){
-        $('#message').empty().append('Good Job! You Got It Right! (Next Game Will Be In 5 Seconds)').fadeIn('slow');
+        $('#message').empty().append('Good Job! You Got It Right!').fadeIn('slow');
         drawMemorizedCircle(true);
     }
     else {
-        $('#message').empty().append('No Worries! You Will Only Get Better! (Next Game Will Be In 5 Seconds)').fadeIn('slow');
+        $('#message').empty().append('No Worries! You Will Only Get Better!').fadeIn('slow');
     }
 
     rollBg();
