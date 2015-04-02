@@ -24,7 +24,7 @@ var quotes = [
     'Great Effort!',
     'Add More Bible Reading Plans',
     'Keep Up The Good Work!',
-    'Smile . It Looks Good On You',
+    'Smile, It Looks Good On You',
     'Say Hi to a stranger. It will brighten both your day and theirs',
     'Be mindful of your posture. You\'ll look and feel more confident!']
 
@@ -187,13 +187,13 @@ function drawMemorizedCircle(increment){
         chrome.storage.sync.set(data);
 
         $('#memorized-circle').circleProgress({
-            value: Math.min(1,memorizedCount / DAILY_MEMORIZED_GOAL),
-            size: 70,
-            thickness: 7,
+            value: Math.min(1,memorizedCount / DAILY_MEMORIZED_GOAL) + 0.1,
+            size: 170,
+            thickness: 17,
             fill: { gradient: ['#f65bf0','#f68a16'], gradientAngle: Math.PI / 4 }
         }).on('circle-animation-progress', function(event, progress, stepValue) {
                 // $(this).find('strong').text(String(stepValue.toFixed(2)).substr(1));
-                $(this).find('strong').text(memorizedCount);
+//                $(this).find('strong').text(memorizedCount);
             });
     });
 }
@@ -294,7 +294,7 @@ function HTMLRender(){
             return;
         }
         else if(bHasNextVerse) {
-            $('#finish-button').text('Done! Try a Game');
+            $('#finish-button').text('Ready For a Game?');
             return;
         }
 
@@ -447,11 +447,13 @@ function hideWords(text){
     var txttmp = text.split(/\s+/);
     var randoms = getRandom(txttmp.length, txttmp.length);
     var toPick = Math.floor(txttmp.length/ Math.min(txttmp.length,ratio+1));
+
     console.log('text ' + text);
     console.log('txttmp.length ' + txttmp.length);
     console.log('ratio ' + ratio);
     console.log('toPick ' + toPick);
     console.log('difficulty' + difficulty) ;
+
     var picked = 0;
     var i=0;
     while(picked < toPick && i < randoms.length){
@@ -522,10 +524,10 @@ function replaceVerses(data){
     var hideSentence = 0;
     var difficulty = getDifficulty();
     if(difficulty == 1){
-        hideSentence = 1;
+        hideSentence = Math.min(2, totalSentence);
     }
     else if(difficulty == 2){
-        hideSentence = 1;
+        hideSentence = Math.min(2, totalSentence);
     }
     else if(difficulty == 3){
         hideSentence = Math.max(2,Math.floor(totalSentence/2));
@@ -545,7 +547,6 @@ function replaceVerses(data){
 
         }
         else if(this.nodeType == 3 && $(this).parent().prop('className') != 'scripture') {
-//            final += hideWords($(this).text()) + ' ';
             sentenceCounter++;
             if(numInArray(sentenceCounter, ran)){
                 final += hideWords($(this).text());
@@ -562,7 +563,6 @@ function replaceVerses(data){
                 final +=$(this).prop('outerHTML');
             }
             else {
-//                final += hideWords($(this).text()) + ' ';;
                 sentenceCounter++;
                 if(numInArray(sentenceCounter, ran)){
                     final += hideWords($(this).text());
@@ -630,6 +630,7 @@ function processVerses(data, planId, day, hideWords){
 }
 
 function fetchVerses(planId, day, hideWords){
+    day = 2;
     var key = 'planId' + planId + '-' + today;
     chrome.storage.sync.get(key, function (data) {
         if (data !== undefined && data[key] !== undefined){
@@ -741,7 +742,8 @@ String.prototype.removePunctuation = function(){
 }
 
 function revealClicked(){
-    $('#reveal-button, #message').fadeOut();
+//    $('#reveal-button, #message').fadeOut();
+    $('#message').fadeOut();
 
     var bAllCorrect = true;
     $('.missingWord').each(function(e){
@@ -756,7 +758,7 @@ function revealClicked(){
     });
 
     if(bAllCorrect){
-        $('#message').empty().append('Good Job! You Got It Right!').fadeIn('slow');
+        $('#message').empty().append('Good Job!').fadeIn('slow');
         drawMemorizedCircle(true);
     }
     else {
