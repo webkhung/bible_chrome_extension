@@ -6,7 +6,9 @@ body {
     color: #ffffff;
     text-decoration: none;
     font-size:30px;
-
+    position: absolute;
+    top: 10px;
+    left: 10px;
 
     font-weight: 300;
     text-shadow: 1px 1px 1px #333;
@@ -298,10 +300,6 @@ body {
     /*left:       -8;*/
 }
 
-#finish-button, #reveal-button-container {
-    display: none;
-}
-
 .myButton {
     background-color:#44c767;
     -moz-border-radius:28px;
@@ -325,29 +323,6 @@ body {
     top:1px;
 }
 
-/*.myButtonReveal {*/
-    /*background-color: #4b62c7;*/
-    /*-moz-border-radius:28px;*/
-    /*-webkit-border-radius:28px;*/
-    /*border-radius:28px;*/
-    /*border:1px solid #224bab;*/
-    /*display:inline-block;*/
-    /*cursor:pointer;*/
-    /*color:#ffffff;*/
-    /*font-family:arial;*/
-    /*font-size:17px;*/
-    /*padding:16px 31px;*/
-    /*text-decoration:none;*/
-    /*text-shadow:0px 1px 0px #2f6627;*/
-/*}*/
-/*.myButtonReveal:hover {*/
-    /*background-color: #224bab;*/
-/*}*/
-/*.myButtonReveal:active {*/
-    /*position:relative;*/
-    /*top:1px;*/
-/*}*/
-
 
 .myButtonReveal {
     position:relative;
@@ -364,8 +339,6 @@ body {
 .myButtonReveal:hover {
     color: yellow;
 }
-
-
 
 .myButtonSmall {
     background-color:#44c767;

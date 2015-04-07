@@ -2,8 +2,8 @@ var today = formatDate(new Date());
 var objPlans = {};
 var userId = '';
 var htmlRender = new HTMLRender();
-var DAILY_MEMORIZED_GOAL = 10;
-var memorizedCount = 0;
+var DAILY_MEMORIZED_GOAL = 3;
+//var memorizedCount = 0;
 var HOST = 'biblereadingplans.herokuapp.com';
 //var HOST = 'localhost:3001';
 var questions = [
@@ -160,95 +160,28 @@ function saveData(){
     chrome.storage.sync.set(userData);
 }
 
-function drawPlansCircle(){
-    numPlansAdded();
-    $('#plans-circle').circleProgress({
-        value: Math.min(1,numPlansAdded() / 7),
-        size: 70,
-        thickness: 7,
-        fill: { gradient: ['#FFCC03', '#FFF702'], gradientAngle: Math.PI / 4 }
-    }).on('circle-animation-progress', function(event, progress, stepValue) {
-            $(this).find('strong').text(numPlansAdded());
-        });
-}
+//function randomAddedPlan(){
+//    var allPlanIds = [];
+//    for(var planId in objPlans){
+//        if(objPlans[planId].added && objPlans[planId].lastCompletedDate() == today) {
+//            allPlanIds[allPlanIds.length] = planId;
+//        }
+//    }
+//
+//    var randomPlanId = allPlanIds[(Math.floor(Math.random() * allPlanIds.length) + 1) - 1];
+//    return objPlans[randomPlanId];
+//}
 
-function drawMemorizedCircle(increment){
-    var dailyGoal = numUnfinishedPlans() * DAILY_MEMORIZED_GOAL;
-    var key = 'memorized' + today;
-    chrome.storage.sync.get(key, function (data) {
-        if (data !== undefined && data[key] !== undefined){
-            memorizedCount = parseInt(data[key]);
-        }
-        if(increment ==  true) {
-            memorizedCount = memorizedCount + 1;
-        }
-        var data = {};
-        data[key] = memorizedCount;
-        chrome.storage.sync.set(data);
-
-        $('#memorized-circle').circleProgress({
-            value: Math.min(1,memorizedCount / DAILY_MEMORIZED_GOAL) + 0.1,
-            size: 170,
-            thickness: 17,
-            fill: { gradient: ['#f65bf0','#f68a16'], gradientAngle: Math.PI / 4 }
-        }).on('circle-animation-progress', function(event, progress, stepValue) {
-                // $(this).find('strong').text(String(stepValue.toFixed(2)).substr(1));
-//                $(this).find('strong').text(memorizedCount);
-            });
-    });
-}
-
-function drawVersesCircle(increment){
-    chrome.storage.sync.get("verses", function (data) {
-        var count = 0;
-        if (data !== undefined && data['verses'] !== undefined){
-            count = parseInt(data['verses']);
-        }
-
-        if(increment !==  undefined) {
-            count = count + increment;
-        }
-        var data = { "verses" : count }
-        chrome.storage.sync.set(data);
-
-        $('#verses-circle').circleProgress({
-            value: Math.min(1,count / 50),
-            size: 70,
-            thickness: 7,
-            fill: { gradient: ['#88eeff','#59ff5b'], gradientAngle: Math.PI / 4 }
-        }).on('circle-animation-progress', function(event, progress, stepValue) {
-                $(this).find('strong').text(count);
-            });
-    });
-}
-
-function formatDate(date){
-    return (date.getMonth() + 1) + '-' + date.getDate() + '-' +  date.getFullYear();
-}
-
-function randomAddedPlan(){
-    var allPlanIds = [];
-    for(var planId in objPlans){
-        if(objPlans[planId].added && objPlans[planId].lastCompletedDate() == today) {
-            allPlanIds[allPlanIds.length] = planId;
-        }
-    }
-
-    var randomPlanId = allPlanIds[(Math.floor(Math.random() * allPlanIds.length) + 1) - 1];
-    return objPlans[randomPlanId];
-}
-
-function hasFinishedToday(){
-
-    var bFinishedToday = false;
-    for(var planId in objPlans){
-        var plan = objPlans[planId];
-        if(plan.added){
-            bFinishedToday = true;
-        }
-    }
-    return bFinishedToday;
-}
+//function hasFinishedToday(){
+//    var bFinishedToday = false;
+//    for(var planId in objPlans){
+//        var plan = objPlans[planId];
+//        if(plan.added){
+//            bFinishedToday = true;
+//        }
+//    }
+//    return bFinishedToday;
+//}
 
 function HTMLRender(){
 
@@ -281,7 +214,7 @@ function HTMLRender(){
                     var day = plan.numDaysFinished()+1;
                     bHasNextVerse = true;
                     fetchVerses(planId, day);
-                    $('#finish-button').data('planId', planId).data('day', day);
+                    return;
                 }
                 else {
                     bHasMoreVerseAfterNext = true;
@@ -289,21 +222,21 @@ function HTMLRender(){
             }
         }
 
-        if(bHasMoreVerseAfterNext){
-            $('#finish-button').text('Show Next Verse');
-            return;
-        }
-        else if(bHasNextVerse) {
-            $('#finish-button').text('Ready For a Game?');
-            return;
-        }
-
-        // There is today's verse and they are done, so randomly fetch a verse to play the game.
-        if(hasFinishedToday()){
-            var plan = randomAddedPlan();
-            fetchVerses(plan.id, plan.numDaysFinished(), true);
-            return;
-        }
+//        if(bHasMoreVerseAfterNext){
+//            $('#finish-button').text('Show Next Verse');
+//            return;
+//        }
+//        else if(bHasNextVerse) {
+//            $('#finish-button').text('Done!');
+//            return;
+//        }
+//
+//        // There is today's verse and they are done, so randomly fetch a verse to play the game.
+//        if(hasFinishedToday()){
+//            var plan = randomAddedPlan();
+//            fetchVerses(plan.id, plan.numDaysFinished(), true);
+//            return;
+//        }
 
         // To fix God's words in your heart and mind, it means to be continually conscious of the Bible’s teachings as you go through your daily routine.
         // one practical way to make sure that God’s words are always close at hand is to memorize verses and passages from the Bible.
@@ -359,11 +292,6 @@ function HTMLRender(){
                 $plan.append($container);
             }
         }
-
-        $container = $("<div class='plan-container'>");
-        $addPlans = $("<a id='add-new-plan' href='#'><img src='images/add.png' style='vertical-align:middle'>Add More Plans</a>");
-        $container.append($addPlans);
-        $plan.append($container);
     }
 
     this.showPlansSelector = function(){
@@ -398,23 +326,64 @@ function HTMLRender(){
             $container.append($rightCol);
             $planSelector.append($container);
         }
-        var addPlansText = '';
-        if(numPlansAdded == 0){
-            addPlansText = '<h1>Make God\'s Word Part Of Your Day! Add Your 1st Plan Now!</h1><h2>(You can add additional plans later)</h2>';
-        }
-        else if(numPlansAdded == 1){
-            addPlansText = '<h1>Add Your 2nd Plan Now!</h1>';
-        }
-        else if(numPlansAdded == 2){
-            addPlansText = '<h1>Add Your 3rd Plan Now!</h1>';
-        }
-        else {
-            addPlansText = '<h1>Great Job! You Can Add Even More Plans!';
-        }
+        var addPlansText = '<h1>Make God\'s Word Part Of Your Day!</h1><h2>(You can add additional plans later)</h2>';
         $planSelector.find('#plansSelectorHeader').html(addPlansText);
         $planSelector.append("<div style='text-align: center'><a id='plans-close' class='myButton' href='#'>Close</a></div>");
         $planSelector.show();
     }
+
+    this.drawMemorizedCircle = function(planId, day){
+        var key = memorizedKey(planId, day);
+        chrome.storage.sync.get(key, function (data) {
+            var memorizedCount = 0;
+            if (data !== undefined && data[key] !== undefined){
+                memorizedCount = parseInt(data[key]);
+            }
+
+            $('#memorized-circle').circleProgress({
+                value: Math.min(1,memorizedCount / DAILY_MEMORIZED_GOAL) + 0.01,
+                size: 170,
+                thickness: 17,
+                fill: { gradient: ['#f65bf0','#f68a16'], gradientAngle: Math.PI / 4 }
+            })
+        });
+    }
+
+    this.newGradient = function() {
+        var c1 = {
+            r: Math.floor(Math.random()*155) + 100,
+            g: Math.floor(Math.random()*155) + 100,
+            b: Math.floor(Math.random()*155) + 100
+        };
+        var c2 = {
+            r: Math.floor(Math.random()*255) + 0,
+            g: Math.floor(Math.random()*255) + 0,
+            b: Math.floor(Math.random()*255) + 0
+        };
+        c1.rgb = 'rgb('+c1.r+','+c1.g+','+c1.b+')';
+        c2.rgb = 'rgb('+c2.r+','+c2.g+','+c2.b+')';
+        return 'radial-gradient(at top left, '+c1.rgb+', '+c2.rgb+')';
+    }
+
+    this.newGradient2 = function() {
+        var c1 = {
+            r: Math.floor(Math.random()*255),
+            g: Math.floor(Math.random()*255),
+            b: Math.floor(Math.random()*255)
+        };
+        var c2 = {
+            r: Math.floor(Math.random()*255),
+            g: Math.floor(Math.random()*255),
+            b: Math.floor(Math.random()*255)
+        };
+        c1.rgb = 'rgb('+c1.r+','+c1.g+','+c1.b+')';
+        c2.rgb = 'rgb('+c2.r+','+c2.g+','+c2.b+')';
+        return 'radial-gradient(at top left, '+c1.rgb+', '+c2.rgb+')';
+    }
+}
+
+function memorizedKey(planId, day){
+    return 'memorized-' +  planId + '-' + day + '-' + today;
 }
 
 // max is based of '1'
@@ -431,19 +400,22 @@ function getRandom(pick, max) {
     return arr;
 }
 
-function getDifficulty(){
-    var ratio = Math.max(1,(DAILY_MEMORIZED_GOAL-memorizedCount)/2);
-    var difficulty = 6 - Math.ceil(ratio); // from 1 to 5
-    return difficulty;
+function getDifficulty(planId, day, memorizedCount){
+    if(memorizedCount == 0){
+        return 0;
+    }
+    else {
+        var ratio = Math.max(1,(DAILY_MEMORIZED_GOAL-memorizedCount)/2);
+        var difficulty = 6 - Math.ceil(ratio); // from 1 to 5
+        return difficulty;
+    }
 }
 
-function hideWords(text){
-    // DAILY_MEMORIZED_GOAL is 10
+function hideWords(text, difficulty, memorizedCount){
     // if memorizedCount = 0,1, ratio = 5
     // if memorizedCount = 2,3, ratio = 4
     // if memorizedCount = 9,10, ratio = 1
     var ratio = Math.max(1,(DAILY_MEMORIZED_GOAL-memorizedCount)/2);
-    var difficulty = getDifficulty();
     var txttmp = text.split(/\s+/);
     var randoms = getRandom(txttmp.length, txttmp.length);
     var toPick = Math.floor(txttmp.length/ Math.min(txttmp.length,ratio+1));
@@ -501,7 +473,7 @@ function maskWord(word, difficulty){
     return maskedWord;
 }
 
-function replaceVerses(data){
+function replaceVerses(data, planId, day, memorizedCount){
     $p = $(data);
     var final = '';
 
@@ -522,8 +494,12 @@ function replaceVerses(data){
     });
 
     var hideSentence = 0;
-    var difficulty = getDifficulty();
-    if(difficulty == 1){
+    var difficulty = getDifficulty(planId, day, memorizedCount);
+    console.log('difficulty ' + difficulty);
+    if(difficulty == 0){
+        hideSentence = 0;
+    }
+    else if(difficulty == 1){
         hideSentence = Math.min(2, totalSentence);
     }
     else if(difficulty == 2){
@@ -549,7 +525,7 @@ function replaceVerses(data){
         else if(this.nodeType == 3 && $(this).parent().prop('className') != 'scripture') {
             sentenceCounter++;
             if(numInArray(sentenceCounter, ran)){
-                final += hideWords($(this).text());
+                final += hideWords($(this).text(), difficulty, memorizedCount);
             }
             else {
                 final += $(this).text();
@@ -565,7 +541,7 @@ function replaceVerses(data){
             else {
                 sentenceCounter++;
                 if(numInArray(sentenceCounter, ran)){
-                    final += hideWords($(this).text());
+                    final += hideWords($(this).text(), difficulty, memorizedCount);
                 }
                 else {
                     final += $(this).text();
@@ -577,71 +553,48 @@ function replaceVerses(data){
     return final;
 }
 
-function numInArray(num, array){
-    for(var i=0; i<array.length; i++){
-        if(array[i] == num){
-            return true;
+function processVerses(data, planId, day){
+    var key = memorizedKey(planId, day);
+    chrome.storage.sync.get(key, function (userData) {
+        var memorizedCount = 0;
+        if (userData !== undefined && userData[key] !== undefined){
+            memorizedCount = parseInt(userData[key]);
         }
-    }
-    return false;
-}
 
-function processVerses(data, planId, day, hideWords){
-    var $passage = $('#passages');
-    var verses;
-    if(hideWords) {
-        verses  = replaceVerses(data);
-        $('#finish-button-container, #message').hide();
-    }
-    else {
-        verses = data
-        $('#reveal-button').hide();
+        var verses = replaceVerses(data, planId, day, memorizedCount);
+
         $('#reveal-button').data('planId', planId).data('day', day);
-    }
-    $passage
-        .hide()
-        .empty()
-        .append("<div id='passage-plan-name'>" + objPlans[planId].name + '</div>')
-        .append(verses).fadeIn('slow');
 
-    if(hideWords) {
-        var message = '';
-        var memorized = parseInt($('#memorized-circle strong').text());
-        if(memorized < 1){
-            message = "Memorize verses fix God's words in your heart and mind";
-        }
-        else if(memorized < 2){
-            message = "Read it out loud help you memorize the verses";
-        }
-        else if(numPlansAdded() == 1){
-            message = 'You Can Add Another Bible Reading Plan Below';
+        $('#passages')
+            .hide()
+            .empty()
+            .append("<div id='passage-plan-name'>" + objPlans[planId].name + '</div>')
+            .append(verses).fadeIn('slow');
+
+        if(memorizedCount == 0){
+            htmlRender.drawMemorizedCircle(planId, day);
+            $('#reveal-button').text('Yes!');
+            $('#message').text('Did You Read This Passage?');
         }
         else {
-            message= quotes[getRandom(1,quotes.length)[0] -1];
+            $('#reveal-button').text('Check!')
+            $('#message').text('Difficult ' + memorizedCount);
         }
-        $('#message').empty().append(message).fadeIn('slow');
-        $('#reveal-button-container, #reveal-button').fadeIn('slow');
-    }
-    else {
-        var message= questions[getRandom(1,questions.length)[0] -1];
-        $('#message').empty().append(message).fadeIn('slow');
-        $('#finish-button-container, #finish-button').show('slow');
-    }
+    });
 }
 
-function fetchVerses(planId, day, hideWords){
-    day = 2;
+function fetchVerses(planId, day){
     var key = 'planId' + planId + '-' + today;
     chrome.storage.sync.get(key, function (data) {
         if (data !== undefined && data[key] !== undefined){
-            processVerses(data[key], planId, day, hideWords);
+            processVerses(data[key], planId, day);
         }
         else {
             $.get('http://' + HOST + '/verses', { plan_id: planId, day: day, user_id: userId }, function(verses){
                 var data = {}
                 data[key] = verses;
                 chrome.storage.sync.set(data);
-                processVerses(verses, planId, day, hideWords);
+                processVerses(verses, planId, day);
             });
         }
     });
@@ -655,47 +608,14 @@ function addPlan(event){
     htmlRender.showNextVerse();
     $('#plans-selector').hide();
     $('#passages-container').show();
-    drawPlansCircle();
     saveData();
 }
 
 function rollBg() {
     var bgImage = "bg" + (Math.floor(Math.random() * 33) + 1) + ".jpg";
     $('body').css('background-image', "url('images/" + bgImage + "')");
-    $('.bg.hidden').css('background', newGradient());
+    $('.bg.hidden').css('background', htmlRender.newGradient());
     $('.bg').toggleClass('hidden');
-}
-
-function newGradient() {
-    var c1 = {
-        r: Math.floor(Math.random()*155) + 100,
-        g: Math.floor(Math.random()*155) + 100,
-        b: Math.floor(Math.random()*155) + 100
-    };
-    var c2 = {
-        r: Math.floor(Math.random()*255) + 0,
-        g: Math.floor(Math.random()*255) + 0,
-        b: Math.floor(Math.random()*255) + 0
-    };
-    c1.rgb = 'rgb('+c1.r+','+c1.g+','+c1.b+')';
-    c2.rgb = 'rgb('+c2.r+','+c2.g+','+c2.b+')';
-    return 'radial-gradient(at top left, '+c1.rgb+', '+c2.rgb+')';
-}
-
-function newGradient2() {
-    var c1 = {
-        r: Math.floor(Math.random()*255),
-        g: Math.floor(Math.random()*255),
-        b: Math.floor(Math.random()*255)
-    };
-    var c2 = {
-        r: Math.floor(Math.random()*255),
-        g: Math.floor(Math.random()*255),
-        b: Math.floor(Math.random()*255)
-    };
-    c1.rgb = 'rgb('+c1.r+','+c1.g+','+c1.b+')';
-    c2.rgb = 'rgb('+c2.r+','+c2.g+','+c2.b+')';
-    return 'radial-gradient(at top left, '+c1.rgb+', '+c2.rgb+')';
 }
 
 function numPlansAdded(){
@@ -720,29 +640,59 @@ function numUnfinishedPlans(){
     return numPlansAdded;
 }
 
-function finishClicked(){
-    drawVersesCircle($('#passages').find('sup').length);
-    $(this).hide();
-    $('#message').hide();
-    var lastPlanId = $(this).data('planId');
-    var day = $(this).data('day');
-    var plan = objPlans[lastPlanId];
-    plan.dayCompleted();
+//function finishClicked(){
+//    $(this).hide();
+//    $('#message').hide();
+//    var lastPlanId = $(this).data('planId');
+//    var day = $(this).data('day');
+//    var plan = objPlans[lastPlanId];
+//    plan.dayCompleted();
+//    saveData();
+//
+//    htmlRender.drawMemorizedCircle(lastPlanId, day, true);
+//
+//    htmlRender.updatePlanProgressMeter(lastPlanId);
+//    htmlRender.showNextVerse();
+//    rollBg();
+//
+//    $.get('http://' + HOST + '/finished', { plan_id: lastPlanId, day: day, user_id: userId }, function(data){});
+//}
+
+function todayVersesCompleted(planId, day){
+
+    objPlans[planId].dayCompleted();
     saveData();
 
-    htmlRender.updatePlanProgressMeter(lastPlanId);
-    htmlRender.showNextVerse();
-    rollBg();
+    $('#message').text('GREAT JOB!');
+
+    htmlRender.drawMemorizedCircle(planId, day);
+    htmlRender.updatePlanProgressMeter(planId);
 
     $.get('http://' + HOST + '/finished', { plan_id: lastPlanId, day: day, user_id: userId }, function(data){});
 }
 
-String.prototype.removePunctuation = function(){
-    return this.replace(/[\.,-\/#!$%\^&\*;:{}=\-_`~()]/g,"")
+function incrementMemorizedCount(planId, day){
+    var key = memorizedKey(planId, day);
+    chrome.storage.sync.get(key, function (data) {
+        var memorizedCount = 0;
+        if (data !== undefined && data[key] !== undefined){
+            memorizedCount = parseInt(data[key]);
+        }
+        memorizedCount = memorizedCount + 1;
+
+        var data = {};
+        data[key] = memorizedCount;
+        chrome.storage.sync.set(data);
+
+        htmlRender.drawMemorizedCircle(planId, day);
+
+        if(memorizedCount == DAILY_MEMORIZED_GOAL){
+            todayVersesCompleted(planId, day);
+        }
+    });
 }
 
 function revealClicked(){
-//    $('#reveal-button, #message').fadeOut();
     $('#message').fadeOut();
 
     var bAllCorrect = true;
@@ -759,10 +709,11 @@ function revealClicked(){
 
     if(bAllCorrect){
         $('#message').empty().append('Good Job!').fadeIn('slow');
-        drawMemorizedCircle(true);
+        incrementMemorizedCount($(this).data('planId'), $(this).data('day'));
     }
     else {
-        $('#message').empty().append('No Worries! You Will Only Get Better!').fadeIn('slow');
+        $('#message').empty().append('Try Again!').fadeIn('slow');
+        incrementMemorizedCount($(this).data('planId'), $(this).data('day'));
     }
 
     rollBg();
@@ -772,16 +723,6 @@ function revealClicked(){
     setTimeout(function(){
         htmlRender.showNextVerse(true);
     }, 5000);
-}
-
-function randomString(length, chars) {
-    var result = '';
-    for (var i = length; i > 0; --i) result += chars[Math.round(Math.random() * (chars.length - 1))];
-    return result;
-}
-
-function generateUserId(){
-    return randomString(30, '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ');
 }
 
 $( document ).ready(function() {
@@ -809,27 +750,11 @@ $( document ).ready(function() {
             objPlans[planId].completedOn = userData["plans"][planId];
         };
 
-        $('#finish-button').click(finishClicked);
-
-        drawPlansCircle();
-        drawMemorizedCircle();
-        drawVersesCircle();
-
         htmlRender.showAddedPlans();
         htmlRender.showNextVerse();
     });
 
     $('#reveal-button').click(revealClicked);
-
-    $('#clean-storage').click(function(){
-        chrome.storage.sync.clear();
-    });
-
-    $('#show-storage').click(function(){
-        chrome.storage.sync.get(null, function(data){
-            console.log(data);
-        })
-    });
 
     $('.maincontainer').on('click', '#add-new-plan', function(){
         htmlRender.showPlansSelector();
@@ -841,14 +766,6 @@ $( document ).ready(function() {
         $('#passages-container').show();
     });
 
-    $('#add-day').click(function(){
-        var tomorrow = new Date(today);
-        tomorrow.setDate(tomorrow.getDate()+1);
-        today = formatDate(tomorrow);
-        htmlRender.showAddedPlans();
-        htmlRender.showNextVerse();
-    });
-
     $('#add-new-plan').hover(
         function(){
             $(this).find('span').show();
@@ -858,6 +775,25 @@ $( document ).ready(function() {
         }
     )
 
+    // Debug stuffs
+    $('#clean-storage').click(function(){
+        chrome.storage.sync.clear();
+    });
+
+    $('#show-storage').click(function(){
+        chrome.storage.sync.get(null, function(data){
+            console.log(data);
+        })
+    });
+
+    $('#add-day').click(function(){
+        var tomorrow = new Date(today);
+        tomorrow.setDate(tomorrow.getDate()+1);
+        today = formatDate(tomorrow);
+        htmlRender.showAddedPlans();
+        htmlRender.showNextVerse();
+    });
+
     $('#helps-container a').click(function(){
         fetchVerses($(this).attr('id'), 1);
     });
@@ -865,56 +801,3 @@ $( document ).ready(function() {
     rollBg();
     setTimeout(rollBg, 0.5);
 });
-
-//$('#jqmeter-horizontal').jQMeter({goal:'$10,000',raised:'$6,600',width:'300px'});
-//$('#jqmeter-horizontal2').jQMeter({goal:'$10,000',raised:'$3000',width:'270px',height:'20px',bgColor:'#dadada',barColor:'#f09246',animationSpeed:1000,displayTotal:false});
-//$('#jqmeter-horizontal3').jQMeter({goal:'$10,000',raised:'$8000',width:'160px',height:'40px',bgColor:'#bfb345',barColor:'#f3e45b',animationSpeed:600});
-//$('#jqmeter-vertical').jQMeter({goal:'10,000',raised:'9,000',orientation:'vertical',width:'50px',height:'200px',barColor:'#d9235c'});
-//$('#jqmeter-vertical2').jQMeter({goal:'10,000',raised:'4,000',orientation:'vertical',width:'30px',height:'150px',barColor:'#93d5c7',bgColor:'#e1e1e1',displayTotal:false,animationSpeed:400});
-//document.getElementById("abutton").addEventListener("click",test);
-
-
-//{
-//    "id": "5",
-//    "name": "12 Days on Worry",
-//    "badge": "",
-//    "description": "",
-//    "days": ["Deuteronomy.28:58-68","Psalm.94:1-23","Jeremiah.17:5-8","Ezekiel.12:1-20","Matthew.6:25-34","Mark.4:35-41","Luke.8:11-15","Luke.10:38-42","John.14:1-14","Philippians.4:4-9"]
-//},
-//{
-//    "id": "6",
-//    "name": "10 Days on Freedom",
-//    "badge": "",
-//    "description": "",
-//    "days": ["Exodus.12:31-42","Leviticus.25:38-55,Deuteronomy.15:12-18","Isaiah.58:1-12","Jeremiah.34:8-22","John.8:31-38","Romans.6:15-23","1Corinthians.7:17-24","1Corinthians.9:1-23","1Peter.2:11-17","Galatians.5:1-15"]
-//},
-//{
-//    "id": "7",
-//    "name": "10 Days on Wisdom",
-//    "badge": "",
-//    "description": "",
-//    "days": ["1Kings.3:3-15","1Kings.3:16-28","Proverbs.8:1-21","Proverbs.8:22-36","Proverbs.9:1-18","Ecclesiastes.1:12-18,Ecclesiastes.2:12-17","Matthew.12:38-42","1Corinthians.1:18-31","1Corinthians.2:1-13","James.1:5-8,James.3:13-18"]
-//},
-//{
-//    "id": "8",
-//    "name": "10 Days on Friendship",
-//    "badge": "",
-//    "description": "",
-//    "days": ["Exodus.33:7-11,2Chronicles.20:7","Ruth.1:6-22","1Samuel.18:1-4,.1Samuel.19:1-7,1Samuel.20:1-42","2Samuel.15:32-37,.2Samuel.16:15-19,2Samuel.17:1-16","Job.2:11-13,Job.19:13-22","Psalm.55","Proverbs.13:20,Proverbs.14:20,Proverbs.16:28","Mark.2:1-12","John.11:1-44","John.15:1-17"]
-//}
-//,
-//{
-//    "id": "9",
-//    "name": "30 Days with Jesus",
-//    "badge": "",
-//    "description": "",
-//    "days": ["Isaiah.52:13-53:12","Matthew.1:18-25,Luke.2:1-21","Luke.3:1-22,Luke.4:1-13","John.2:1-11,John.3:1-21","John.4:1-42","Luke.4:14-44","Matthew.9:9-13,Luke 5:1-11,John.1:35-51","Luke.6:17-49","Luke.11:1-13,Luke.18:1-14","Matthew.13:1-52","Luke.11:14-53","Mark.4:35-5:20","Mark.5:21-43","Matthew.9:35-10:42","Matthew.14:13-36","Luke.15:1-32","Mark.8:1-30","Mark.9:1-29","Luke.10:25-42","John.7:1-52","John.9:1-41","John.11:1-44","Matthew.19:13-30","Matthew.21:1-27","Luke.21:5-38","Matthew.26:17-56","Mark.14:53-15:15","Matthew.27:32-66","Luke.24:1-35,John.20:1-31","Matthew.28:16-20,Luke.24:50-53,Acts.1:3-11"]
-//}
-//,
-//{
-//    "id": "10",
-//    "name": "Luke 1 Month",
-//    "badge": "",
-//    "description": "",
-//    "days": ["Luke 1:1-38","Luke 1:39-80","Luke 2","Luke 3","Luke 4","Luke 5","Luke 6","Luke 7","Luke 8:1-25","Luke 8:26-56","Luke 9:1-36","Luke 9:37-62","Luke 10","Luke 11","Luke 12:1-34","Luke 12:35-59","Luke 13","Luke 14","Luke 15","Luke 16","Luke 17","Luke 18","Luke 19","Luke 20","Luke 21","Luke 22:1-38","Luke 22:39-71","Luke 23:1-25","Luke 23:26-56","Luke 24"]
-//}
