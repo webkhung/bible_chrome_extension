@@ -2,33 +2,33 @@ var today = formatDate(new Date());
 var objPlans = {};
 var userId = '';
 var htmlRender = new HTMLRender();
-var DAILY_MEMORIZED_GOAL = 3;
-//var memorizedCount = 0;
+var DAILY_MEMORIZED_GOAL = 7;
 var HOST = 'biblereadingplans.herokuapp.com';
 //var HOST = 'localhost:3001';
-var questions = [
-    'How Does This Passage Apply To Your Life Today?',
-    'What Does This Passage Mean To You?'
-]
-
-var quotes = [
-    'Like This App? <a href=\'https://chrome.google.com/webstore/detail/bible-reading-plans/jogajkcgclkfedbhdcopmpmeeophkkji?authuser=1\' target=\'_blank\'>Rate It On Chrome Store</a>',
-    'I Appreciate Your Feedback! Leave a Feedback on Chrome Store',
-    'How Does This Passage Apply To Your life Today?',
-    'What Does This Passage Mean To You?',
-    'Read it out loud help you memorize the verses',
-    'Memorize verses fix God\'s words in your heart and mind',
-    'Hello, Nice To See You Again!',
-    'You Are Doing A Good Job!',
-    'You Are Doing A Nice Work!',
-    'Great Effort!',
-    'Add More Bible Reading Plans',
-    'Keep Up The Good Work!',
-    'Smile, It Looks Good On You',
-    'Say Hi to a stranger. It will brighten both your day and theirs',
-    'Be mindful of your posture. You\'ll look and feel more confident!']
+//var questions = [
+//    'How Does This Passage Apply To Your Life Today?',
+//    'What Does This Passage Mean To You?'
+//]
+//
+//var quotes = [
+//    'Like This App? <a href=\'https://chrome.google.com/webstore/detail/bible-reading-plans/jogajkcgclkfedbhdcopmpmeeophkkji?authuser=1\' target=\'_blank\'>Rate It On Chrome Store</a>',
+//    'I Appreciate Your Feedback! Leave a Feedback on Chrome Store',
+//    'How Does This Passage Apply To Your life Today?',
+//    'What Does This Passage Mean To You?',
+//    'Read it out loud help you memorize the verses',
+//    'Memorize verses fix God\'s words in your heart and mind',
+//    'Hello, Nice To See You Again!',
+//    'You Are Doing A Good Job!',
+//    'You Are Doing A Nice Work!',
+//    'Great Effort!',
+//    'Add More Bible Reading Plans',
+//    'Keep Up The Good Work!',
+//    'Smile, It Looks Good On You',
+//    'Say Hi to a stranger. It will brighten both your day and theirs',
+//    'Be mindful of your posture. You\'ll look and feel more confident!']
 
 //http://www.biblestudytools.com/topical-verses/
+
 var readingPlans = [
     {
         "id": "1",
@@ -120,7 +120,7 @@ function Plan(json){
     this.days = json["days"];
     this.badge = json["badge"];
     this.added = false;
-    this.completedOn = [];
+    this.completedOn = []; // index is day-1, value is the date
     this.numOfDays = this.days.length;
     this.numDaysFinished = function() { return this.completedOn.length; }
     this.lastCompletedDate = function() { return this.completedOn[this.completedOn.length - 1]; }
@@ -160,17 +160,17 @@ function saveData(){
     chrome.storage.sync.set(userData);
 }
 
-//function randomAddedPlan(){
-//    var allPlanIds = [];
-//    for(var planId in objPlans){
-//        if(objPlans[planId].added && objPlans[planId].lastCompletedDate() == today) {
-//            allPlanIds[allPlanIds.length] = planId;
-//        }
-//    }
-//
-//    var randomPlanId = allPlanIds[(Math.floor(Math.random() * allPlanIds.length) + 1) - 1];
-//    return objPlans[randomPlanId];
-//}
+function randomAddedPlan(){
+    var allPlanIds = [];
+    for(var planId in objPlans){
+        if(objPlans[planId].added && objPlans[planId].lastCompletedDate() == today) {
+            allPlanIds[allPlanIds.length] = planId;
+        }
+    }
+
+    var randomPlanId = allPlanIds[(Math.floor(Math.random() * allPlanIds.length) + 1) - 1];
+    return objPlans[randomPlanId];
+}
 
 //function hasFinishedToday(){
 //    var bFinishedToday = false;
@@ -194,43 +194,34 @@ function HTMLRender(){
             $("#jmeter" + lastPlanId).jQMeter({
                 goal : lastPlan.days.length.toString(),
                 raised : lastPlan.completedOn.length.toString(),
-                width : '220px',
-                height : '16px',
-                bgColor : '#bbb',
-                barColor : '#666',
+                width : '150px',
+                height : '26px',
+                bgColor : '#dadada',
+                barColor : '#f09246',
                 displayTotal: false
             });
         }
     }
 
-    this.showNextVerse = function(fromNextPlay){
+    this.showNextVerse = function(){
         // Fetch the verse of the current plan
-        var bHasNextVerse = false;
-        var bHasMoreVerseAfterNext = false;
         for(var planId in objPlans){
             var plan = objPlans[planId];
             if(plan.added && !plan.completed() && plan.lastCompletedDate() != today) {
-                if(!bHasNextVerse) {
-                    var day = plan.numDaysFinished()+1;
-                    bHasNextVerse = true;
-                    fetchVerses(planId, day);
-                    return;
-                }
-                else {
-                    bHasMoreVerseAfterNext = true;
-                }
+                var day = plan.numDaysFinished()+1;
+                fetchVerses(planId, day);
+                return;
             }
         }
 
-//        if(bHasMoreVerseAfterNext){
-//            $('#finish-button').text('Show Next Verse');
-//            return;
-//        }
-//        else if(bHasNextVerse) {
-//            $('#finish-button').text('Done!');
-//            return;
-//        }
-//
+        var randomPlan = randomAddedPlan();
+        if(randomPlan){
+            var randomDay = getRandom(1,randomPlan.completedOn.length);
+            fetchVerses(randomPlan.id, randomDay, true);
+        }
+        else {
+            htmlRender.showPlansSelector();
+        }
 //        // There is today's verse and they are done, so randomly fetch a verse to play the game.
 //        if(hasFinishedToday()){
 //            var plan = randomAddedPlan();
@@ -240,8 +231,6 @@ function HTMLRender(){
 
         // To fix God's words in your heart and mind, it means to be continually conscious of the Bible’s teachings as you go through your daily routine.
         // one practical way to make sure that God’s words are always close at hand is to memorize verses and passages from the Bible.
-
-        htmlRender.showPlansSelector();
     }
 
     this.showAddedPlans = function(){
@@ -276,14 +265,14 @@ function HTMLRender(){
                 $addedPlan.attr('class', 'added-plan');
                 $rightCol.append($addedPlan);
 
-                $jqmeter = $("<div id='jmeter" + plan.id + "'>");
+                $jqmeter = $("<div id='jmeter" + plan.id + "' class='jmeter'>");
                 $jqmeter.jQMeter({
                     goal : plan.days.length.toString(),
                     raised : plan.completedOn.length.toString(),
-                    width : '220px',
-                    height : '16px',
-                    bgColor : '#bbb',
-                    barColor : '#666',
+                    width : '150px',
+                    height : '26px',
+                    bgColor : '#dadada',
+                    barColor : '#f09246',
                     displayTotal: false
                 });
                 $rightCol.append($jqmeter);
@@ -341,7 +330,7 @@ function HTMLRender(){
             }
 
             $('#memorized-circle').circleProgress({
-                value: Math.min(1,memorizedCount / DAILY_MEMORIZED_GOAL) + 0.01,
+                value: Math.min(1,memorizedCount / DAILY_MEMORIZED_GOAL) + 0.1,
                 size: 170,
                 thickness: 17,
                 fill: { gradient: ['#f65bf0','#f68a16'], gradientAngle: Math.PI / 4 }
@@ -384,20 +373,6 @@ function HTMLRender(){
 
 function memorizedKey(planId, day){
     return 'memorized-' +  planId + '-' + day + '-' + today;
-}
-
-// max is based of '1'
-function getRandom(pick, max) {
-    var arr = []
-    while(arr.length < pick){
-        var randomnumber=Math.ceil(Math.random()*max)
-        var found=false;
-        for(var i=0;i<arr.length;i++){
-            if(arr[i]==randomnumber){found=true;break}
-        }
-        if(!found)arr[arr.length]=randomnumber;
-    }
-    return arr;
 }
 
 function getDifficulty(planId, day, memorizedCount){
@@ -553,48 +528,74 @@ function replaceVerses(data, planId, day, memorizedCount){
     return final;
 }
 
-function processVerses(data, planId, day){
+function processVerses(data, planId, day, review){
     var key = memorizedKey(planId, day);
     chrome.storage.sync.get(key, function (userData) {
-        var memorizedCount = 0;
-        if (userData !== undefined && userData[key] !== undefined){
-            memorizedCount = parseInt(userData[key]);
+        if(review !== undefined && review){
+            var verses = replaceVerses(data, planId, day, 0);
+
+            $('#reveal-button').hide();
+
+            $('#passages')
+                .hide()
+                .empty()
+                .append("<div id='passage-plan-name'>Day " + day + " of " + objPlans[planId].name + '</div>')
+                .append(verses).fadeIn('slow');
+
+            $('#message').html("<p>You completed this passage on " + objPlans[planId].completedOn[day-1] + "</p>Let's review God's passages again!");
         }
+        else{
+            var memorizedCount = 0;
+            if (userData !== undefined && userData[key] !== undefined){
+                memorizedCount = parseInt(userData[key]);
+            }
 
-        var verses = replaceVerses(data, planId, day, memorizedCount);
+            var verses = replaceVerses(data, planId, day, memorizedCount);
 
-        $('#reveal-button').data('planId', planId).data('day', day);
+            $('#passages')
+                .hide()
+                .empty()
+                .append("<div id='passage-plan-name'>" + objPlans[planId].name + '</div>')
+                .append(verses).fadeIn('slow', function(){
 
-        $('#passages')
-            .hide()
-            .empty()
-            .append("<div id='passage-plan-name'>" + objPlans[planId].name + '</div>')
-            .append(verses).fadeIn('slow');
+                });
 
-        if(memorizedCount == 0){
+            $('#reveal-button').data('disable',false).removeClass('no-link').data('planId', planId).data('day', day).fadeIn();
+
             htmlRender.drawMemorizedCircle(planId, day);
-            $('#reveal-button').text('Yes!');
-            $('#message').text('Did You Read This Passage?');
-        }
-        else {
-            $('#reveal-button').text('Check!')
-            $('#message').text('Difficult ' + memorizedCount);
+
+            if(memorizedCount == 0){
+                $('#reveal-button').text('Yes!');
+                $('#message').text('Did You Read This Bible Passage?');
+            }
+            else {
+                $('#reveal-button').text('Check!')
+                if(memorizedCount == 1){
+                    $('#message').html("Memorize verses fixes God's words in your hear");
+                }
+                else if(memorizedCount == DAILY_MEMORIZED_GOAL - 1){
+                    $('#message').text('Final Test!');
+                }
+                else {
+                    $('#message').text('Difficulty ' + memorizedCount);
+                }
+            }
         }
     });
 }
 
-function fetchVerses(planId, day){
+function fetchVerses(planId, day, review){
     var key = 'planId' + planId + '-' + today;
     chrome.storage.sync.get(key, function (data) {
         if (data !== undefined && data[key] !== undefined){
-            processVerses(data[key], planId, day);
+            processVerses(data[key], planId, day, review);
         }
         else {
             $.get('http://' + HOST + '/verses', { plan_id: planId, day: day, user_id: userId }, function(verses){
                 var data = {}
                 data[key] = verses;
                 chrome.storage.sync.set(data);
-                processVerses(verses, planId, day);
+                processVerses(verses, planId, day, review);
             });
         }
     });
@@ -640,30 +641,11 @@ function numUnfinishedPlans(){
     return numPlansAdded;
 }
 
-//function finishClicked(){
-//    $(this).hide();
-//    $('#message').hide();
-//    var lastPlanId = $(this).data('planId');
-//    var day = $(this).data('day');
-//    var plan = objPlans[lastPlanId];
-//    plan.dayCompleted();
-//    saveData();
-//
-//    htmlRender.drawMemorizedCircle(lastPlanId, day, true);
-//
-//    htmlRender.updatePlanProgressMeter(lastPlanId);
-//    htmlRender.showNextVerse();
-//    rollBg();
-//
-//    $.get('http://' + HOST + '/finished', { plan_id: lastPlanId, day: day, user_id: userId }, function(data){});
-//}
-
 function todayVersesCompleted(planId, day){
-
     objPlans[planId].dayCompleted();
     saveData();
 
-    $('#message').text('GREAT JOB!');
+    $('#message').text('Great Job! You Should Have Memorized The Passage By Now!');
 
     htmlRender.drawMemorizedCircle(planId, day);
     htmlRender.updatePlanProgressMeter(planId);
@@ -693,7 +675,10 @@ function incrementMemorizedCount(planId, day){
 }
 
 function revealClicked(){
-    $('#message').fadeOut();
+    if($(this).data('disable')){
+        return false;
+    }
+    $('#reveal-button').data('disable', true);
 
     var bAllCorrect = true;
     $('.missingWord').each(function(e){
@@ -708,20 +693,24 @@ function revealClicked(){
     });
 
     if(bAllCorrect){
+        $('#reveal-button').addClass('no-link').html("<span class='button-tick'>&#10004;</span>");
         $('#message').empty().append('Good Job!').fadeIn('slow');
         incrementMemorizedCount($(this).data('planId'), $(this).data('day'));
     }
     else {
+        $('#reveal-button').addClass('no-link').html("<span class='button-tick'>&#x2715;</span>");
         $('#message').empty().append('Try Again!').fadeIn('slow');
-        incrementMemorizedCount($(this).data('planId'), $(this).data('day'));
+//        incrementMemorizedCount($(this).data('planId'), $(this).data('day'));
     }
 
     rollBg();
 
-    $.get('http://' + HOST + '/answered', { plan_id: $(this).data('planId'), day: $(this).data('day'), user_id: userId }, function(data){});
+    if(!$(this).data('review')){
+        $.get('http://' + HOST + '/answered', { plan_id: $(this).data('planId'), day: $(this).data('day'), user_id: userId }, function(data){});
+    }
 
     setTimeout(function(){
-        htmlRender.showNextVerse(true);
+        htmlRender.showNextVerse();
     }, 5000);
 }
 

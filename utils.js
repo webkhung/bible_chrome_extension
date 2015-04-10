@@ -25,6 +25,19 @@ function generateUserId(){
     return randomString(30, '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ');
 }
 
+// max is based of '1'
+function getRandom(pick, max) {
+    var arr = []
+    while(arr.length < pick){
+        var randomnumber=Math.ceil(Math.random()*max)
+        var found=false;
+        for(var i=0;i<arr.length;i++){
+            if(arr[i]==randomnumber){found=true;break}
+        }
+        if(!found)arr[arr.length]=randomnumber;
+    }
+    return arr;
+}
 
 
 //function drawPlansCircle(){
@@ -108,4 +121,23 @@ function generateUserId(){
 //    "badge": "",
 //    "description": "",
 //    "days": ["Luke 1:1-38","Luke 1:39-80","Luke 2","Luke 3","Luke 4","Luke 5","Luke 6","Luke 7","Luke 8:1-25","Luke 8:26-56","Luke 9:1-36","Luke 9:37-62","Luke 10","Luke 11","Luke 12:1-34","Luke 12:35-59","Luke 13","Luke 14","Luke 15","Luke 16","Luke 17","Luke 18","Luke 19","Luke 20","Luke 21","Luke 22:1-38","Luke 22:39-71","Luke 23:1-25","Luke 23:26-56","Luke 24"]
+//}
+
+
+//function finishClicked(){
+//    $(this).hide();
+//    $('#message').hide();
+//    var lastPlanId = $(this).data('planId');
+//    var day = $(this).data('day');
+//    var plan = objPlans[lastPlanId];
+//    plan.dayCompleted();
+//    saveData();
+//
+//    htmlRender.drawMemorizedCircle(lastPlanId, day, true);
+//
+//    htmlRender.updatePlanProgressMeter(lastPlanId);
+//    htmlRender.showNextVerse();
+//    rollBg();
+//
+//    $.get('http://' + HOST + '/finished', { plan_id: lastPlanId, day: day, user_id: userId }, function(data){});
 //}
