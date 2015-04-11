@@ -22,7 +22,7 @@ function randomString(length, chars) {
 }
 
 function generateUserId(){
-    return randomString(30, '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ');
+    return randomString(20, '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ');
 }
 
 // max is based of '1'
@@ -38,44 +38,6 @@ function getRandom(pick, max) {
     }
     return arr;
 }
-
-
-//function drawPlansCircle(){
-//    numPlansAdded();
-//    $('#plans-circle').circleProgress({
-//        value: Math.min(1,numPlansAdded() / 7),
-//        size: 70,
-//        thickness: 7,
-//        fill: { gradient: ['#FFCC03', '#FFF702'], gradientAngle: Math.PI / 4 }
-//    }).on('circle-animation-progress', function(event, progress, stepValue) {
-//            $(this).find('strong').text(numPlansAdded());
-//        });
-//}
-
-
-//function drawVersesCircle(increment){
-//    chrome.storage.sync.get("verses", function (data) {
-//        var count = 0;
-//        if (data !== undefined && data['verses'] !== undefined){
-//            count = parseInt(data['verses']);
-//        }
-//
-//        if(increment !==  undefined) {
-//            count = count + increment;
-//        }
-//        var data = { "verses" : count }
-//        chrome.storage.sync.set(data);
-//
-//        $('#verses-circle').circleProgress({
-//            value: Math.min(1,count / 50),
-//            size: 70,
-//            thickness: 7,
-//            fill: { gradient: ['#88eeff','#59ff5b'], gradientAngle: Math.PI / 4 }
-//        }).on('circle-animation-progress', function(event, progress, stepValue) {
-//                $(this).find('strong').text(count);
-//            });
-//    });
-//}
 
 
 //{

@@ -5,6 +5,7 @@ var htmlRender = new HTMLRender();
 var DAILY_MEMORIZED_GOAL = 7;
 var HOST = 'biblereadingplans.herokuapp.com';
 //var HOST = 'localhost:3001';
+
 //var questions = [
 //    'How Does This Passage Apply To Your Life Today?',
 //    'What Does This Passage Mean To You?'
@@ -214,6 +215,7 @@ function HTMLRender(){
             }
         }
 
+        // Today's verses are done. Randomly fetch a verse to read.
         var randomPlan = randomAddedPlan();
         if(randomPlan){
             var randomDay = getRandom(1,randomPlan.completedOn.length);
@@ -222,12 +224,6 @@ function HTMLRender(){
         else {
             htmlRender.showPlansSelector();
         }
-//        // There is today's verse and they are done, so randomly fetch a verse to play the game.
-//        if(hasFinishedToday()){
-//            var plan = randomAddedPlan();
-//            fetchVerses(plan.id, plan.numDaysFinished(), true);
-//            return;
-//        }
 
         // To fix God's words in your heart and mind, it means to be continually conscious of the Bible’s teachings as you go through your daily routine.
         // one practical way to make sure that God’s words are always close at hand is to memorize verses and passages from the Bible.
@@ -315,7 +311,7 @@ function HTMLRender(){
             $container.append($rightCol);
             $planSelector.append($container);
         }
-        var addPlansText = '<h1>Make God\'s Word Part Of Your Day!</h1><h2>(You can add additional plans later)</h2>';
+        var addPlansText = '<h1>Make God\'s Word Part Of Your Day!</h1><h2>Select a Plan Below</h2>';
         $planSelector.find('#plansSelectorHeader').html(addPlansText);
         $planSelector.append("<div style='text-align: center'><a id='plans-close' class='myButton' href='#'>Close</a></div>");
         $planSelector.show();
@@ -534,6 +530,8 @@ function processVerses(data, planId, day, review){
         if(review !== undefined && review){
             var verses = replaceVerses(data, planId, day, 0);
 
+            $('#memorized-circle').hide();
+
             $('#reveal-button').hide();
 
             $('#passages')
@@ -542,9 +540,11 @@ function processVerses(data, planId, day, review){
                 .append("<div id='passage-plan-name'>Day " + day + " of " + objPlans[planId].name + '</div>')
                 .append(verses).fadeIn('slow');
 
-            $('#message').html("<p>You completed this passage on " + objPlans[planId].completedOn[day-1] + "</p>Let's review God's passages again!");
+            $('#message').html("<p>You completed this passage on " + objPlans[planId].completedOn[day-1] + "</p>Let's review God's words again!");
         }
         else{
+            $('#memorized-circle').show();
+
             var memorizedCount = 0;
             if (userData !== undefined && userData[key] !== undefined){
                 memorizedCount = parseInt(userData[key]);
@@ -557,7 +557,6 @@ function processVerses(data, planId, day, review){
                 .empty()
                 .append("<div id='passage-plan-name'>" + objPlans[planId].name + '</div>')
                 .append(verses).fadeIn('slow', function(){
-
                 });
 
             $('#reveal-button').data('disable',false).removeClass('no-link').data('planId', planId).data('day', day).fadeIn();
@@ -571,7 +570,7 @@ function processVerses(data, planId, day, review){
             else {
                 $('#reveal-button').text('Check!')
                 if(memorizedCount == 1){
-                    $('#message').html("Memorize verses fixes God's words in your hear");
+                    $('#message').html("Memorize verses fixes God's word in your heart");
                 }
                 else if(memorizedCount == DAILY_MEMORIZED_GOAL - 1){
                     $('#message').text('Final Test!');

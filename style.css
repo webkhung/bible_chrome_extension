@@ -451,12 +451,6 @@ body {
     top: 8px;
 }
 
-#sidebar {
-    position: absolute;
-    top: 15px;
-    left: 15px;
-}
-
 .progress-circle {
     width: 100px;
     display: inline-block;
