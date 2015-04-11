@@ -3,7 +3,7 @@ var objPlans = {};
 var userId = '';
 var userName = '';
 var htmlRender = new HTMLRender();
-var DAILY_MEMORIZED_GOAL = 7;
+var DAILY_MEMORIZED_GOAL = 6;
 var HOST = 'biblereadingplans.herokuapp.com';
 //var HOST = 'localhost:3001';
 
@@ -379,7 +379,7 @@ function memorizedKey(planId, day){
     return 'memorized-' +  planId + '-' + day + '-' + today;
 }
 
-function getDifficulty(planId, day, memorizedCount){
+function getDifficulty(memorizedCount){
     if(memorizedCount == 0){
         return 0;
     }
@@ -398,6 +398,10 @@ function hideWords(text, difficulty, memorizedCount){
     var txttmp = text.split(/\s+/);
     var randoms = getRandom(txttmp.length, txttmp.length);
     var toPick = Math.floor(txttmp.length/ Math.min(txttmp.length,ratio+1));
+    var minCharsCount = 4;
+    if(difficulty > 3){
+        minCharsCount = 3;
+    }
 
 //    console.log('text ' + text);
 //    console.log('txttmp.length ' + txttmp.length);
@@ -409,7 +413,7 @@ function hideWords(text, difficulty, memorizedCount){
     var i=0;
     while(picked < toPick && i < randoms.length){
         var currWord = txttmp[randoms[i]-1]
-        if(txttmp[randoms[i]-1].length >= 4){
+        if(txttmp[randoms[i]-1].length >= minCharsCount){
             txttmp[randoms[i]-1] = ' <input class=missingWord type=text data-answer=\'' + currWord + '\' placeholder=\'' + maskWord(currWord, difficulty) + '\'>';
             picked++;
         }
@@ -473,22 +477,21 @@ function replaceVerses(data, planId, day, memorizedCount){
     });
 
     var hideSentence = 0;
-    var difficulty = getDifficulty(planId, day, memorizedCount);
-//    console.log('difficulty ' + difficulty);
+    var difficulty = getDifficulty(memorizedCount);
     if(difficulty == 0){
         hideSentence = 0;
     }
     else if(difficulty == 1){
-        hideSentence = Math.min(2, totalSentence);
+        hideSentence = Math.min(1, totalSentence);
     }
     else if(difficulty == 2){
         hideSentence = Math.min(2, totalSentence);
     }
     else if(difficulty == 3){
-        hideSentence = Math.max(2,Math.floor(totalSentence/2));
+        hideSentence = Math.min(3, totalSentence);
     }
     else if(difficulty == 4){
-        hideSentence = totalSentence-1;
+        hideSentence = Math.max(1, totalSentence-1);
     }
     else if(difficulty == 5){
         hideSentence = totalSentence;
@@ -533,6 +536,7 @@ function replaceVerses(data, planId, day, memorizedCount){
 }
 
 function processVerses(data, planId, day, review){
+    console.log('processVerses ' + ',' + data  + ',' + planId  + ',' + day  + ',' + review);
     var key = memorizedKey(planId, day);
     chrome.storage.sync.get(key, function (userData) {
         if(review !== undefined && review){
@@ -661,7 +665,7 @@ function todayVersesCompleted(planId, day){
     htmlRender.drawMemorizedCircle(planId, day);
     htmlRender.updatePlanProgressMeter(planId);
 
-    $.get('http://' + HOST + '/finished', { plan_id: lastPlanId, day: day, user_id: userId, user_name: userName }, function(data){});
+    $.get('http://' + HOST + '/finished', { plan_id: planId, day: day, user_id: userId, user_name: userName }, function(data){});
 }
 
 function incrementMemorizedCount(planId, day){
@@ -736,7 +740,7 @@ function revealClicked(){
         $.get('http://' + HOST + '/answered', { plan_id: $(this).data('planId'), day: $(this).data('day'), user_id: userId, user_name: userName }, function(data){});
     }
 
-    setTimeout(function(){
+    timeoutVar = setTimeout(function(){
         htmlRender.showNextVerse();
     }, 5000);
 }
