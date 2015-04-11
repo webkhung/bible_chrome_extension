@@ -207,6 +207,7 @@ function HTMLRender(){
     }
 
     this.showNextVerse = function(){
+        console.log('showNextVerse');
         // Fetch the verse of the current plan
         for(var planId in objPlans){
             var plan = objPlans[planId];
@@ -398,11 +399,11 @@ function hideWords(text, difficulty, memorizedCount){
     var randoms = getRandom(txttmp.length, txttmp.length);
     var toPick = Math.floor(txttmp.length/ Math.min(txttmp.length,ratio+1));
 
-    console.log('text ' + text);
-    console.log('txttmp.length ' + txttmp.length);
-    console.log('ratio ' + ratio);
-    console.log('toPick ' + toPick);
-    console.log('difficulty' + difficulty) ;
+//    console.log('text ' + text);
+//    console.log('txttmp.length ' + txttmp.length);
+//    console.log('ratio ' + ratio);
+//    console.log('toPick ' + toPick);
+//    console.log('difficulty' + difficulty) ;
 
     var picked = 0;
     var i=0;
@@ -473,7 +474,7 @@ function replaceVerses(data, planId, day, memorizedCount){
 
     var hideSentence = 0;
     var difficulty = getDifficulty(planId, day, memorizedCount);
-    console.log('difficulty ' + difficulty);
+//    console.log('difficulty ' + difficulty);
     if(difficulty == 0){
         hideSentence = 0;
     }
@@ -591,13 +592,17 @@ function processVerses(data, planId, day, review){
 }
 
 function fetchVerses(planId, day, review){
+    console.log('fetchVerses ' + planId + ',' + day + ',' + review);
     var key = 'planId' + planId + '-' + today;
     chrome.storage.sync.get(key, function (data) {
         if (data !== undefined && data[key] !== undefined){
+            console.log('fetchVerses from cache');
             processVerses(data[key], planId, day, review);
         }
         else {
+            console.log('fetchVerses from server');
             $.get('http://' + HOST + '/verses', { plan_id: planId, day: day, user_id: userId, user_name: userName }, function(verses){
+                console.log('fetchVerses from server returned');
                 var data = {}
                 data[key] = verses;
                 chrome.storage.sync.set(data);
@@ -690,8 +695,8 @@ function userNameSubmitClicked(){
         userName = name;
         saveData();
         $('#user-name-container').fadeOut('slow', function(){
-            htmlRender.showPlansSelector();
-            $('#plans-selector, #add-new-plan').show();
+            htmlRender.showNextVerse();
+            $('#add-new-plan').show();
         });
     }
 }
@@ -762,7 +767,7 @@ $( document ).ready(function() {
         };
 
 
-        if(userData['userName'] === undefined) {
+        if(userData['userName'] === undefined || userData['userName'] == '') {
             htmlRender.showUserNameContainer();
         }
         else {
