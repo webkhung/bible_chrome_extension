@@ -1,6 +1,7 @@
 var today = formatDate(new Date());
 var objPlans = {};
 var userId = '';
+var userName = '';
 var htmlRender = new HTMLRender();
 var DAILY_MEMORIZED_GOAL = 7;
 var HOST = 'biblereadingplans.herokuapp.com';
@@ -158,6 +159,7 @@ function saveData(){
         }
     }
     userData['userId'] =  userId;
+    userData['userName'] =  userName;
     chrome.storage.sync.set(userData);
 }
 
@@ -279,6 +281,11 @@ function HTMLRender(){
         }
     }
 
+    this.showUserNameContainer = function() {
+        $('#add-new-plan').hide();
+        $('#user-name-container').show();
+    }
+
     this.showPlansSelector = function(){
         $('#passages-container').hide();
 
@@ -311,7 +318,7 @@ function HTMLRender(){
             $container.append($rightCol);
             $planSelector.append($container);
         }
-        var addPlansText = '<h1>Make God\'s Word Part Of Your Day!</h1><h2>Select a Plan Below</h2>';
+        var addPlansText = '<h1><span class=username>' + userName + ',</span> Make God\'s Word Part Of Your Day!</h1><h2>Select a Plan Below</h2>';
         $planSelector.find('#plansSelectorHeader').html(addPlansText);
         $planSelector.append("<div style='text-align: center'><a id='plans-close' class='myButton' href='#'>Close</a></div>");
         $planSelector.show();
@@ -540,7 +547,7 @@ function processVerses(data, planId, day, review){
                 .append("<div id='passage-plan-name'>Day " + day + " of " + objPlans[planId].name + '</div>')
                 .append(verses).fadeIn('slow');
 
-            $('#message').html("<p>You completed this passage on " + objPlans[planId].completedOn[day-1] + "</p>Let's review God's words again!");
+            $('#message').html("<p>You completed this passage on " + objPlans[planId].completedOn[day-1] + "</p><p>Let's review God's words again!</p>");
         }
         else{
             $('#memorized-circle').show();
@@ -565,7 +572,7 @@ function processVerses(data, planId, day, review){
 
             if(memorizedCount == 0){
                 $('#reveal-button').text('Yes!');
-                $('#message').text('Did You Read This Bible Passage?');
+                $('#message').html('Hello <span class=username>' + userName + '</span>, did you read this Bible passage?');
             }
             else {
                 $('#reveal-button').text('Check!')
@@ -590,7 +597,7 @@ function fetchVerses(planId, day, review){
             processVerses(data[key], planId, day, review);
         }
         else {
-            $.get('http://' + HOST + '/verses', { plan_id: planId, day: day, user_id: userId }, function(verses){
+            $.get('http://' + HOST + '/verses', { plan_id: planId, day: day, user_id: userId, user_name: userName }, function(verses){
                 var data = {}
                 data[key] = verses;
                 chrome.storage.sync.set(data);
@@ -649,7 +656,7 @@ function todayVersesCompleted(planId, day){
     htmlRender.drawMemorizedCircle(planId, day);
     htmlRender.updatePlanProgressMeter(planId);
 
-    $.get('http://' + HOST + '/finished', { plan_id: lastPlanId, day: day, user_id: userId }, function(data){});
+    $.get('http://' + HOST + '/finished', { plan_id: lastPlanId, day: day, user_id: userId, user_name: userName }, function(data){});
 }
 
 function incrementMemorizedCount(planId, day){
@@ -671,6 +678,22 @@ function incrementMemorizedCount(planId, day){
             todayVersesCompleted(planId, day);
         }
     });
+}
+
+function userNameSubmitClicked(){
+    var name = $('#user-name').val().trim();
+
+    if(name.length < 5) {
+        alert('Your name is too short');
+    }
+    else {
+        userName = name;
+        saveData();
+        $('#user-name-container').fadeOut('slow', function(){
+            htmlRender.showPlansSelector();
+            $('#plans-selector, #add-new-plan').show();
+        });
+    }
 }
 
 function revealClicked(){
@@ -705,7 +728,7 @@ function revealClicked(){
     rollBg();
 
     if(!$(this).data('review')){
-        $.get('http://' + HOST + '/answered', { plan_id: $(this).data('planId'), day: $(this).data('day'), user_id: userId }, function(data){});
+        $.get('http://' + HOST + '/answered', { plan_id: $(this).data('planId'), day: $(this).data('day'), user_id: userId, user_name: userName }, function(data){});
     }
 
     setTimeout(function(){
@@ -738,8 +761,16 @@ $( document ).ready(function() {
             objPlans[planId].completedOn = userData["plans"][planId];
         };
 
+
+        if(userData['userName'] === undefined) {
+            htmlRender.showUserNameContainer();
+        }
+        else {
+            userName = userData['userName'];
+            htmlRender.showNextVerse();
+        }
+
         htmlRender.showAddedPlans();
-        htmlRender.showNextVerse();
     });
 
     $('#reveal-button').click(revealClicked);
@@ -754,14 +785,7 @@ $( document ).ready(function() {
         $('#passages-container').show();
     });
 
-    $('#add-new-plan').hover(
-        function(){
-            $(this).find('span').show();
-        },
-        function(){
-            $(this).find('span').hide();
-        }
-    )
+    $('#user-name-submit').click(userNameSubmitClicked);
 
     // Debug stuffs
     $('#clean-storage').click(function(){
