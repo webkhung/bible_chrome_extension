@@ -245,7 +245,11 @@ body {
     margin-right: 8px;
 }
 
-#copyright { padding: 0px 5px; }
+#copyright {
+    padding: 0px 5px;
+    text-align: center;
+    opacity: 0.5;
+}
 
 /* Left column */
 #left-column {
@@ -448,7 +452,7 @@ body {
     font-size: 60px;
     position: relative;
     left: 20px;
-    top: 8px;
+    top: 18px;
 }
 
 .progress-circle {
@@ -530,4 +534,22 @@ input.wrong {
 .username {
     color: #ffc723;
     text-transform: capitalize;
+}
+
+#users {
+    text-align: right;
+    position: absolute;
+    bottom: 10px;
+    right: 10px;
+    color: #eee;
+    font-size: 14px;
+    opacity: 0.5;
+}
+
+#users #user-header {
+    font-weight: bold;
+}
+
+#users ul {
+    list-style-type: none;
 }

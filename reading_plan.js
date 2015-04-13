@@ -188,6 +188,12 @@ function randomAddedPlan(){
 
 function HTMLRender(){
 
+    this.fetchUsers = function(){
+        $.get('http://' + HOST + '/users', function(data){
+            $('#users').html(data);
+        });
+    }
+
     this.updatePlanProgressMeter = function(lastPlanId){
         // Update UI of last finished plan
         if (lastPlanId) {
@@ -795,6 +801,8 @@ $( document ).ready(function() {
     });
 
     $('#user-name-submit').click(userNameSubmitClicked);
+
+    htmlRender.fetchUsers();
 
     // Debug stuffs
     $('#clean-storage').click(function(){
