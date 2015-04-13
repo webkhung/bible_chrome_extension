@@ -390,9 +390,11 @@ function getDifficulty(memorizedCount){
         return 0;
     }
     else {
-        var ratio = Math.max(1,(DAILY_MEMORIZED_GOAL-memorizedCount)/2);
-        var difficulty = 6 - Math.ceil(ratio); // from 1 to 5
+        var difficulty = Math.min(5, memorizedCount);
         return difficulty;
+//        var ratio = Math.max(1,(DAILY_MEMORIZED_GOAL-memorizedCount)/2);
+//        var difficulty = 6 - Math.ceil(ratio); // from 1 to 5
+//        return difficulty;
     }
 }
 
@@ -441,13 +443,16 @@ function maskWord(word, difficulty){
         every_n_chars_1_char_reveals = wordLen;
     }
     else if(difficulty == 4){
-        every_n_chars_1_char_reveals = 5;
+        every_n_chars_1_char_reveals = 4;
+        maskedWord = replaceOneCharacter(maskedWord, 0, word.charAt(0))
     }
     else if(difficulty == 3){
-        every_n_chars_1_char_reveals = 4;
+        every_n_chars_1_char_reveals = 3;
+        maskedWord = replaceOneCharacter(maskedWord, 0, word.charAt(0))
     }
     else if(difficulty == 2){
         every_n_chars_1_char_reveals = 3;
+        maskedWord = replaceOneCharacter(maskedWord, 0, word.charAt(0))
     }
     else if(difficulty == 1){
         every_n_chars_1_char_reveals = 2;
@@ -491,10 +496,10 @@ function replaceVerses(data, planId, day, memorizedCount){
         hideSentence = Math.min(1, totalSentence);
     }
     else if(difficulty == 2){
-        hideSentence = Math.min(2, totalSentence);
+        hideSentence = Math.min(1, totalSentence);
     }
     else if(difficulty == 3){
-        hideSentence = Math.min(3, totalSentence);
+        hideSentence = Math.min(2, totalSentence);
     }
     else if(difficulty == 4){
         hideSentence = Math.max(1, totalSentence-1);
