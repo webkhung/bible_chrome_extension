@@ -383,6 +383,7 @@ body {
     position: absolute;
     bottom: 0px;
     right: 0px;
+    z-index: 100000;
 }
 
 .circle {
@@ -452,7 +453,7 @@ body {
     font-size: 60px;
     position: relative;
     left: 20px;
-    top: 18px;
+    top: 8px;
 }
 
 .progress-circle {
@@ -552,4 +553,39 @@ input.wrong {
 
 #users ul {
     list-style-type: none;
+}
+
+.blink_me {
+    -webkit-animation-name: blinker;
+    -webkit-animation-duration: 3s;
+    -webkit-animation-timing-function: linear;
+    -webkit-animation-iteration-count: infinite;
+
+    -moz-animation-name: blinker;
+    -moz-animation-duration: 3s;
+    -moz-animation-timing-function: linear;
+    -moz-animation-iteration-count: infinite;
+
+    animation-name: blinker;
+    animation-duration: 3s;
+    animation-timing-function: linear;
+    animation-iteration-count: infinite;
+}
+
+@-moz-keyframes blinker {
+    0% { opacity: 1.0; }
+    50% { opacity: 0.0; }
+    100% { opacity: 1.0; }
+}
+
+@-webkit-keyframes blinker {
+    0% { opacity: 1.0; }
+    50% { opacity: 0.0; }
+    100% { opacity: 1.0; }
+}
+
+@keyframes blinker {
+    0% { opacity: 1.0; }
+    50% { opacity: 0.0; }
+    100% { opacity: 1.0; }
 }

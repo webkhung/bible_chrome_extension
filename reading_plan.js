@@ -199,7 +199,7 @@ function HTMLRender(){
         if (lastPlanId) {
             var lastPlan = objPlans[lastPlanId];
             $('#added-plan-' + lastPlanId).addClass('plan-done-today');
-            $('#added-plan-' + lastPlanId + ' .circle').removeClass('circle' + lastPlan.id).addClass('circle-solid-' + lastPlan.id).append("<span class='tick'>&#10004;</span>");
+            $('#added-plan-' + lastPlanId + ' .circle').removeClass('blink_me').removeClass('circle' + lastPlan.id).addClass('circle-solid-' + lastPlan.id).append("<span class='tick'>&#10004;</span>");
             $("#jmeter" + lastPlanId).jQMeter({
                 goal : lastPlan.days.length.toString(),
                 raised : lastPlan.completedOn.length.toString(),
@@ -294,7 +294,7 @@ function HTMLRender(){
     }
 
     this.showPlansSelector = function(){
-        $('#passages-container').hide();
+        $('#passages-container, #add-new-plan').hide();
 
         $planSelector = $('#plans-selector');
         $planSelector.empty();
@@ -553,6 +553,8 @@ function processVerses(data, planId, day, review){
         if(review !== undefined && review){
             var verses = replaceVerses(data, planId, day, 0);
 
+            $('#add-new-plan').addClass('blink_me');
+
             $('#memorized-circle').hide();
 
             $('#reveal-button').hide();
@@ -566,6 +568,10 @@ function processVerses(data, planId, day, review){
             $('#message').html("<p>You completed this passage on " + objPlans[planId].completedOn[day-1] + "</p><p>Let's review God's words again!</p>");
         }
         else{
+            $('#add-new-plan').removeClass('blink_me');
+
+            $('#added-plan-' + planId + ' .circle').addClass('circle-solid-' + planId).addClass('blink_me');
+
             $('#memorized-circle').show();
 
             var memorizedCount = 0;
@@ -578,7 +584,7 @@ function processVerses(data, planId, day, review){
             $('#passages')
                 .hide()
                 .empty()
-                .append("<div id='passage-plan-name'>" + objPlans[planId].name + '</div>')
+                .append("<div id='passage-plan-name'>Day " + day + " of " + objPlans[planId].name + '</div>')
                 .append(verses).fadeIn('slow', function(){
                 });
 
@@ -802,7 +808,7 @@ $( document ).ready(function() {
 
     $('#plans-selector').on('click', '#plans-close', function(){
         $('#plans-selector').hide();
-        $('#passages-container').show();
+        $('#passages-container, #add-new-plan').show();
     });
 
     $('#user-name-submit').click(userNameSubmitClicked);
