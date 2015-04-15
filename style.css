@@ -173,14 +173,17 @@ body {
 
 #message {
     color: #FFF856;
-    text-shadow: 1px 1px 1px #333;
+    /*text-shadow: 1px 1px 1px #333;*/
     font-weight: 300;
     font-size: 18px;
-    font-weight: bold;
+    /*font-weight: bold;*/
     text-align: center;
     width: 100%;
-    margin: 0px auto 0 auto;
-    padding-top: 15px;
+    margin: 60px auto 0 auto;
+}
+
+#message p {
+    margin: 5px 0px;
 }
 
 #message a {
@@ -196,7 +199,7 @@ body {
     color: white;
     text-align: center;
     width: 75%;
-    margin: 70px auto 0 auto;
+    margin: 50px auto 50px auto;
     text-shadow: 1px 1px 1px #333;
 }
 
@@ -207,8 +210,10 @@ body {
 
 #passage-plan-name {
     color: #44c767;
-    font-size: 30px;
+    font-size: 18px;
     font-weight: bold;
+    padding-bottom: 10px;
+    display: none;
 }
 
 #passages h2, #passages h3 {
@@ -228,6 +233,7 @@ body {
 .scripture {
     font-size: 14px;
     display: block;
+    padding-top: 15px;
 }
 
 #bottom {
@@ -327,6 +333,31 @@ body {
     top:1px;
 }
 
+#reveal-button {
+    cursor:pointer;
+    color:#ffffff;
+    font-family:arial;
+    font-size:16px;
+    text-decoration:none;
+    text-shadow:0px 1px 0px #2f6627;
+    border: 1px solid white;
+    padding: 10px 25px;
+    /*display: none;*/
+    visibility: hidden;
+}
+
+#reveal-button:hover {
+    text-decoration: underline;
+}
+
+#ticks {
+    margin-top: 30px;
+}
+
+.tick-circle span {
+    display: none;
+}
+
 .myButtonReveal.no-link {
     text-decoration:none;
 }
@@ -385,6 +416,30 @@ body {
     right: 0px;
     z-index: 100000;
 }
+
+
+.tick-circle {
+    border-radius: 50%;
+    display: inline-block;
+    margin: 0 10px;
+    width: 30px;
+    height: 30px;
+    border: 2px solid #c7c7c7;
+    position: relative;
+}
+
+.tick-circle.filled {
+    background-color: #ffffff;
+}
+
+.tick-circle span {
+    font-size: 17px;
+    position: absolute;
+    left: 7px;
+    top: 4px;
+    color: rgb(8, 231, 11);
+}
+
 
 .circle {
     border-radius: 50%;
@@ -493,6 +548,10 @@ body {
     position: relative;
     top: -5px;
     padding-left: 4px;
+    background-color: transparent;
+    border-top: none;
+    border-left: none;
+    border-right: none
 }
 
 input.correct {

@@ -3,7 +3,7 @@ var objPlans = {};
 var userId = '';
 var userName = '';
 var htmlRender = new HTMLRender();
-var DAILY_MEMORIZED_GOAL = 6;
+var DAILY_MEMORIZED_GOAL = 4;
 var HOST = 'biblereadingplans.herokuapp.com';
 //var HOST = 'localhost:3001';
 
@@ -339,6 +339,8 @@ function HTMLRender(){
                 memorizedCount = parseInt(data[key]);
             }
 
+            showTicks(memorizedCount);
+
             $('#memorized-circle').circleProgress({
                 value: Math.min(1,memorizedCount / DAILY_MEMORIZED_GOAL) + 0.1,
                 size: 170,
@@ -386,36 +388,34 @@ function memorizedKey(planId, day){
 }
 
 function getDifficulty(memorizedCount){
-    if(memorizedCount == 0){
-        return 0;
-    }
-    else {
-        var difficulty = Math.min(5, memorizedCount);
-        return difficulty;
-//        var ratio = Math.max(1,(DAILY_MEMORIZED_GOAL-memorizedCount)/2);
-//        var difficulty = 6 - Math.ceil(ratio); // from 1 to 5
+    return memorizedCount;
+//    if(memorizedCount == 0){
+//        return 0;
+//    }
+//    else {
+//        var difficulty = Math.min(5, memorizedCount);
 //        return difficulty;
-    }
+//    }
 }
 
 function hideWords(text, difficulty, memorizedCount){
-    // if memorizedCount = 0,1, ratio = 5
-    // if memorizedCount = 2,3, ratio = 4
-    // if memorizedCount = 9,10, ratio = 1
     var ratio = Math.max(1,(DAILY_MEMORIZED_GOAL-memorizedCount)/2);
     var txttmp = text.split(/\s+/);
     var randoms = getRandom(txttmp.length, txttmp.length);
     var toPick = Math.floor(txttmp.length/ Math.min(txttmp.length,ratio+1));
     var minCharsCount = 4;
-    if(difficulty > 3){
-        minCharsCount = 3;
-    }
+//    if(difficulty > 3){
+//        minCharsCount = 3;
+//    }
 
-//    console.log('text ' + text);
-//    console.log('txttmp.length ' + txttmp.length);
-//    console.log('ratio ' + ratio);
-//    console.log('toPick ' + toPick);
-//    console.log('difficulty' + difficulty) ;
+    console.log('difficulty ' + difficulty);
+    console.log('memorizedCount ' + memorizedCount);
+    console.log('text ' + text);
+    console.log('txttmp.length ' + txttmp.length);
+    console.log('ratio ' + ratio);
+    console.log('toPick ' + toPick);
+    console.log('difficulty' + difficulty) ;
+    console.log('--------------') ;
 
     var picked = 0;
     var i=0;
@@ -552,27 +552,22 @@ function processVerses(data, planId, day, review){
     chrome.storage.sync.get(key, function (userData) {
         if(review !== undefined && review){
             var verses = replaceVerses(data, planId, day, 0);
-
             $('#add-new-plan').addClass('blink_me');
-
             $('#memorized-circle').hide();
-
-            $('#reveal-button').hide();
-
+            $('#reveal-button').css('visibility','hidden');
+            $('#ticks').hide();
             $('#passages')
                 .hide()
                 .empty()
                 .append("<div id='passage-plan-name'>Day " + day + " of " + objPlans[planId].name + '</div>')
                 .append(verses).fadeIn('slow');
-
             $('#message').html("<p>You completed this passage on " + objPlans[planId].completedOn[day-1] + "</p><p>Let's review God's words again!</p>");
         }
         else{
             $('#add-new-plan').removeClass('blink_me');
-
             $('#added-plan-' + planId + ' .circle').addClass('circle-solid-' + planId).addClass('blink_me');
-
             $('#memorized-circle').show();
+            $('#reveal-button').css('visibility','visible').data('disable',false).removeClass('no-link').data('planId', planId).data('day', day);
 
             var memorizedCount = 0;
             if (userData !== undefined && userData[key] !== undefined){
@@ -580,7 +575,6 @@ function processVerses(data, planId, day, review){
             }
 
             var verses = replaceVerses(data, planId, day, memorizedCount);
-
             $('#passages')
                 .hide()
                 .empty()
@@ -588,28 +582,40 @@ function processVerses(data, planId, day, review){
                 .append(verses).fadeIn('slow', function(){
                 });
 
-            $('#reveal-button').data('disable',false).removeClass('no-link').data('planId', planId).data('day', day).fadeIn();
-
             htmlRender.drawMemorizedCircle(planId, day);
 
+            // READ SCREEN
             if(memorizedCount == 0){
-                $('#reveal-button').text('Yes!');
-                $('#message').html('Hello <span class=username>' + userName + '</span>, did you read this Bible passage?');
+                $('#reveal-button').text('Next');
+                $('#message').html('Hello <span class=username>' + userName + '</span>, Memorize the verse');
             }
+            // TEST SCREEN
             else {
-                $('#reveal-button').text('Check!')
-                if(memorizedCount == 1){
-                    $('#message').html("Memorize verses fixes God's word in your heart");
-                }
-                else if(memorizedCount == DAILY_MEMORIZED_GOAL - 1){
-                    $('#message').text('Final Test!');
+                $('#reveal-button').text('Done');
+                $('#ticks').show();
+                showTicks(memorizedCount);
+
+                if(memorizedCount == DAILY_MEMORIZED_GOAL - 1){
+                    $('#message').text('Last Question!');
                 }
                 else {
-                    $('#message').text('Difficulty ' + memorizedCount);
+                    $('#message').html("Fill in the blank spaces with the memorized verses");
+//                    $('#message').html("Memorize verses fixes God's word in your heart");
                 }
             }
         }
     });
+}
+
+function showTicks(memorizedCount){
+    // Reset
+    $('#ticks .tick-circle').removeClass('filled').find('span').hide();
+
+    if(memorizedCount > 0){
+        for(var i=0; i < memorizedCount-1; i++){
+            $('#ticks .tick-circle').eq(i).addClass('filled').find('span').show();
+        }
+    }
 }
 
 function fetchVerses(planId, day, review){
@@ -640,7 +646,7 @@ function addPlan(event){
     htmlRender.showAddedPlans();
     htmlRender.showNextVerse();
     $('#plans-selector').hide();
-    $('#passages-container').show();
+    $('#passages-container, #add-new-plan').show();
     saveData();
 }
 
@@ -709,7 +715,7 @@ function incrementMemorizedCount(planId, day){
 function userNameSubmitClicked(){
     var name = $('#user-name').val().trim();
 
-    if(name.length < 5) {
+    if(name.length < 3) {
         alert('Your name is too short');
     }
     else {
@@ -726,8 +732,9 @@ function revealClicked(){
     if($(this).data('disable')){
         return false;
     }
-    $('#reveal-button').data('disable', true);
+    $('#reveal-button').data('disable', true).css('visibility', 'hidden');
 
+    // This part only applies if there are fill-in-the-blank
     var bAllCorrect = true;
     $('.missingWord').each(function(e){
         if($(this).val().toLowerCase().removePunctuation() == $(this).data('answer').toLowerCase().removePunctuation()){
@@ -741,12 +748,12 @@ function revealClicked(){
     });
 
     if(bAllCorrect){
-        $('#reveal-button').addClass('no-link').html("<span class='button-tick'>&#10004;</span>");
+//        $('#reveal-button').addClass('no-link').html("<span class='button-tick'>&#10004;</span>");
         $('#message').empty().append('Good Job!').fadeIn('slow');
         incrementMemorizedCount($(this).data('planId'), $(this).data('day'));
     }
     else {
-        $('#reveal-button').addClass('no-link').html("<span class='button-tick'>&#x2715;</span>");
+//        $('#reveal-button').addClass('no-link').html("<span class='button-tick'>&#x2715;</span>");
         $('#message').empty().append('Try Again!').fadeIn('slow');
 //        incrementMemorizedCount($(this).data('planId'), $(this).data('day'));
     }
