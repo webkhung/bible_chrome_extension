@@ -543,23 +543,26 @@ body {
 }
 
 #passages input {
-    font-size: 14px;
-    height: 24px;
-    position: relative;
-    top: -5px;
+    font-size: 22px;
+    /*height: 24px;*/
+    /*top: -5px;*/
     padding-left: 4px;
     background-color: transparent;
     border-top: none;
     border-left: none;
-    border-right: none
+    border-right: none;
+    width: 90px;
+    position: relative !important;
+    top: -2px;
+    height: 29px;
 }
 
 input.correct {
-    background-color: rgb(251, 255, 115);;
+    background-color: rgb(251, 255, 115) !important;
 }
 
 input.wrong {
-    background-color: rgb(255, 147, 147);
+    background-color: rgb(255, 147, 147) !important;
 }
 
 .jmeter .outer-therm{

@@ -399,11 +399,11 @@ function getDifficulty(memorizedCount){
 }
 
 function hideWords(text, difficulty, memorizedCount){
-    var ratio = Math.max(1,(DAILY_MEMORIZED_GOAL-memorizedCount)/2);
+//    var ratio = Math.max(1,(DAILY_MEMORIZED_GOAL-memorizedCount)/2);
     var txttmp = text.split(/\s+/);
     var randoms = getRandom(txttmp.length, txttmp.length);
-    var toPick = Math.floor(txttmp.length/ Math.min(txttmp.length,ratio+1));
-    var minCharsCount = 4;
+    var toPick = 3; // Math.floor(txttmp.length/ Math.min(txttmp.length,ratio+1));
+    var minCharsCount = 3;
 //    if(difficulty > 3){
 //        minCharsCount = 3;
 //    }
@@ -412,7 +412,7 @@ function hideWords(text, difficulty, memorizedCount){
     console.log('memorizedCount ' + memorizedCount);
     console.log('text ' + text);
     console.log('txttmp.length ' + txttmp.length);
-    console.log('ratio ' + ratio);
+//    console.log('ratio ' + ratio);
     console.log('toPick ' + toPick);
     console.log('difficulty' + difficulty) ;
     console.log('--------------') ;
@@ -599,7 +599,7 @@ function processVerses(data, planId, day, review){
                     $('#message').text('Last Question!');
                 }
                 else {
-                    $('#message').html("Fill in the blank spaces with the memorized verses");
+                    $('#message').html("Fill in the blank spaces with the memorized verse");
 //                    $('#message').html("Memorize verses fixes God's word in your heart");
                 }
             }
