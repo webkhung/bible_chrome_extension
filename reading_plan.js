@@ -352,12 +352,12 @@ function HTMLRender(){
 
     this.newGradient = function() {
         var c1 = {
-            r: Math.floor(Math.random()*155) + 100,
+            r: Math.floor(Math.random()*0) + 100,
             g: Math.floor(Math.random()*155) + 100,
             b: Math.floor(Math.random()*155) + 100
         };
         var c2 = {
-            r: Math.floor(Math.random()*255) + 0,
+            r: Math.floor(Math.random()*0) + 0,
             g: Math.floor(Math.random()*255) + 0,
             b: Math.floor(Math.random()*255) + 0
         };
@@ -422,7 +422,7 @@ function hideWords(text, difficulty, memorizedCount){
     while(picked < toPick && i < randoms.length){
         var currWord = txttmp[randoms[i]-1]
         if(txttmp[randoms[i]-1].length >= minCharsCount){
-            txttmp[randoms[i]-1] = ' <input class=missingWord type=text data-answer=\'' + currWord + '\' placeholder=\'' + maskWord(currWord, difficulty) + '\'>';
+            txttmp[randoms[i]-1] = ' <input style=\'width:' + (currWord.length * 18) + 'px\' class=missingWord type=text data-answer=\'' + currWord + '\' placeholder=\'' + maskWord(currWord, difficulty) + '\'>';
             picked++;
         }
         i++;
@@ -554,7 +554,7 @@ function processVerses(data, planId, day, review){
             var verses = replaceVerses(data, planId, day, 0);
             $('#add-new-plan').addClass('blink_me');
             $('#memorized-circle').hide();
-            $('#reveal-button').css('visibility','hidden');
+            $('#reveal-button, #hint-button').css('visibility','hidden');
             $('#ticks').hide();
             $('#passages')
                 .hide()
@@ -592,6 +592,8 @@ function processVerses(data, planId, day, review){
             // TEST SCREEN
             else {
                 $('#reveal-button').text('Done');
+                $('#hint-button').css('visibility','visible').data('disable',false).removeClass('no-link').data('planId', planId).data('day', day);
+
                 $('#ticks').show();
                 showTicks(memorizedCount);
 
@@ -728,11 +730,27 @@ function userNameSubmitClicked(){
     }
 }
 
+function clearInput(){
+    $('.missingWord').each(function(){
+        $(this).val('');
+    });
+}
+
 function revealClicked(){
+    var bHint = $(this).attr('id') == 'hint-button';
+    if(bHint) {
+        $('.missingWord').each(function(){
+            $(this).val($(this).data('answer'));
+        });
+        setTimeout(clearInput, 1000);
+        return;
+    }
+
     if($(this).data('disable')){
         return false;
     }
-    $('#reveal-button').data('disable', true).css('visibility', 'hidden');
+    $('#reveal-button, #hint-button').data('disable', true).css('visibility', 'hidden');
+
 
     // This part only applies if there are fill-in-the-blank
     var bAllCorrect = true;
@@ -748,13 +766,16 @@ function revealClicked(){
     });
 
     if(bAllCorrect){
-//        $('#reveal-button').addClass('no-link').html("<span class='button-tick'>&#10004;</span>");
         $('#message').empty().append('Good Job!').fadeIn('slow');
         incrementMemorizedCount($(this).data('planId'), $(this).data('day'));
     }
     else {
-//        $('#reveal-button').addClass('no-link').html("<span class='button-tick'>&#x2715;</span>");
-        $('#message').empty().append('Try Again!').fadeIn('slow');
+        if($(this).attr('id') == 'hint-button'){
+            $('#message').empty().append('There you go').fadeIn('slow');
+        }
+        else {
+            $('#message').empty().append('Try Again!').fadeIn('slow');
+        }
 //        incrementMemorizedCount($(this).data('planId'), $(this).data('day'));
     }
 
@@ -806,7 +827,7 @@ $( document ).ready(function() {
         htmlRender.showAddedPlans();
     });
 
-    $('#reveal-button').click(revealClicked);
+    $('#reveal-button, #hint-button').click(revealClicked);
 
     $('.maincontainer').on('click', '#add-new-plan', function(){
         htmlRender.showPlansSelector();

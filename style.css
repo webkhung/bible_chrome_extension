@@ -333,7 +333,7 @@ body {
     top:1px;
 }
 
-#reveal-button {
+#reveal-button, #hint-button {
     cursor:pointer;
     color:#ffffff;
     font-family:arial;
@@ -344,6 +344,12 @@ body {
     padding: 10px 25px;
     /*display: none;*/
     visibility: hidden;
+    display: inline-block;
+    width: 100px;
+}
+
+#hint-button {
+    background-color: rgba(190,190,190,.5);
 }
 
 #reveal-button:hover {
@@ -544,14 +550,11 @@ body {
 
 #passages input {
     font-size: 22px;
-    /*height: 24px;*/
-    /*top: -5px;*/
     padding-left: 4px;
     background-color: transparent;
     border-top: none;
     border-left: none;
     border-right: none;
-    width: 90px;
     position: relative !important;
     top: -2px;
     height: 29px;
