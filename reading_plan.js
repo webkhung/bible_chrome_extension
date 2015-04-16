@@ -554,7 +554,8 @@ function processVerses(data, planId, day, review){
             var verses = replaceVerses(data, planId, day, 0);
             $('#add-new-plan').addClass('blink_me');
             $('#memorized-circle').hide();
-            $('#reveal-button, #hint-button').css('visibility','hidden');
+            $('#reveal-button').css('visibility','hidden');
+            $('#hint-button').hide();
             $('#ticks').hide();
             $('#passages')
                 .hide()
@@ -587,12 +588,13 @@ function processVerses(data, planId, day, review){
             // READ SCREEN
             if(memorizedCount == 0){
                 $('#reveal-button').text('Next');
+                $('#hint-button, #ticks').hide();
                 $('#message').html('Hello <span class=username>' + userName + '</span>, Memorize the verse');
             }
             // TEST SCREEN
             else {
                 $('#reveal-button').text('Done');
-                $('#hint-button').css('visibility','visible').data('disable',false).removeClass('no-link').data('planId', planId).data('day', day);
+                $('#hint-button').show().data('disable',false).removeClass('no-link').data('planId', planId).data('day', day);
 
                 $('#ticks').show();
                 showTicks(memorizedCount);
@@ -749,7 +751,8 @@ function revealClicked(){
     if($(this).data('disable')){
         return false;
     }
-    $('#reveal-button, #hint-button').data('disable', true).css('visibility', 'hidden');
+    $('#reveal-button').data('disable', true).css('visibility', 'hidden');
+    $('#hint-button').data('disable', true).hide();
 
 
     // This part only applies if there are fill-in-the-blank
