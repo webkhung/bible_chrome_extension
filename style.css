@@ -2,7 +2,7 @@ body {
     margin: 0px;
 }
 
-#add-new-plan {
+#new-plan-link {
     color: #ffffff;
     text-decoration: none;
     font-size:30px;
@@ -15,11 +15,11 @@ body {
 }
 
 
-#add-new-plan:hover {
+#new-plan-link:hover {
     color: #bbbbbb;
 }
 
-#add-new-plan span {
+#new-plan-link span {
     position: absolute;
     top: 30px;
 }
@@ -130,8 +130,9 @@ body {
 
 .circle img {
     position: relative;
-    top: 15px;
-    left: 13px;
+    width: 50px;
+    top: 19px;
+    left: 20px;
 }
 
 .overlay-icon {
@@ -445,7 +446,7 @@ body {
     font-size: 17px;
     position: absolute;
     left: 7px;
-    top: 4px;
+    top: 7px;
     color: rgb(8, 231, 11);
 }
 
@@ -508,16 +509,24 @@ body {
     -webkit-transition: opacity 5s;
     -moz-transition: opacity 5s;
     transition: opacity 7s;
-    opacity: 0.8;
+    opacity: 0.7;
 }
 
 .hidden { opacity: 0; }
 
-.tick {
+.circle .tick {
     font-size: 60px;
     position: relative;
     left: 20px;
     top: 8px;
+}
+
+.circle .currentDay {
+    position: absolute;
+    font-size: 20px;
+    font-weight: bold;
+    top: 34px;
+    left: 19px;
 }
 
 .progress-circle {

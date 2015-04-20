@@ -199,7 +199,12 @@ function HTMLRender(){
         if (lastPlanId) {
             var lastPlan = objPlans[lastPlanId];
             $('#added-plan-' + lastPlanId).addClass('plan-done-today');
-            $('#added-plan-' + lastPlanId + ' .circle').removeClass('blink_me').removeClass('circle' + lastPlan.id).addClass('circle-solid-' + lastPlan.id).append("<span class='tick'>&#10004;</span>");
+            $('#added-plan-' + lastPlanId + ' .circle')
+                .removeClass('blink_me')
+                .removeClass('circle' + lastPlan.id)
+                .addClass('circle-solid-' + lastPlan.id)
+                .empty()
+                .append("<span class='tick'>&#10004;</span>");
             $("#jmeter" + lastPlanId).jQMeter({
                 goal : lastPlan.days.length.toString(),
                 raised : lastPlan.completedOn.length.toString(),
@@ -210,32 +215,6 @@ function HTMLRender(){
                 displayTotal: false
             });
         }
-    }
-
-    this.showNextVerse = function(){
-        console.log('showNextVerse');
-        // Fetch the verse of the current plan
-        for(var planId in objPlans){
-            var plan = objPlans[planId];
-            if(plan.added && !plan.completed() && plan.lastCompletedDate() != today) {
-                var day = plan.numDaysFinished()+1;
-                fetchVerses(planId, day);
-                return;
-            }
-        }
-
-        // Today's verses are done. Randomly fetch a verse to read.
-        var randomPlan = randomAddedPlan();
-        if(randomPlan){
-            var randomDay = getRandom(1,randomPlan.completedOn.length);
-            fetchVerses(randomPlan.id, randomDay, true);
-        }
-        else {
-            htmlRender.showPlansSelector();
-        }
-
-        // To fix God's words in your heart and mind, it means to be continually conscious of the Bible’s teachings as you go through your daily routine.
-        // one practical way to make sure that God’s words are always close at hand is to memorize verses and passages from the Bible.
     }
 
     this.showAddedPlans = function(){
@@ -252,7 +231,7 @@ function HTMLRender(){
                 $container.attr('id', 'added-plan-' + plan.id);
 
                 if(plan.completed()) {
-                    $container.append("<div class='plan-badge'><span class='circle circle-solid-" + planId + "'><img src='images/trophy.png'></span></div>");
+                    $container.append("<div class='plan-badge'><span class='circle circle-solid-" + planId + "'><img src='images/star.png'></span></div>");
                     $container.addClass('plan-done-today');
                 }
                 else if(plan.lastCompletedDate() != today) {
@@ -288,13 +267,13 @@ function HTMLRender(){
         }
     }
 
-    this.showUserNameContainer = function() {
-        $('#add-new-plan').hide();
+    this.screenUserName = function() {
+        $('#new-plan-link').hide();
         $('#user-name-container').show();
     }
 
-    this.showPlansSelector = function(){
-        $('#passages-container, #add-new-plan').hide();
+    this.screenPlanSelector = function(){
+        $('#passages-container, #new-plan-link').hide();
 
         $planSelector = $('#plans-selector');
         $planSelector.empty();
@@ -310,7 +289,7 @@ function HTMLRender(){
             if(plan.added){
                 numPlansAdded++;
                 if(plan.completed()){
-                    $meta.append(" Completed <img src='images/trophy.png'>");
+                    $meta.append(" Completed <img src='images/star22.png'>");
                 }
                 else {
                     $meta.append(' Added');
@@ -318,7 +297,7 @@ function HTMLRender(){
             }
             else {
                 var addPlanLink = $('<a />').attr({ class: 'myButtonSmallLink', href: '#' }).text('Add');
-                addPlanLink.click({ param1: planId }, addPlan)
+                addPlanLink.click({ param1: planId }, addPlanLinkClicked)
                 $meta.append(addPlanLink);
             }
             $rightCol.append($meta);
@@ -357,7 +336,7 @@ function HTMLRender(){
             b: Math.floor(Math.random()*155) + 100
         };
         var c2 = {
-            r: Math.floor(Math.random()*0) + 0,
+            r: Math.floor(Math.random()*0) + 100,
             g: Math.floor(Math.random()*255) + 0,
             b: Math.floor(Math.random()*255) + 0
         };
@@ -380,6 +359,66 @@ function HTMLRender(){
         c1.rgb = 'rgb('+c1.r+','+c1.g+','+c1.b+')';
         c2.rgb = 'rgb('+c2.r+','+c2.g+','+c2.b+')';
         return 'radial-gradient(at top left, '+c1.rgb+', '+c2.rgb+')';
+    }
+
+    this.screenReviewVerses = function(data, planId, day){
+        var verses = replaceVerses(data, planId, day, 0);
+        $('#new-plan-link').addClass('blink_me');
+        $('#memorized-circle').hide();
+        $('#reveal-button').css('visibility','hidden');
+        $('#hint-button').hide();
+        $('#ticks').hide();
+        $('#passages')
+            .hide()
+            .empty()
+            .append("<div id='passage-plan-name'>Day " + day + " of " + objPlans[planId].name + '</div>')
+            .append(verses).fadeIn('slow');
+        $('#message').html("<p>You completed this passage on " + objPlans[planId].completedOn[day-1] + "</p><p>Let's review God's words again!</p>");
+    }
+
+    this.screenTodayVerses = function(data, planId, day, userData, key){
+        $('#new-plan-link').removeClass('blink_me');
+        $('#added-plan-' + planId + ' .circle').addClass('circle-solid-' + planId).addClass('blink_me').append("<span class='currentDay'>Day " + day + "</span>");
+        $('#memorized-circle').show();
+        $('#reveal-button').css('visibility','visible').data('disable',false).removeClass('no-link').data('planId', planId).data('day', day);
+
+        var memorizedCount = 0;
+        if (userData !== undefined && userData[key] !== undefined){
+            memorizedCount = parseInt(userData[key]);
+        }
+
+        var verses = replaceVerses(data, planId, day, memorizedCount);
+        $('#passages')
+            .hide()
+            .empty()
+            .append("<div id='passage-plan-name'>Day " + day + " of " + objPlans[planId].name + '</div>')
+            .append(verses).fadeIn('slow', function(){
+            });
+
+        htmlRender.drawMemorizedCircle(planId, day);
+
+        // READ SCREEN
+        if(memorizedCount == 0){
+            $('#reveal-button').text('Next');
+            $('#hint-button, #ticks').hide();
+            $('#message').html('Hello <span class=username>' + userName + '</span>, Memorize the verse');
+        }
+        // TEST SCREEN
+        else {
+            $('#reveal-button').text('Done');
+            $('#hint-button').show().data('disable',false).removeClass('no-link').data('planId', planId).data('day', day);
+
+            $('#ticks').show();
+            showTicks(memorizedCount);
+
+            if(memorizedCount == DAILY_MEMORIZED_GOAL - 1){
+                $('#message').text('Last Question!');
+            }
+            else {
+                $('#message').html("Fill in the blank spaces with the memorized verse");
+//                    $('#message').html("Memorize verses fixes God's word in your heart");
+            }
+        }
     }
 }
 
@@ -551,64 +590,36 @@ function processVerses(data, planId, day, review){
     var key = memorizedKey(planId, day);
     chrome.storage.sync.get(key, function (userData) {
         if(review !== undefined && review){
-            var verses = replaceVerses(data, planId, day, 0);
-            $('#add-new-plan').addClass('blink_me');
-            $('#memorized-circle').hide();
-            $('#reveal-button').css('visibility','hidden');
-            $('#hint-button').hide();
-            $('#ticks').hide();
-            $('#passages')
-                .hide()
-                .empty()
-                .append("<div id='passage-plan-name'>Day " + day + " of " + objPlans[planId].name + '</div>')
-                .append(verses).fadeIn('slow');
-            $('#message').html("<p>You completed this passage on " + objPlans[planId].completedOn[day-1] + "</p><p>Let's review God's words again!</p>");
+            htmlRender.screenReviewVerses(data, planId, day);
         }
         else{
-            $('#add-new-plan').removeClass('blink_me');
-            $('#added-plan-' + planId + ' .circle').addClass('circle-solid-' + planId).addClass('blink_me');
-            $('#memorized-circle').show();
-            $('#reveal-button').css('visibility','visible').data('disable',false).removeClass('no-link').data('planId', planId).data('day', day);
-
-            var memorizedCount = 0;
-            if (userData !== undefined && userData[key] !== undefined){
-                memorizedCount = parseInt(userData[key]);
-            }
-
-            var verses = replaceVerses(data, planId, day, memorizedCount);
-            $('#passages')
-                .hide()
-                .empty()
-                .append("<div id='passage-plan-name'>Day " + day + " of " + objPlans[planId].name + '</div>')
-                .append(verses).fadeIn('slow', function(){
-                });
-
-            htmlRender.drawMemorizedCircle(planId, day);
-
-            // READ SCREEN
-            if(memorizedCount == 0){
-                $('#reveal-button').text('Next');
-                $('#hint-button, #ticks').hide();
-                $('#message').html('Hello <span class=username>' + userName + '</span>, Memorize the verse');
-            }
-            // TEST SCREEN
-            else {
-                $('#reveal-button').text('Done');
-                $('#hint-button').show().data('disable',false).removeClass('no-link').data('planId', planId).data('day', day);
-
-                $('#ticks').show();
-                showTicks(memorizedCount);
-
-                if(memorizedCount == DAILY_MEMORIZED_GOAL - 1){
-                    $('#message').text('Last Question!');
-                }
-                else {
-                    $('#message').html("Fill in the blank spaces with the memorized verse");
-//                    $('#message').html("Memorize verses fixes God's word in your heart");
-                }
-            }
+            htmlRender.screenTodayVerses(data, planId, day, userData, key);
         }
     });
+}
+
+
+function nextVerses(){
+    console.log('nextVerses');
+    // Fetch the verse of the current plan
+    for(var planId in objPlans){
+        var plan = objPlans[planId];
+        if(plan.added && !plan.completed() && plan.lastCompletedDate() != today) {
+            var day = plan.numDaysFinished()+1;
+            fetchVerses(planId, day);
+            return;
+        }
+    }
+
+    // Today's verses are done. Randomly fetch a verse to read.
+    var randomPlan = randomAddedPlan();
+    if(randomPlan){
+        var randomDay = getRandom(1,randomPlan.completedOn.length);
+        fetchVerses(randomPlan.id, randomDay[0], true);
+    }
+    else {
+        htmlRender.screenPlanSelector();
+    }
 }
 
 function showTicks(memorizedCount){
@@ -627,13 +638,10 @@ function fetchVerses(planId, day, review){
     var key = 'planId' + planId + '-' + today;
     chrome.storage.sync.get(key, function (data) {
         if (data !== undefined && data[key] !== undefined){
-            console.log('fetchVerses from cache');
             processVerses(data[key], planId, day, review);
         }
         else {
-            console.log('fetchVerses from server');
             $.get('http://' + HOST + '/verses', { plan_id: planId, day: day, user_id: userId, user_name: userName }, function(verses){
-                console.log('fetchVerses from server returned');
                 var data = {}
                 data[key] = verses;
                 chrome.storage.sync.set(data);
@@ -644,18 +652,18 @@ function fetchVerses(planId, day, review){
     $('#passages').html('Loading');
 }
 
-function addPlan(event){
+function addPlanLinkClicked(event){
     var planId = event.data.param1;
     objPlans[planId].added = true;
     htmlRender.showAddedPlans();
-    htmlRender.showNextVerse();
+    nextVerses();
     $('#plans-selector').hide();
-    $('#passages-container, #add-new-plan').show();
+    $('#passages-container, #new-plan-link').show();
     saveData();
 }
 
 function rollBg() {
-    var bgImage = "bg" + (Math.floor(Math.random() * 33) + 1) + ".jpg";
+    var bgImage = "bg" + (Math.floor(Math.random() * 40) + 1) + ".jpg";
     $('body').css('background-image', "url('images/" + bgImage + "')");
     $('.bg.hidden').css('background', htmlRender.newGradient());
     $('.bg').toggleClass('hidden');
@@ -726,8 +734,8 @@ function userNameSubmitClicked(){
         userName = name;
         saveData();
         $('#user-name-container').fadeOut('slow', function(){
-            htmlRender.showNextVerse();
-            $('#add-new-plan').show();
+            nextVerses();
+            $('#new-plan-link').show();
         });
     }
 }
@@ -745,6 +753,7 @@ function revealClicked(){
             $(this).val($(this).data('answer'));
         });
         setTimeout(clearInput, 1000);
+        $.get('http://' + HOST + '/usage', { usage_type: 'HINT', plan_id: $(this).data('planId'), day: $(this).data('day'), user_id: userId, user_name: userName }, function(data){});
         return;
     }
 
@@ -757,39 +766,43 @@ function revealClicked(){
 
     // This part only applies if there are fill-in-the-blank
     var bAllCorrect = true;
+    var correct = 0, wrong = 0;
     $('.missingWord').each(function(e){
         if($(this).val().toLowerCase().removePunctuation() == $(this).data('answer').toLowerCase().removePunctuation()){
             $(this).addClass('correct');
+            correct++;
         }
         else {
             bAllCorrect = false;
             $(this).val($(this).data('answer'));
             $(this).addClass('wrong');
+            wrong++;
         }
     });
 
+    var usageType = '';
+    var details = '';
+
     if(bAllCorrect){
+        usageType = 'ANSWERED_CORRECT'
         $('#message').empty().append('Good Job!').fadeIn('slow');
         incrementMemorizedCount($(this).data('planId'), $(this).data('day'));
     }
     else {
-        if($(this).attr('id') == 'hint-button'){
-            $('#message').empty().append('There you go').fadeIn('slow');
-        }
-        else {
-            $('#message').empty().append('Try Again!').fadeIn('slow');
-        }
-//        incrementMemorizedCount($(this).data('planId'), $(this).data('day'));
+        usageType = 'ANSWERED_WRONG'
+        details = correct +'/' + wrong;
+        $('#message').empty().append('Try Again!').fadeIn('slow');
+        incrementMemorizedCount($(this).data('planId'), $(this).data('day'));
     }
 
     rollBg();
 
     if(!$(this).data('review')){
-        $.get('http://' + HOST + '/answered', { plan_id: $(this).data('planId'), day: $(this).data('day'), user_id: userId, user_name: userName }, function(data){});
+        $.get('http://' + HOST + '/usage', { usage_type: usageType, details: details, plan_id: $(this).data('planId'), day: $(this).data('day'), user_id: userId, user_name: userName }, function(data){});
     }
 
     timeoutVar = setTimeout(function(){
-        htmlRender.showNextVerse();
+        nextVerses();
     }, 5000);
 }
 
@@ -820,11 +833,11 @@ $( document ).ready(function() {
 
 
         if(userData['userName'] === undefined || userData['userName'] == '') {
-            htmlRender.showUserNameContainer();
+            htmlRender.screenUserName();
         }
         else {
             userName = userData['userName'];
-            htmlRender.showNextVerse();
+            nextVerses();
         }
 
         htmlRender.showAddedPlans();
@@ -832,14 +845,14 @@ $( document ).ready(function() {
 
     $('#reveal-button, #hint-button').click(revealClicked);
 
-    $('.maincontainer').on('click', '#add-new-plan', function(){
-        htmlRender.showPlansSelector();
+    $('.maincontainer').on('click', '#new-plan-link', function(){
+        htmlRender.screenPlanSelector();
         $('#passages-container').hide();
     });
 
     $('#plans-selector').on('click', '#plans-close', function(){
         $('#plans-selector').hide();
-        $('#passages-container, #add-new-plan').show();
+        $('#passages-container, #new-plan-link').show();
     });
 
     $('#user-name-submit').click(userNameSubmitClicked);
@@ -862,7 +875,7 @@ $( document ).ready(function() {
         tomorrow.setDate(tomorrow.getDate()+1);
         today = formatDate(tomorrow);
         htmlRender.showAddedPlans();
-        htmlRender.showNextVerse();
+        nextVerses();
     });
 
     $('#helps-container a').click(function(){
