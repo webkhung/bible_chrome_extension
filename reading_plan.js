@@ -420,6 +420,10 @@ function HTMLRender(){
             }
         }
     }
+
+    this.showFeedback = function(){
+        $('#feedback').show();
+    }
 }
 
 function memorizedKey(planId, day){
@@ -746,6 +750,13 @@ function clearInput(){
     });
 }
 
+function feedbackCloseClicked(){
+    $('#feedback').hide();
+    var data = {}
+    data['feedback-closed'] = '1';
+    chrome.storage.sync.set(data);
+}
+
 function revealClicked(){
     var bHint = $(this).attr('id') == 'hint-button';
     if(bHint) {
@@ -782,14 +793,17 @@ function revealClicked(){
 
     var usageType = '';
     var details = '';
+    var timeoutLength = 0;
 
     if(bAllCorrect){
-        usageType = 'ANSWERED_CORRECT'
+        usageType = 'ANSWERED_CORRECT';
+        timeoutLength = 2000;
         $('#message').empty().append('Good Job!').fadeIn('slow');
         incrementMemorizedCount($(this).data('planId'), $(this).data('day'));
     }
     else {
         usageType = 'ANSWERED_WRONG'
+        timeoutLength = 6000;
         details = correct +'/' + wrong;
         $('#message').empty().append('Try Again!').fadeIn('slow');
 //        incrementMemorizedCount($(this).data('planId'), $(this).data('day'));
@@ -803,7 +817,7 @@ function revealClicked(){
 
     timeoutVar = setTimeout(function(){
         nextVerses();
-    }, 5000);
+    }, timeoutLength);
 }
 
 $( document ).ready(function() {
@@ -826,9 +840,11 @@ $( document ).ready(function() {
             userId = userData['userId'];
         }
 
+        var completedCount = 0;
         for(var planId in userData["plans"]){
             objPlans[planId].added = true;
             objPlans[planId].completedOn = userData["plans"][planId];
+            completedCount += objPlans[1].completedOn.length;
         };
 
 
@@ -841,7 +857,21 @@ $( document ).ready(function() {
         }
 
         htmlRender.showAddedPlans();
+
+        if(completedCount >= 3){
+            $('#superuser-name').text(userData['userName']);
+            $('#help').show();
+            if(userData['feedback-closed'] === undefined) {
+                htmlRender.showFeedback();
+            }
+        }
     });
+
+    $('#feedback-close').click(feedbackCloseClicked);
+
+    $('#help').click(function(){
+        htmlRender.showFeedback();
+    })
 
     $('#reveal-button, #hint-button').click(revealClicked);
 

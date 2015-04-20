@@ -2,6 +2,20 @@ body {
     margin: 0px;
 }
 
+
+#help {
+    color: #ffffff;
+    text-decoration: none;
+    font-size:14px;
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    font-weight: 300;
+    display: none;
+}
+
+#help:hover { text-decoration: underline; }
+
 #new-plan-link {
     color: #ffffff;
     text-decoration: none;
@@ -65,7 +79,12 @@ body {
 }
 
 /* Plan */
-#plans-selector, #user-name-container {
+#feedback {
+    font-size: 18px;
+    background-color: rgba(255,255,255,1) !important;
+}
+
+#plans-selector, #user-name-container, #feedback {
     position: absolute;
     top: 20px;
     left: 10px;
@@ -446,7 +465,7 @@ body {
     font-size: 17px;
     position: absolute;
     left: 7px;
-    top: 7px;
+    top: 5px;
     color: rgb(8, 231, 11);
 }
 
@@ -459,8 +478,8 @@ body {
     height: 90px;
 }
 
-.circle1, .circle-solid-1 { border: 2px solid #59ff5b; }
-.circle-solid-1 { background-color: #59ff5b; }
+.circle1, .circle-solid-1 { border: 2px solid #4de34f; }
+.circle-solid-1 { background-color: #4de34f; }
 
 .circle2, .circle-solid-2 { border: 2px solid #ff65f0; }
 .circle-solid-2 { background-color: #ff65f0; }
@@ -480,8 +499,8 @@ body {
 .circle7, .circle-solid-7 { border: 2px solid #eda400; }
 .circle-solid-7 { background-color: #eda400; }
 
-.circle8, .circle-solid-8 { border: 2px solid #79ff79; }
-.circle-solid-8 { background-color: #79ff79; }
+.circle8, .circle-solid-8 { border: 2px solid #6ee76e; }
+.circle-solid-8 { background-color: #6ee76e; }
 
 .circle9, .circle-solid-9 { border: 2px solid #b8a3ff; }
 .circle-solid-9 { background-color: #b8a3ff; }
@@ -489,8 +508,8 @@ body {
 .circle10, .circle-solid-10 { border: 2px solid #ff2825; }
 .circle-solid-10 { background-color: #ff2825; }
 
-.circle11, .circle-solid-11 { border: 2px solid #bcf483; }
-.circle-solid-11 { background-color: #bcf483; }
+.circle11, .circle-solid-11 { border: 2px solid #b2e77c; }
+.circle-solid-11 { background-color: #b2e77c; }
 
 .circle12, .circle-solid-12 { border: 2px solid #d341ff; }
 .circle-solid-12 { background-color: #d341ff; }
