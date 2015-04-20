@@ -792,7 +792,7 @@ function revealClicked(){
         usageType = 'ANSWERED_WRONG'
         details = correct +'/' + wrong;
         $('#message').empty().append('Try Again!').fadeIn('slow');
-        incrementMemorizedCount($(this).data('planId'), $(this).data('day'));
+//        incrementMemorizedCount($(this).data('planId'), $(this).data('day'));
     }
 
     rollBg();
