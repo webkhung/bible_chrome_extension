@@ -12,10 +12,10 @@ var game = new Game();
 var readingPlans = [
     {
         "id": "1",
-        "name": "14 Days on Being Thankful",
+        "name": "9 Days on Being Thankful",
         "badge": "images/greystyle_08_badge.png",
         "description": "",
-        "days": ["1Chronicles.23:30","John.14:27","2 Corinthians.12:10","1 Timothy.6:12","Luke.4:32","Philippians.2:14","Romans.5:5","Isaiah.43:19","Titus.2:12","2Corinthians.5:21","2Corinthians.10:5","Matthew.6:26","1Samuel.17:45","Isaiah.61:3"]
+        "days": ["1Chronicles.23:30","John.14:27","Romans.5:5","2Corinthians.10:5","Matthew.6:26","Psalm.20:4","Colossians.3:17","1Thessalonians.5:18","James.1:17","Philippians.4:6"]
     },
     {
         "id": "2",
@@ -121,7 +121,7 @@ function Plan(json){
         }
     }
     this.completed = function(){
-        return this.added && this.numDaysFinished() == this.numOfDays;
+        return this.added && this.numDaysFinished() >= this.numOfDays;
     }
 }
 
@@ -515,15 +515,6 @@ function versesNext(){
         return;
     }
 
-//    for(var planId in objPlans){
-//        var plan = objPlans[planId];
-//        if(plan.added && !plan.completed() && plan.lastCompletedDate() == today) {
-//            var day = plan.numDaysFinished();
-//            versesFetch(planId, day); // TODO pick a random fetch that's for today
-//            return;
-//        }
-//    }
-
     htmlRender.screenPlanSelector();
 }
 
@@ -662,7 +653,7 @@ function revealClicked(){
         }
         else {
             usageType = 'ANSWERED_WRONG'
-            timeoutLength = 1000;
+            timeoutLength = 5000;
             details = correct +'/' + wrong;
             $('#message').empty().append('Try Again in 5 Seconds!').fadeIn('slow');
 //            incrementMemorizedCount();
