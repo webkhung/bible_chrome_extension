@@ -4,8 +4,8 @@ var userId = '';
 var userName = '';
 var htmlRender = new HTMLRender();
 var DAILY_MEMORIZED_GOAL = 4;
-//var HOST = 'biblereadingplans.herokuapp.com';
-var HOST = 'localhost:3001';
+var HOST = 'biblereadingplans.herokuapp.com';
+//var HOST = 'localhost:3001';
 var memorizedCount = 0;
 var game = new Game();
 
