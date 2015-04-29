@@ -38,46 +38,6 @@ body {
     top: 30px;
 }
 
-#helps-container ul {
-    list-style-type: none;
-}
-
-#helps-container li {
-    font-family: 'Lato', sans-serif;
-    font-size: 18px;
-    float: left;
-    margin: 0 10px;
-    color: #ffffff;
-    text-decoration: none;
-}
-
-#helps-container li.title {
-    font-weight: bold;
-}
-
-#helps-container li a {
-    font-weight: 300;
-    color: #ffffff;
-    text-decoration: none;
-}
-
-#helps-container li a:hover{
-    color: #ffffff;
-    text-decoration: underline;
-}
-
-#helps-container {
-    /*position: absolute;*/
-    /*bottom: 0px;*/
-    /*left: 0px;*/
-    overflow: hidden;
-    background-color: rgba(255,255,255,0.3);
-    width: 100%;
-    z-index: 100;
-    color: white;
-    padding-bottom: 10px;
-}
-
 /* Plan */
 #feedback {
     font-size: 18px;
@@ -199,7 +159,7 @@ body {
     /*font-weight: bold;*/
     text-align: center;
     width: 100%;
-    margin: 60px auto 0 auto;
+    margin: 0px auto 0 auto;
 }
 
 #message p {
@@ -218,8 +178,8 @@ body {
     font-size: 26px;
     color: white;
     text-align: center;
-    width: 75%;
-    margin: 50px auto 50px auto;
+    width: 85%;
+    margin: 40px auto 60px auto;
     text-shadow: 1px 1px 1px #333;
 }
 
@@ -295,10 +255,6 @@ body {
 
 .verses-done-icon {
     display: none;
-}
-
-.plan-done-today {
-    /*text-decoration: line-through;*/
 }
 
 #added-plans, #current-verses, completed-plans {
@@ -474,8 +430,8 @@ body {
     border-radius: 50%;
     display: inline-block;
     margin-right: 20px;
-    width: 90px;
-    height: 90px;
+    width: 80px;
+    height: 80px;
 }
 
 .circle1, .circle-solid-1 { border: 2px solid #4de34f; }
@@ -542,9 +498,9 @@ body {
 
 .circle .currentDay {
     position: absolute;
-    font-size: 20px;
+    font-size: 18px;
     font-weight: bold;
-    top: 34px;
+    top: 31px;
     left: 19px;
 }
 
@@ -653,17 +609,17 @@ input.wrong {
 
 .blink_me {
     -webkit-animation-name: blinker;
-    -webkit-animation-duration: 3s;
+    -webkit-animation-duration: 2s;
     -webkit-animation-timing-function: linear;
     -webkit-animation-iteration-count: infinite;
 
     -moz-animation-name: blinker;
-    -moz-animation-duration: 3s;
+    -moz-animation-duration: 2s;
     -moz-animation-timing-function: linear;
     -moz-animation-iteration-count: infinite;
 
     animation-name: blinker;
-    animation-duration: 3s;
+    animation-duration: 2s;
     animation-timing-function: linear;
     animation-iteration-count: infinite;
 }
@@ -684,4 +640,8 @@ input.wrong {
     0% { opacity: 1.0; }
     50% { opacity: 0.0; }
     100% { opacity: 1.0; }
+}
+
+#passages-container {
+    margin-top: 180px;
 }

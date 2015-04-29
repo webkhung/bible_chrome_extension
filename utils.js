@@ -85,6 +85,30 @@ function getRandom(pick, max) {
 //    "days": ["Luke 1:1-38","Luke 1:39-80","Luke 2","Luke 3","Luke 4","Luke 5","Luke 6","Luke 7","Luke 8:1-25","Luke 8:26-56","Luke 9:1-36","Luke 9:37-62","Luke 10","Luke 11","Luke 12:1-34","Luke 12:35-59","Luke 13","Luke 14","Luke 15","Luke 16","Luke 17","Luke 18","Luke 19","Luke 20","Luke 21","Luke 22:1-38","Luke 22:39-71","Luke 23:1-25","Luke 23:26-56","Luke 24"]
 //}
 
+//var questions = [
+//    'How Does This Passage Apply To Your Life Today?',
+//    'What Does This Passage Mean To You?'
+//]
+//
+//var quotes = [
+//    'Like This App? <a href=\'https://chrome.google.com/webstore/detail/bible-reading-plans/jogajkcgclkfedbhdcopmpmeeophkkji?authuser=1\' target=\'_blank\'>Rate It On Chrome Store</a>',
+//    'I Appreciate Your Feedback! Leave a Feedback on Chrome Store',
+//    'How Does This Passage Apply To Your life Today?',
+//    'What Does This Passage Mean To You?',
+//    'Read it out loud help you memorize the verses',
+//    'Memorize verses fix God\'s words in your heart and mind',
+//    'Hello, Nice To See You Again!',
+//    'You Are Doing A Good Job!',
+//    'You Are Doing A Nice Work!',
+//    'Great Effort!',
+//    'Add More Bible Reading Plans',
+//    'Keep Up The Good Work!',
+//    'Smile, It Looks Good On You',
+//    'Say Hi to a stranger. It will brighten both your day and theirs',
+//    'Be mindful of your posture. You\'ll look and feel more confident!']
+
+//http://www.biblestudytools.com/topical-verses/
+
 
 //function finishClicked(){
 //    $(this).hide();
@@ -103,3 +127,48 @@ function getRandom(pick, max) {
 //
 //    $.get('http://' + HOST + '/finished', { plan_id: lastPlanId, day: day, user_id: userId }, function(data){});
 //}
+
+//function numPlansAdded(){
+//    var numPlansAdded = 0;
+//    for(var planId in objPlans){
+//        var plan = objPlans[planId];
+//        if(plan.added){
+//            numPlansAdded++;
+//        }
+//    }
+//    return numPlansAdded;
+//}
+
+//function numUnfinishedPlans(){
+//    var numPlansAdded = 0;
+//    for(var planId in objPlans){
+//        var plan = objPlans[planId];
+//        if(plan.added && !plan.completed()){
+//            numPlansAdded++;
+//        }
+//    }
+//    return numPlansAdded;
+//}
+
+//function hasFinishedToday(){
+//    var bFinishedToday = false;
+//    for(var planId in objPlans){
+//        var plan = objPlans[planId];
+//        if(plan.added){
+//            bFinishedToday = true;
+//        }
+//    }
+//    return bFinishedToday;
+//}
+
+function randomAddedPlan(){
+    var allPlanIds = [];
+    for(var planId in objPlans){
+        if(objPlans[planId].added && objPlans[planId].lastCompletedDate() == today) {
+            allPlanIds[allPlanIds.length] = planId;
+        }
+    }
+
+    var randomPlanId = allPlanIds[(Math.floor(Math.random() * allPlanIds.length) + 1) - 1];
+    return objPlans[randomPlanId];
+}

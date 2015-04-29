@@ -1,6 +1,6 @@
 {
   "name": "Daily Bible Verse",
-  "description": "The most beautiful daily bible verse plugin.  Select a bible reading plans, read the verse whenever you open a new tab, play simple games to memorize the verses.",
+  "description": "The most beautiful daily bible verse plugin.  Select a reading plans, read the verse whenever you open a new tab.",
   "permissions": [
     "storage",
     "http://biblereadingplans.herokuapp.com/verses",
@@ -11,7 +11,7 @@
     "scripts": ["background.js"],
     "persistent": false
   },
-  "version": "0.8.7",
+  "version": "0.8.8",
   "chrome_url_overrides": {
     "newtab": "main.html"
   },
