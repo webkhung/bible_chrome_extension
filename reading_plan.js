@@ -435,12 +435,11 @@ function HTMLRender(){
 
         // READ SCREEN
         if(memorizedCount == 0){
-            var ran = getRandom(1,100)[0];
-            console.log('------' + ran);
-            if ((ran%2) == 0) {
+//            var ran = getRandom(1,100)[0];
+//            if ((ran%2) == 0) {
                 var animation = textAnimations[getRandom(1, textAnimations.length)[0]-1];
                 $('#passages').textillate({ in: { effect: animation, delay: 40, shuffle: false } });
-            }
+//            }
             $('#message').html('Hello <span class=username>' + userName + '</span>, if you like this passage, memorize it to fix God\'s word in your heart.');
             $('#reveal-button').text('Like').data('start-memorize', true);
             $('#hint-button, #ticks').hide();
