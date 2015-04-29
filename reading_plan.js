@@ -303,22 +303,6 @@ function HTMLRender(){
         });
     }
 
-    this.updatePlanProgressMeter = function(lastPlanId){
-        // Update UI of last finished plan
-        if (lastPlanId) {
-            var lastPlan = objPlans[lastPlanId];
-            $("#jmeter" + lastPlanId).jQMeter({
-                goal : lastPlan.days.length.toString(),
-                raised : lastPlan.completedOn.length.toString(),
-                width : '150px',
-                height : '26px',
-                bgColor : '#dadada',
-                barColor : '#f09246',
-                displayTotal: false
-            });
-        }
-    }
-
     this.showAddedPlans = function(){
         $plan = $('#added-plans');
         $plan.empty();
@@ -453,7 +437,6 @@ function HTMLRender(){
 
     this.screenTodayVerses = function(data, planId, day){
         console.log('screenTodayVerses ' + planId + ',' + day);
-        $('#added-plan-' + planId + ' .circle').addClass('circle-solid-' + planId).addClass('blink_me').empty().append("<span class='currentDay'>Day " + day + "</span>");
         $('#reveal-button').css('visibility','visible').removeClass('no-link').data('planId', planId).data('day', day);
 
         var verses = game.replaceVerses(data, memorizedCount);
@@ -535,6 +518,7 @@ function versesFetch(planId, day, review){
             });
         }
     });
+    htmlRender.showAddedPlans();
     $('#passages').html('Loading');
 }
 
@@ -548,7 +532,6 @@ function rollBg() {
 function versesTodayCompleted(planId){
     objPlans[planId].dayCompleted();
     saveData();
-    htmlRender.updatePlanProgressMeter(planId);
     var day = objPlans[planId].numDaysFinished();
     $.get('http://' + HOST + '/finished', { plan_id: planId, day: day, user_id: userId, user_name: userName }, function(data){});
 }
@@ -703,8 +686,6 @@ $( document ).ready(function() {
             userName = userData['userName'];
             versesNext();
         }
-
-        htmlRender.showAddedPlans();
 
         $('#superuser-name').text(userData['userName']);
         $('#help').show();

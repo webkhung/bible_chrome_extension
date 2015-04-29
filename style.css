@@ -446,8 +446,8 @@ body {
 .circle4, .circle-solid-4 { border: 2px solid #ffa496; }
 .circle-solid-4 { background-color: #ffa496; }
 
-.circle5, .circle-solid-5 { border: 2px solid #fffd33; }
-.circle-solid-5 { background-color: #FFFD33; }
+.circle5, .circle-solid-5 { border: 2px solid #F4CC00; }
+.circle-solid-5 { background-color: #F4CC00; }
 
 .circle6, .circle-solid-6 { border: 2px solid #88eeff; }
 .circle-solid-6 { background-color: #88eeff; }
@@ -609,17 +609,17 @@ input.wrong {
 
 .blink_me {
     -webkit-animation-name: blinker;
-    -webkit-animation-duration: 2s;
+    -webkit-animation-duration: 3s;
     -webkit-animation-timing-function: linear;
     -webkit-animation-iteration-count: infinite;
 
     -moz-animation-name: blinker;
-    -moz-animation-duration: 2s;
+    -moz-animation-duration: 3s;
     -moz-animation-timing-function: linear;
     -moz-animation-iteration-count: infinite;
 
     animation-name: blinker;
-    animation-duration: 2s;
+    animation-duration: 3s;
     animation-timing-function: linear;
     animation-iteration-count: infinite;
 }
