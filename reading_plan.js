@@ -8,6 +8,8 @@ var HOST = 'biblereadingplans.herokuapp.com';
 //var HOST = 'localhost:3001';
 var memorizedCount = 0;
 var game = new Game();
+var textAnimations = ['rotateIn', 'rotateInDownLeft', 'rotateInDownRight', 'shake', 'tada', 'swing', 'wobble', 'fadeIn', 'fadeInUp', 'fadeInDown',
+    'fadeInLeft', 'fadeInRight', 'fadeInDownBig', 'bounceIn', 'bounceInDown', 'flash']; // pulse, flip, 'fadeInLeftBig', 'fadeInRightBig'
 
 var readingPlans = [
     {
@@ -423,32 +425,22 @@ function HTMLRender(){
         return 'radial-gradient(at top left, '+c1.rgb+', '+c2.rgb+')';
     }
 
-    this.screenReviewVerses = function(data, planId, day){
-        var verses = game.replaceVerses(data, 0);
-        $('#reveal-button').css('visibility','hidden');
-        $('#hint-button, #ticks').hide();
-        $('#passages')
-            .hide()
-            .empty()
-            .append("<div id='passage-plan-name'>Day " + day + " of " + objPlans[planId].name + '</div>')
-            .append(verses).fadeIn('slow');
-        $('#message').html("<p>You completed this passage on " + objPlans[planId].completedOn[day-1] + "</p><p>Let's review God's words again!</p>");
-    }
-
     this.screenTodayVerses = function(data, planId, day){
         console.log('screenTodayVerses ' + planId + ',' + day);
         $('#reveal-button').css('visibility','visible').removeClass('no-link').data('planId', planId).data('day', day);
 
         var verses = game.replaceVerses(data, memorizedCount);
-        $('#passages')
-            .hide()
-            .empty()
-            .append("<div id='passage-plan-name'>Day " + day + " of " + objPlans[planId].name + '</div>')
-            .append(verses).fadeIn('slow', function(){
-            });
+        $('#passages').empty().append(verses);
+        // .append("<div id='passage-plan-name'>Day " + day + " of " + objPlans[planId].name + '</div>')
 
         // READ SCREEN
         if(memorizedCount == 0){
+            var ran = getRandom(1,100)[0];
+            console.log('------' + ran);
+            if ((ran%2) == 0) {
+                var animation = textAnimations[getRandom(1, textAnimations.length)[0]-1];
+                $('#passages').textillate({ in: { effect: animation, delay: 40, shuffle: false } });
+            }
             $('#message').html('Hello <span class=username>' + userName + '</span>, if you like this passage, memorize it to fix God\'s word in your heart.');
             $('#reveal-button').text('Like').data('start-memorize', true);
             $('#hint-button, #ticks').hide();
@@ -468,15 +460,10 @@ function HTMLRender(){
     }
 }
 
-function versesProcess(data, planId, day, review){
-    console.log('versesProcess ' + ',' + data  + ',' + planId  + ',' + day  + ',' + review);
+function versesProcess(data, planId, day){
+    console.log('versesProcess ' + ',' + data  + ',' + planId  + ',' + day);
     $('.blink_me').removeClass('blink_me')
-    if(review !== undefined && review){
-        htmlRender.screenReviewVerses(data, planId, day);
-    }
-    else{
-        htmlRender.screenTodayVerses(data, planId, day);
-    }
+    htmlRender.screenTodayVerses(data, planId, day);
 }
 
 function versesNext(){
@@ -501,12 +488,12 @@ function versesNext(){
     htmlRender.screenPlanSelector();
 }
 
-function versesFetch(planId, day, review){
-    console.log('versesFetch ' + planId + ',' + day + ',' + review);
+function versesFetch(planId, day){
+    console.log('versesFetch ' + planId + ',' + day);
     var key = 'planId' + planId + '-' + today;
     chrome.storage.sync.get(key, function (data) {
         if (data !== undefined && data[key] !== undefined){
-            versesProcess(data[key], planId, day, review);
+            versesProcess(data[key], planId, day);
             $.get('http://' + HOST + '/usage', { usage_type: 'OPEN', plan_id: planId, day: day, user_id: userId, user_name: userName });
         }
         else {
@@ -514,7 +501,7 @@ function versesFetch(planId, day, review){
                 var data = {}
                 data[key] = verses;
                 chrome.storage.sync.set(data);
-                versesProcess(verses, planId, day, review);
+                versesProcess(verses, planId, day);
             });
         }
     });
@@ -644,10 +631,6 @@ function revealClicked(){
     }
 
     rollBg();
-
-    if(!$(this).data('review')){
-        $.get('http://' + HOST + '/usage', { usage_type: usageType, details: details, plan_id: $(this).data('planId'), day: $(this).data('day'), user_id: userId, user_name: userName }, function(data){});
-    }
 
     timeoutVar = setTimeout(function(){
         versesNext();
