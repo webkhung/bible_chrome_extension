@@ -14,77 +14,77 @@ var textAnimations = ['rotateIn', 'rotateInDownLeft', 'rotateInDownRight', 'shak
 var readingPlans = [
     {
         "id": "1",
-        "name": "9 Days on Being Thankful",
+        "name": "Being Thankful",
         "badge": "images/greystyle_08_badge.png",
         "description": "",
-        "days": ["1Chronicles.23:30","John.14:27","Romans.5:5","2Corinthians.10:5","Matthew.6:26","Psalm.20:4","Colossians.3:17","1Thessalonians.5:18","James.1:17","Philippians.4:6"]
+        "days": ["1Chronicles.23:30","John.14:27","Romans.5:5","Matthew.6:26","Psalm.20:4","Colossians.3:17","1Thessalonians.5:18","James.1:17","Philippians.4:6"]
     },
     {
         "id": "2",
-        "name": "14 Days on Love Part 1",
+        "name": "Love Part 1",
         "badge": "images/greenstyle_08_badge.png",
         "description": "",
         "days": ["Luke.6:31","Luke.6:35","John.8:13","Romans.12:9","Mark.12:31","Romans.13:10","1Corinthians.13:4-8","1Corinthians.13:13","Ephesians.4:2","1Peter.4:8","1John.4:7","1John.4:18-19","John.15:13","Ephesians.5:25"]
     },
     {
         "id": "3",
-        "name": "14 Days on Love Part 2",
+        "name": "Love Part 2",
         "badge": "",
         "description": "",
         "days": ["Ephesians.5:33","Colossians.3:14","Proverbs.10:12","Proverbs.17:17","1John.3:16-18","1John.4:8","John.3:16","Psalm.18:1","Matthew.22:27-29","Deuteronomy.10:12-19","Song of Solomon.8:4-8","Matthew.6:24","Matthew.22:37-39","Matthew.23:6-8"]
     },
     {
         "id": "4",
-        "name": "7 Days on Temptation",
+        "name": "Temptation",
         "badge": "images/greenstyle_08_badge.png",
         "description": "",
         "days": ["James.1:14", "Hebrews.2.18", "Hebrews.4.15", "James.4.7", "Romans.6.6-13", "Ephesians6.10-11", "1Peter.5:8-9"]
     },
     {
         "id": "5",
-        "name": "12 Days on Worry",
+        "name": "Worry",
         "badge": "",
         "description": "",
         "days": ["Proverbs.3:5-6", "Philippians.4:6-7", "Matthew.11:28-30", "John.14:27", "Jeremiah.17:5-8", "Colossians.3:15", "2Thessalonians.3:16", "Psalm.55:22", "Proverbs.12:25", "1Peter.5:6-8", "Psalm.23:4", "Hebrews.13:5-6"]
     },
     {
         "id": "6",
-        "name": "16 Days on Forgiveness",
+        "name": "Forgiveness",
         "badge": "",
         "description": "",
         "days": ["Matthew.6:14-15","1John.1:9","Isaiah.43:25-26","Acts.3:19","Isaiah.1:18","2.Corinthians.5:17","Ephesians.1:7","Hebrews.10:17","Daniel.9:9","Colossians.1:13-14","Psalm.103:12","Numbers.14:19-21","Micah.7:18-19","Matthew.6:9-15","Mark.11:25","Matthew.26:28"]
     },
     {
         "id": "7",
-        "name": "17 Days on Encouragement",
+        "name": "Encouragement",
         "badge": "",
         "description": "",
         "days": ["Proverbs.18:10","Proverbs.3:5-6","Isaiah.41:10","John.14:27","John.16:33","Psalm.46:1-3","2Timothy.1:7","Psalm.16:8","Psalm.55:22","1Peter.5:7","Isaiah.26:3","Psalm.118:14-16","Psalm.119:114-115","Psalm.119:25","Psalm.119:50","Psalm.119:71","Psalm.120:1"]
     },
     {
         "id": "8",
-        "name": "17 Days on Anger",
+        "name": "Anger",
         "badge": "",
         "description": "",
         "days": ["James.1:19-20","Proverbs.29:11","James.1:20","Proverbs.19:11","Ecclesiastes.7:9","Proverbs.15:1","Proverbs.15:18","Colossians.3:8","James.4:1-2","Proverbs.16:32","Proverbs.22:24","Matthew.5:22","Psalm.37:8-9","Psalm.7:11","2 Kings.11:9-10","2 Kings.17:18","Proverbs.14:29"]
     },
     {
         "id": "9",
-        "name": "12 Days on Success",
+        "name": "Success",
         "badge": "",
         "description": "",
         "days": ["Philippians.4:13","Psalm.37:4","Psalm.1:1-3","Proverbs.16:3","1.Kings 2:3","Matthew.16:26-27","Luke.16:10-11","Romans.12:2","Isaiah.41:10","Philippians.4:6","Deuteronomy.8:18","Jeremiah.17:7"]
     },
     {
         "id": "10",
-        "name": "12 Days on Your Body",
+        "name": "Your Body",
         "badge": "",
         "description": "",
         "days": ["1Corinthians.6:19-20", "1Corinthians.3:16-17","Romans.12:1-2","1Corinthians.10:31","1Timothy.4:8","1Timothy.5:23","Matthew.6:22-23","1Corinthians.15:44","Philippians.1:20","1Corinthians.12:27","Psalm.100:3","Romans.12:4"]
     },
     {
         "id": "11",
-        "name": "28 Days on Money",
+        "name": "Money",
         "badge": "",
         "description": "",
         "days": ["Matthew.6:21","Malachi.3:10","Ecclesiastes.5:10","Romans.13:8","Psalm.37:16-17","Proverbs.13:11","Hebrews.13:5","Matthew.19:21","Proverbs.17:16","Matthew.6:24","Luke.3:14","Exodus.22:25","1Timothy.6:10","Deuteronomy.23:19","Matthew.21:12-13","1Timothy.6:17-19","Luke.12:33","Deuteronomy.15:7","Matthew.6:1-4","Mark.12:41-44","Proverbs.10:4","Revelation.3:17","Luke.16:13","Matthew.13:22","2Chronicles.1:11-12","1Peter.5:2-3","1Samuel.2:7","Proverbs.3:9"]
@@ -112,14 +112,6 @@ function Plan(json){
         }
         else {
             return this.days[this.numDaysFinished()];
-        }
-    }
-    this.todayVerse = function(){
-        if(this.lastCompletedDate() == today) {
-            return this.days[this.numDaysFinished() - 1];
-        }
-        else {
-            return '';
         }
     }
     this.completed = function(){
@@ -367,7 +359,7 @@ function HTMLRender(){
             var plan = objPlans[planId];
             $container = $("<div class='plan-container'>")
             $rightCol = $("<div class='plan-right'>");
-            $rightCol.append("<span class='plan-name'>" + plan.name + "</span>");
+            $rightCol.append("<span class='plan-name'>" + plan.numOfDays + ' Days on ' + plan.name + "</span>");
             $meta = $("<span class='plan-meta'>");
             if(plan.added){
                 numPlansAdded++;

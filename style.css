@@ -89,7 +89,7 @@ body {
 }
 
 .plan-right {
-    margin-left: 100px;
+    margin-left: 80px;
 }
 
 .plan-right .inner-therm span {
@@ -103,7 +103,7 @@ body {
 
 .plan-badge {
     float:left;
-    width:100px;
+    width:75px;
     position: relative;
 }
 
@@ -227,7 +227,7 @@ body {
     float: left;
     clear: none;
     width: 260px;
-    height: 95px;
+    height: 70px;
     margin-right: 8px;
 }
 
@@ -429,9 +429,9 @@ body {
 .circle {
     border-radius: 50%;
     display: inline-block;
-    margin-right: 20px;
-    width: 80px;
-    height: 80px;
+    /*margin-right: 10px;*/
+    width: 65px;
+    height: 65px;
 }
 
 .circle1, .circle-solid-1 { border: 2px solid #4de34f; }
@@ -498,10 +498,10 @@ body {
 
 .circle .currentDay {
     position: absolute;
-    font-size: 18px;
+    font-size: 14px;
     font-weight: bold;
-    top: 31px;
-    left: 19px;
+    top: 27px;
+    left: 15px;
 }
 
 .progress-circle {
@@ -595,7 +595,7 @@ input.wrong {
     bottom: 10px;
     right: 10px;
     color: #eee;
-    font-size: 14px;
+    font-size: 12px;
     opacity: 0.5;
 }
 
