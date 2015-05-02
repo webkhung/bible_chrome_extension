@@ -8,8 +8,10 @@ var HOST = 'biblereadingplans.herokuapp.com';
 //var HOST = 'localhost:3001';
 var memorizedCount = 0;
 var game = new Game();
-var textAnimations = ['rotateIn', 'rotateInDownLeft', 'rotateInDownRight', 'shake', 'tada', 'swing', 'wobble', 'fadeIn', 'fadeInUp', 'fadeInDown',
+var textAnimations = ['rotateIn', 'rotateInDownLeft', 'rotateInDownRight', 'swing', 'fadeIn', 'fadeInUp', 'fadeInDown',
     'fadeInLeft', 'fadeInRight', 'fadeInDownBig', 'bounceIn', 'bounceInDown', 'flash']; // pulse, flip, 'fadeInLeftBig', 'fadeInRightBig'
+
+var colors = ['gold','pink','lightblue', '#6EE76E'];
 
 var readingPlans = [
     {
@@ -425,9 +427,15 @@ function HTMLRender(){
         // READ SCREEN
         if(memorizedCount == 0){
             var animation = textAnimations[getRandom(1, textAnimations.length)[0]-1];
-            $('#passages').textillate({ in: { effect: animation, delay: 40, shuffle: false } });
+            $('#passages').textillate({ in: { effect: animation, delay: 40, shuffle: false, callback: function(){
+//                $('#passages >span >span[class^="word"]').each(function(){
+//                    $(this).textillate({ in: { effect: 'shake', delay: 40, shuffle: false } , autoStart: false});
+//                    console.log('init');
+//                });
+            } } });
+
             $('#message').html('Hello <span class=username>' + userName + '</span>, if you like this passage, memorize it to fix God\'s word in your heart.');
-            $('#reveal-button').text('Like').data('start-memorize', true);
+            $('#reveal-button').text('Play a Game').data('start-memorize', true);
             $('#hint-button, #ticks').hide();
         }
         // TEST SCREEN
@@ -705,5 +713,13 @@ $( document ).ready(function() {
     });
 
     rollBg();
+
+
+//    $('#passages >span >span[class^="word"]').mouseenter(function(){
+    $('#passages').on('mouseenter', '>span >span[class^="word"]', function(){
+        $(this).css('color', colors[(new(Date)).getSeconds() % colors.length]);
+        // $(this).textillate('start');
+    });
+
 //    setTimeout(rollBg, 0.5);
 });
