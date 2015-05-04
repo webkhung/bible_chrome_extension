@@ -8,9 +8,8 @@ var HOST = 'biblereadingplans.herokuapp.com';
 //var HOST = 'localhost:3001';
 var memorizedCount = 0;
 var game = new Game();
-var textAnimations = ['rotateIn', 'rotateInDownLeft', 'rotateInDownRight', 'swing', 'fadeIn', 'fadeInUp', 'fadeInDown',
+var textAnimations = ['rotateIn', 'rotateInDownLeft', 'rotateInDownRight', 'fadeIn', 'fadeInUp', 'fadeInDown',
     'fadeInLeft', 'fadeInRight', 'fadeInDownBig', 'bounceIn', 'bounceInDown', 'flash']; // pulse, flip, 'fadeInLeftBig', 'fadeInRightBig'
-
 var colors = ['gold','pink','lightblue', '#6EE76E'];
 
 var readingPlans = [
@@ -144,13 +143,13 @@ function Game(){
         //  minCharsCount = 3;
         // }
 
-        console.log('difficulty ' + difficulty);
-        console.log('memorizedCount ' + memorizedCount);
-        console.log('text ' + text);
-        console.log('txttmp.length ' + txttmp.length);
-        console.log('toPick ' + toPick);
-        console.log('difficulty' + difficulty) ;
-        console.log('--------------') ;
+//        console.log('difficulty ' + difficulty);
+//        console.log('memorizedCount ' + memorizedCount);
+//        console.log('text ' + text);
+//        console.log('txttmp.length ' + txttmp.length);
+//        console.log('toPick ' + toPick);
+//        console.log('difficulty' + difficulty) ;
+//        console.log('--------------') ;
 
         var picked = 0;
         var i=0;
@@ -419,7 +418,7 @@ function HTMLRender(){
 
     this.screenTodayVerses = function(data, planId, day){
         console.log('screenTodayVerses ' + planId + ',' + day);
-        $('#reveal-button').css('visibility','visible').removeClass('no-link').data('planId', planId).data('day', day);
+        $('#reveal-button').removeClass('no-link').data('planId', planId).data('day', day);
 
         var verses = game.replaceVerses(data, memorizedCount);
         $('#passages').empty().append(verses);
@@ -428,22 +427,20 @@ function HTMLRender(){
         if(memorizedCount == 0){
             var animation = textAnimations[getRandom(1, textAnimations.length)[0]-1];
             $('#passages').textillate({ in: { effect: animation, delay: 40, shuffle: false, callback: function(){
-//                $('#passages >span >span[class^="word"]').each(function(){
-//                    $(this).textillate({ in: { effect: 'shake', delay: 40, shuffle: false } , autoStart: false});
-//                    console.log('init');
-//                });
-            } } });
+                bgClear();
+                $('#message').html('<span class=username>' + userName + '</span>, if you like this passage, memorize it to fix God\'s word in your heart.').fadeIn('slow');
+                $('#reveal-button').hide().css('visibility','visible').text('Memorize It').data('start-memorize', true).fadeIn('slow');
 
-            $('#message').html('Hello <span class=username>' + userName + '</span>, if you like this passage, memorize it to fix God\'s word in your heart.');
-            $('#reveal-button').text('Play a Game').data('start-memorize', true);
+            }}});
+
             $('#hint-button, #ticks').hide();
         }
-        // TEST SCREEN
+        // GAME SCREEN
         else {
-            $('#reveal-button').text('Done').data('start-memorize', false);
+            $('#reveal-button').css('visibility','visible').text('Done').data('start-memorize', false);
             $('#hint-button').show().removeClass('no-link').data('planId', planId).data('day', day);
             $('#ticks').show();
-            $('#message').html("Fill in the blank spaces of the memorized passage");
+            $('#message').html('Fill in the blank spaces');
             showTicks(memorizedCount);
         }
     }
@@ -458,23 +455,30 @@ function versesProcess(data, planId, day){
     htmlRender.screenTodayVerses(data, planId, day);
 }
 
-function versesNext(){
-    console.log('versesNext');
-    // Fetch a verse that is not shown today first.
-    for(var planId in objPlans){
-        var plan = objPlans[planId];
-        if(plan.added && !plan.completed() && plan.lastCompletedDate() != today) {
-            versesTodayCompleted(planId);
-            var day = plan.numDaysFinished();
-            versesFetch(planId, day);
+function versesNext(planId, day){
+    console.log('versesNext ' + planId + ' ' + day);
+    if(planId !== undefined && day !== undefined){
+        versesFetch(planId, day);
+        return;
+    }
+    else {
+        // Fetch a verse that is not shown today first.
+        for(var planId in objPlans){
+            var plan = objPlans[planId];
+            if(plan.added && !plan.completed() && plan.lastCompletedDate() != today) {
+                versesTodayCompleted(planId);
+                var day = plan.numDaysFinished();
+                versesFetch(planId, day);
+                return;
+            }
+        }
+
+        var randomPlan = randomAddedPlan();
+        if(randomPlan){
+            console.log('versesNext from random plan');
+            versesFetch(randomPlan.id, randomPlan.numDaysFinished());
             return;
         }
-    }
-
-    var randomPlan = randomAddedPlan();
-    if(randomPlan){
-        versesFetch(randomPlan.id, randomPlan.numDaysFinished());
-        return;
     }
 
     htmlRender.screenPlanSelector();
@@ -502,14 +506,13 @@ function versesFetch(planId, day){
     $('#passages').html('Loading');
 }
 
-//function startRelaxation(){
-//    setInterval(rollBgColor, 4000);
-//}
-//
-//function rollBgColor(){
-//    $('.bg.hidden').css('background', htmlRender.newGradient());
-//    $('.bg').toggleClass('hidden');
-//}
+function bgBlock(){
+    $('.bg').removeClass('bgClear').addClass('bgBlock').toggleClass('hidden');
+}
+
+function bgClear(){
+    $('.bg').addClass('bgClear').toggleClass('hidden');
+}
 
 function rollBg() {
     var bgImage = "bg" + (Math.floor(Math.random() * 44) + 1) + ".jpg";
@@ -581,10 +584,14 @@ function revealClicked(){
     var details = '';
     var timeoutLength = 0;
 
+    var planId, day;
+    planId = parseInt($(this).data('planId'));
+    day = parseInt($(this).data('day'));
+
     if($(this).data('start-memorize')) {
         usageType = 'START_MEMORIZE';
         timeoutLength = 0;
-        $('#message').empty().fadeIn('slow');
+        $('#message').empty();
         incrementMemorizedCount();
     }
     else {
@@ -593,7 +600,7 @@ function revealClicked(){
             $('.missingWord').each(function(){
                 $(this).val($(this).data('answer'));
             });
-            setTimeout(clearInput, 1000);
+            setTimeout(clearInput, 3000);
             $.get('http://' + HOST + '/usage', { usage_type: 'HINT', plan_id: $(this).data('planId'), day: $(this).data('day'), user_id: userId, user_name: userName }, function(data){});
             return;
         }
@@ -632,10 +639,11 @@ function revealClicked(){
         }
     }
 
-    rollBg();
+//    rollBg();
+    bgBlock();
 
     timeoutVar = setTimeout(function(){
-        versesNext();
+        versesNext(planId, day);
     }, timeoutLength);
 }
 
@@ -713,13 +721,4 @@ $( document ).ready(function() {
     });
 
     rollBg();
-
-
-//    $('#passages >span >span[class^="word"]').mouseenter(function(){
-    $('#passages').on('mouseenter', '>span >span[class^="word"]', function(){
-        $(this).css('color', colors[(new(Date)).getSeconds() % colors.length]);
-        // $(this).textillate('start');
-    });
-
-//    setTimeout(rollBg, 0.5);
 });

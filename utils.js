@@ -161,6 +161,11 @@ function getRandom(pick, max) {
 //    return bFinishedToday;
 //}
 
+//                $('#passages').on('mouseenter', 'span[class^="char"]', function(){
+//                    bgBlock();
+//                    $(this).css('color', colors[(new(Date)).getSeconds() % colors.length]);
+//                });
+
 function randomAddedPlan(){
     var allPlanIds = [];
     for(var planId in objPlans){
