@@ -429,7 +429,7 @@ function HTMLRender(){
             $('#passages').textillate({ in: { effect: animation, delay: 40, shuffle: false, callback: function(){
                 bgClear();
                 $('#message').html('<span class=username>' + userName + '</span>, if you like this passage, memorize it to fix God\'s word in your heart.').fadeIn('slow');
-                $('#reveal-button').hide().css('visibility','visible').text('Memorize It').data('start-memorize', true).fadeIn('slow');
+                $('#reveal-button').hide().css('visibility','visible').text('Like ').data('start-memorize', true).fadeIn('slow');
 
             }}});
 
