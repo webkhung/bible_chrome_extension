@@ -426,7 +426,7 @@ function HTMLRender(){
         // READ SCREEN
         if(memorizedCount == 0){
             var animation = textAnimations[getRandom(1, textAnimations.length)[0]-1];
-            $('#passages').textillate({ in: { effect: animation, delay: 20, shuffle: false, callback: function(){
+            $('#passages').textillate({ in: { effect: animation, delay: 40, shuffle: false, callback: function(){
                 bgClear();
                 $('#message').html('<span class=username>' + userName + '</span>, if you like this passage, memorize it to fix God\'s word in your heart.').fadeIn('slow');
                 $('#reveal-button').hide().css('visibility','visible').text('Like ').data('start-memorize', true).fadeIn('slow');
