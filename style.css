@@ -309,7 +309,7 @@ body {
     top:1px;
 }
 
-#reveal-button, #hint-button {
+#reveal-button, #hint-button, #rate-yes-button, #rate-no-button {
     cursor:pointer;
     color:#ffffff;
     font-family:arial;
@@ -329,6 +329,10 @@ body {
 #hint-button {
     display: none;
     background-color: rgba(190,190,190,.5);
+}
+
+#rate-container {
+    display: none;
 }
 
 #reveal-button:hover {
@@ -488,7 +492,7 @@ body {
     -webkit-transition: opacity 2s;
     -moz-transition: opacity 2s;
     transition: opacity 2s;
-    opacity: 0.3 !important;
+    opacity: 0.15 !important;
 }
 
 .bg {
@@ -498,7 +502,7 @@ body {
     /*-webkit-transition: opacity 5s;*/
     /*-moz-transition: opacity 5s;*/
     /*transition: opacity 7s;*/
-    opacity: 0.85;
+    opacity: 0.8;
 }
 
 .hidden { opacity: 0; }
@@ -659,3 +663,5 @@ input.wrong {
 #passages-container {
     margin-top: 180px;
 }
+
+.center { text-align: center; }

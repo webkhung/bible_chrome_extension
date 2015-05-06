@@ -11,6 +11,7 @@ var game = new Game();
 var textAnimations = ['rotateIn', 'rotateInDownLeft', 'rotateInDownRight', 'fadeIn', 'fadeInUp', 'fadeInDown',
     'fadeInLeft', 'fadeInRight', 'fadeInDownBig', 'bounceIn', 'bounceInDown', 'flash']; // pulse, flip, 'fadeInLeftBig', 'fadeInRightBig'
 var colors = ['gold','pink','lightblue', '#6EE76E'];
+var rated = false;
 
 var readingPlans = [
     {
@@ -391,7 +392,7 @@ function HTMLRender(){
             b: Math.floor(Math.random()*155) + 100
         };
         var c2 = {
-            r: Math.floor(Math.random()*0) + 100,
+            r: Math.floor(Math.random()*0) + 150,
             g: Math.floor(Math.random()*255) + 0,
             b: Math.floor(Math.random()*255) + 0
         };
@@ -428,9 +429,20 @@ function HTMLRender(){
             var animation = textAnimations[getRandom(1, textAnimations.length)[0]-1];
             $('#passages').textillate({ in: { effect: animation, delay: 30, shuffle: false, callback: function(){
                 bgClear();
-                $('#message').html('<span class=username>' + userName + '</span>, if you like this passage, memorize it to fix God\'s word in your heart.').fadeIn('slow');
-                $('#reveal-button').hide().css('visibility','visible').text('Like ').data('start-memorize', true).fadeIn('slow');
-                $.get('http://' + HOST + '/usage', { usage_type: 'VIEWED', plan_id: planId, day: day, user_id: userId, user_name: userName });
+
+                var usageType = '';
+                if (rated === undefined && day >= 3) {
+                    $('#message').html('Hi <span class=username>' + userName + '</span>, if you like this plugin, can you rate it at app store?').fadeIn('slow');
+                    $('#rate-container').show();
+                    usageType = 'VIEWED-RATE'
+                }
+                else {
+                    $('#message').html('<span class=username>' + userName + '</span>, if you like this passage, memorize it to fix God\'s word in your heart.').fadeIn('slow');
+                    $('#reveal-button').hide().css('visibility','visible').text('Like').data('start-memorize', true).fadeIn('slow');
+                    usageType = 'VIEWED-LIKE'
+                }
+
+                $.get('http://' + HOST + '/usage', { usage_type: usageType, plan_id: planId, day: day, user_id: userId, user_name: userName, details: verses.length });
             }}});
 
             $('#hint-button, #ticks').hide();
@@ -579,6 +591,21 @@ function helpClicked(){
     htmlRender.showFeedback();
 }
 
+function rateYesClicked(){
+    var data = {}
+    data['rated'] = 'yes';
+    chrome.storage.sync.set(data);
+    $.get('http://' + HOST + '/usage', { usage_type: 'RATE-YES', user_id: userId, user_name: userName });
+}
+
+function rateNoClicked(){
+    $('#rate-container').fadeOut();
+    var data = {}
+    data['rated'] = 'no';
+    chrome.storage.sync.set(data);
+    $.get('http://' + HOST + '/usage', { usage_type: 'RATE-NO', user_id: userId, user_name: userName });
+}
+
 function revealClicked(){
     var usageType = '';
     var details = '';
@@ -639,8 +666,9 @@ function revealClicked(){
         }
     }
 
-//    rollBg();
     bgBlock();
+
+    $.get('http://' + HOST + '/usage', { usage_type: usageType, details: details, plan_id: $(this).data('planId'), day: $(this).data('day'), user_id: userId, user_name: userName }, function(data){});
 
     timeoutVar = setTimeout(function(){
         versesNext(planId, day);
@@ -680,6 +708,8 @@ $( document ).ready(function() {
             versesNext();
         }
 
+        rated = userData['rated'];
+
         $('#superuser-name').text(userData['userName']);
         $('#help').show();
     });
@@ -688,6 +718,8 @@ $( document ).ready(function() {
     $('#help').click(helpClicked);
     $('#reveal-button, #hint-button').click(revealClicked);
     $('#user-name-submit').click(userNameSubmitClicked);
+    $('#rate-yes-button').click(rateYesClicked);
+    $('#rate-no-button').click(rateNoClicked);
 
     $('.maincontainer').on('click', '#new-plan-link', function(){
         htmlRender.screenPlanSelector();
