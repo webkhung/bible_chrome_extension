@@ -16,6 +16,20 @@ body {
 
 #help:hover { text-decoration: underline; }
 
+
+#rate-web-store {
+    color: #ffffff;
+    text-decoration: none;
+    font-size:14px;
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    font-weight: 300;
+    opacity: 0.7;
+}
+
+#rate-web-store:hover { text-decoration: underline; }
+
 #new-plan-link {
     color: #ffffff;
     text-decoration: none;
@@ -319,7 +333,7 @@ body {
     border: 1px solid white;
     padding: 10px 25px;
     display: inline-block;
-    margin: 0 5px;
+    margin: 0 4px;
 }
 
 .wide { width: 100px; }
@@ -677,6 +691,7 @@ input.wrong {
     opacity: 0.6;
     color:#333;
     background-color: #fff;
+    padding: 7px 18px;
 }
 
 #rate-background a:hover {

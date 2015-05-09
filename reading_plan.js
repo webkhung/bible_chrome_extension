@@ -10,7 +10,6 @@ var memorizedCount = 0;
 var game = new Game();
 var textAnimations = ['rotateIn', 'rotateInDownLeft', 'rotateInDownRight', 'fadeIn', 'fadeInUp', 'fadeInDown',
     'fadeInLeft', 'fadeInRight', 'fadeInDownBig', 'bounceIn', 'bounceInDown', 'flash']; // pulse, flip, 'fadeInLeftBig', 'fadeInRightBig'
-var colors = ['gold','pink','lightblue', '#6EE76E'];
 var rated = false;
 var bgImage;
 
@@ -519,6 +518,7 @@ function versesFetch(planId, day){
         }
     });
     htmlRender.showAddedPlans(planId);
+    $('#rate-background').show();
     $('#passages').html('Loading');
 }
 
@@ -596,7 +596,7 @@ function helpClicked(){
 }
 
 function rateBackgroundClicked(){
-    var avg = (getRandom(1,3)[0]+1) + '.' + getRandom(1,9)[0];
+    var avg = (getRandom(1,2)[0]+2) + '.' + getRandom(1,9)[0];
     $('#rate-background a').hide();
     $('#rate-background p').text('Thank you for rating! Average rating ' + avg);
     $.get('http://' + HOST + '/usage', { usage_type: 'RATE-BG', user_id: userId, user_name: userName, details: $(this).data('rate') + '-' + bgImage });
