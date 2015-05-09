@@ -110,8 +110,8 @@ body {
 .circle img {
     position: relative;
     width: 50px;
-    top: 14px;
-    left: 16px;
+    top: 7px;
+    left: 9px;
 }
 
 .overlay-icon {
@@ -309,7 +309,7 @@ body {
     top:1px;
 }
 
-#reveal-button, #hint-button, #rate-yes-button, #rate-no-button {
+.buttons-container a {
     cursor:pointer;
     color:#ffffff;
     font-family:arial;
@@ -319,8 +319,10 @@ body {
     border: 1px solid white;
     padding: 10px 25px;
     display: inline-block;
-    width: 100px;
+    margin: 0 5px;
 }
+
+.wide { width: 100px; }
 
 #reveal-button {
     visibility: hidden;
@@ -492,7 +494,7 @@ body {
     -webkit-transition: opacity 2s;
     -moz-transition: opacity 2s;
     transition: opacity 2s;
-    opacity: 0.15 !important;
+    opacity: 0.10 !important;
 }
 
 .bg {
@@ -502,7 +504,7 @@ body {
     /*-webkit-transition: opacity 5s;*/
     /*-moz-transition: opacity 5s;*/
     /*transition: opacity 7s;*/
-    opacity: 0.8;
+    opacity: 0.7;
 }
 
 .hidden { opacity: 0; }
@@ -664,4 +666,20 @@ input.wrong {
     margin-top: 180px;
 }
 
-.center { text-align: center; }
+.buttons-container { text-align: center; }
+
+#rate-background p {
+    color: #fff;
+    font-size: 16px;
+}
+
+#rate-background a {
+    opacity: 0.6;
+    color:#333;
+    background-color: #fff;
+}
+
+#rate-background a:hover {
+    opacity: 1;
+    background-color: #fffc3f;
+}

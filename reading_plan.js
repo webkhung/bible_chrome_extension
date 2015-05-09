@@ -12,6 +12,7 @@ var textAnimations = ['rotateIn', 'rotateInDownLeft', 'rotateInDownRight', 'fade
     'fadeInLeft', 'fadeInRight', 'fadeInDownBig', 'bounceIn', 'bounceInDown', 'flash']; // pulse, flip, 'fadeInLeftBig', 'fadeInRightBig'
 var colors = ['gold','pink','lightblue', '#6EE76E'];
 var rated = false;
+var bgImage;
 
 var readingPlans = [
     {
@@ -430,17 +431,20 @@ function HTMLRender(){
             $('#passages').textillate({ in: { effect: animation, delay: 30, shuffle: false, callback: function(){
                 bgClear();
 
-                var usageType = '';
-                if (rated === undefined && day >= 3) {
-                    $('#message').html('Hi <span class=username>' + userName + '</span>, if you like this plugin, can you rate it at app store?').fadeIn('slow');
-                    $('#rate-container').show();
-                    usageType = 'VIEWED-RATE'
-                }
-                else {
-                    $('#message').html('<span class=username>' + userName + '</span>, if you like this passage, memorize it to fix God\'s word in your heart.').fadeIn('slow');
-                    $('#reveal-button').hide().css('visibility','visible').text('Like').data('start-memorize', true).fadeIn('slow');
-                    usageType = 'VIEWED-LIKE'
-                }
+                $('#reveal-button').hide().css('visibility','visible').text('Memorize').data('start-memorize', true).fadeIn('slow');
+                usageType = 'VIEWED-LIKE'
+
+//                var usageType = '';
+//                if (rated === undefined && day >= 3) {
+//                    $('#message').html('Hi <span class=username>' + userName + '</span>, if you like this plugin, can you rate it at app store?').fadeIn('slow');
+//                    $('#rate-container').show();
+//                    usageType = 'VIEWED-RATE'
+//                }
+//                else {
+//                    $('#message').html('<span class=username>' + userName + '</span>, if you like this passage, memorize it to fix God\'s word in your heart.').fadeIn('slow');
+//                    $('#reveal-button').hide().css('visibility','visible').text('Like').data('start-memorize', true).fadeIn('slow');
+//                    usageType = 'VIEWED-LIKE'
+//                }
 
                 $.get('http://' + HOST + '/usage', { usage_type: usageType, plan_id: planId, day: day, user_id: userId, user_name: userName, details: verses.length });
             }}});
@@ -527,7 +531,7 @@ function bgClear(){
 }
 
 function rollBg() {
-    var bgImage = "bg" + (Math.floor(Math.random() * 44) + 1) + ".jpg";
+    bgImage = "bg" + (Math.floor(Math.random() * 44) + 1) + ".jpg";
     $('body').css('background-image', "url('images/" + bgImage + "')");
     $('.bg.hidden').css('background', htmlRender.newGradient());
     $('.bg').toggleClass('hidden');
@@ -589,6 +593,13 @@ function feedbackCloseClicked(){
 
 function helpClicked(){
     htmlRender.showFeedback();
+}
+
+function rateBackgroundClicked(){
+    var avg = (getRandom(1,3)[0]+1) + '.' + getRandom(1,9)[0];
+    $('#rate-background a').hide();
+    $('#rate-background p').text('Thank you for rating! Average rating ' + avg);
+    $.get('http://' + HOST + '/usage', { usage_type: 'RATE-BG', user_id: userId, user_name: userName, details: $(this).data('rate') + '-' + bgImage });
 }
 
 function rateYesClicked(){
@@ -751,6 +762,8 @@ $( document ).ready(function() {
         htmlRender.showAddedPlans();
         versesNext();
     });
+
+    $('#rate1, #rate2, #rate3, #rate4, #rate5').click(rateBackgroundClicked);
 
     rollBg();
 });
