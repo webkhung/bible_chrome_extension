@@ -623,22 +623,35 @@ input.wrong {
     text-transform: capitalize;
 }
 
-#users {
+#users, #bg-rating {
     text-align: right;
     position: absolute;
     bottom: 10px;
     right: 10px;
-    color: #eee;
+    color: #fff;
     font-size: 12px;
-    opacity: 0.5;
+    opacity: 0.8;
+    z-index: 10;
 }
 
 #users #user-header {
     font-weight: bold;
 }
 
-#users ul {
+#users ul, #bg-rating ul {
     list-style-type: none;
+}
+
+#bg-rating ul li a {
+    color: white;
+    font-size: 14px;
+    text-decoration: none;
+    line-height: 1.6em;
+}
+
+#bg-rating ul li a:hover {
+    color: #ff5a17;
+    text-decoration: underline;
 }
 
 .blink_me {
@@ -691,10 +704,24 @@ input.wrong {
     opacity: 0.6;
     color:#333;
     background-color: #fff;
-    padding: 7px 18px;
+    padding: 5px 14px;
 }
 
 #rate-background a:hover {
     opacity: 1;
     background-color: #fffc3f;
+}
+
+#users-count #user-header {
+    position: absolute;
+    width: 100%;
+    text-align: center;
+    color: white;
+    padding-top: 10px;
+    font-size: 14px;
+    opacity: 0.7;
+}
+
+.symbol {
+    font-size: 16px;
 }

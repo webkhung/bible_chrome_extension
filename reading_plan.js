@@ -293,9 +293,45 @@ function showTicks(memorizedCount){
 
 function HTMLRender(){
 
+    this.fetchBgRating = function(){
+
+        $.get('http://' + HOST + '/bg_rating', function(data){
+            var json = JSON.parse(data);
+            $ul = $('<ul />');
+            $('#bg-rating').append($ul);
+
+            $ul.append('<li><span class=symbol>&#10003;</span> HIGHLY RATED BG</li>');
+            for(var i=0; i < json['high'].length && i < 5; i++){
+                var linkBg = $('<a />').attr({
+                    href: 'images/' + json['high'][i],
+                    target: '_blank'
+                }).text(json['high'][i].split('.')[0]);
+                linkBg.attr('data-rate', 'high');
+                linkBg.click(ratedBgClicked);
+                var li = $('<li />');
+                $ul.append(li.append(linkBg));
+            }
+
+            $ul.append('<li><span class=symbol>&#10008;</span> LOWLY RATED BG</li>');
+            for(var i=0; i < json['low'].length && i < 5; i++){
+                var linkBg = $('<a />').attr({
+                    href: 'images/' + json['low'][i],
+                    target: '_blank'
+                }).text(json['low'][i].split('.')[0]);
+                linkBg.attr('data-rate', 'low');
+                linkBg.click(ratedBgClicked);
+                var li = $('<li />');
+                $ul.append(li.append(linkBg));
+            }
+        });
+    }
+
     this.fetchUsers = function(){
-        $.get('http://' + HOST + '/users', function(data){
-            $('#users').html(data);
+//        $.get('http://' + HOST + '/users', function(data){
+//            $('#users').html(data);
+//        });
+        $.get('http://' + HOST + '/users_count', function(data){
+            $('#users-count').html(data);
         });
     }
 
@@ -432,7 +468,7 @@ function HTMLRender(){
 
                 $('#reveal-button').hide().css('visibility','visible').text('Memorize').data('start-memorize', true).fadeIn('slow');
                 usageType = 'VIEWED-LIKE'
-
+                htmlRender.fetchUsers();
 //                var usageType = '';
 //                if (rated === undefined && day >= 3) {
 //                    $('#message').html('Hi <span class=username>' + userName + '</span>, if you like this plugin, can you rate it at app store?').fadeIn('slow');
@@ -598,8 +634,12 @@ function helpClicked(){
 function rateBackgroundClicked(){
     var avg = (getRandom(1,2)[0]+2) + '.' + getRandom(1,9)[0];
     $('#rate-background a').hide();
-    $('#rate-background p').text('Thank you for rating! Average rating ' + avg);
+    $('#rate-background p').text('Thank you for rating!');
     $.get('http://' + HOST + '/usage', { usage_type: 'RATE-BG', user_id: userId, user_name: userName, details: $(this).data('rate') + '-' + bgImage });
+}
+
+function ratedBgClicked(){
+    $.get('http://' + HOST + '/usage', { usage_type: 'VIEW-RATED-BG', user_id: userId, user_name: userName, details: $(this).data('rate')});
 }
 
 function rateYesClicked(){
@@ -742,7 +782,8 @@ $( document ).ready(function() {
         $('#passages-container, #new-plan-link').show();
     });
 
-    htmlRender.fetchUsers();
+//    htmlRender.fetchUsers();
+    htmlRender.fetchBgRating();
 
     // Debug stuffs
     $('#clean-storage').click(function(){
