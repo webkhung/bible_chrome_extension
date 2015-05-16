@@ -300,7 +300,8 @@ function HTMLRender(){
             $ul = $('<ul />');
             $('#bg-rating').append($ul);
 
-            $ul.append('<li><span class=symbol>&#10003;</span> HIGHLY RATED BG</li>');
+            $ul.append('<li>TOTAL VOTES: '+ json['total'] +'</li><li></li>');
+            $ul.append('<li><span class=symbol>&#10003;</span> HIGHLY RATED:</li>');
             for(var i=0; i < json['high'].length && i < 5; i++){
                 var linkBg = $('<a />').attr({
                     href: 'images/' + json['high'][i],
@@ -312,7 +313,7 @@ function HTMLRender(){
                 $ul.append(li.append(linkBg));
             }
 
-            $ul.append('<li><span class=symbol>&#10008;</span> LOWLY RATED BG</li>');
+            $ul.append('<li><span class=symbol>&#10008;</span> LOWLY RATED:</li>');
             for(var i=0; i < json['low'].length && i < 5; i++){
                 var linkBg = $('<a />').attr({
                     href: 'images/' + json['low'][i],
