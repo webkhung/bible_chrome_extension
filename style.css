@@ -628,7 +628,7 @@ input.wrong {
     right: 10px;
     color: #fff;
     font-size: 12px;
-    opacity: 0.8;
+    opacity: 0.7;
     z-index: 10;
 }
 
@@ -642,9 +642,9 @@ input.wrong {
 
 #bg-rating ul li a {
     color: white;
-    font-size: 14px;
+    font-size: 13px;
     text-decoration: none;
-    line-height: 1.6em;
+    line-height: 1.5em;
 }
 
 #bg-rating ul li a:hover {
@@ -731,6 +731,7 @@ input.wrong {
     right: 10px;
     text-align: center;
     display: none;
+    opacity: 0.7;
 }
 
 #memorized-link span { display: block; }
