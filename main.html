@@ -24,11 +24,17 @@
 
     <div id='users-count'></div>
 
-    <a id='rate-web-store' href='https://chrome.google.com/webstore/detail/daily-bible-verse/jogajkcgclkfedbhdcopmpmeeophkkji/reviews' target='_blank'>Pls Rate @ Web Store</a>
+    <a id='memorized-link' href='#'>
+        <span id='memorized-count'></span>
+        <span id='memorized-label'>Memorized</span>
+    </a>
 
-    <!--<a id='help' href='#'>Rate At Chrome Web Store</a>-->
+    <div id='memorized-verses-container' class='popup'>
+        <div id='memorized-verses'></div>
+        <div style='text-align: center'><a id='memorized-close' class='myButton' href='#'>Close</a></div>
+    </div>
 
-    <div id='plans-selector'></div>
+    <div id='plans-selector' class='popup'></div>
 
     <div id='user-name-container'>
         <h1>Hello! What's your display name?</h1>
@@ -47,10 +53,10 @@
                 <a id='reveal-button' class='wide' href='#'></a>
                 <a id='hint-button' class='wide' href='#'>Need a Hint?</a>
             </div>
-            <div id='rate-container' class='buttons-container'>
-                <a id='rate-yes-button' class='wide' href='https://chrome.google.com/webstore/detail/daily-bible-verse/jogajkcgclkfedbhdcopmpmeeophkkji/reviews' target='_blank'>Rate</a>
-                <a id='rate-no-button' class='wide' href='#'>Later</a>
-            </div>
+            <!--<div id='rate-container' class='buttons-container'>-->
+                <!--<a id='rate-yes-button' class='wide' href='https://chrome.google.com/webstore/detail/daily-bible-verse/jogajkcgclkfedbhdcopmpmeeophkkji/reviews' target='_blank'>Rate</a>-->
+                <!--<a id='rate-no-button' class='wide' href='#'>Later</a>-->
+            <!--</div>-->
             <!--<div id="memorized-circle" class='progress-circle' style='left:-40px'>-->
                 <!--<strong></strong>-->
                 <!--<strong><a id='reveal-button' class="myButtonReveal" href='#'></a></strong>-->
@@ -63,15 +69,19 @@
         </div>
     </div>
 
-    <div id='feedback'>
-        <p>Hello <span id='superuser-name'></span>,</p>
-        <p>THANK YOU for using this plugin! This project is still in a very early stage and I need feedback to make it better.
-        <p>If you are willing to share your experience with me, please contact me at kelvinhung8@gmail.com.</p>
-        <p>Or if you prefer, you can leave a feedback at the <a href='https://chrome.google.com/webstore/detail/bible-reading-plans/jogajkcgclkfedbhdcopmpmeeophkkji/support' target='_blank'>plugin feedback page</a>.</p>
-        <p>Sincerely,</p>
-        <p>Kelvin Hung</p>
-        <div style='text-align:center'><a id='feedback-close' href='#'>Close</a></div>
-    </div>
+    <!--<div id='feedback'>-->
+        <!--<p>Hello <span id='superuser-name'></span>,</p>-->
+        <!--<p>THANK YOU for using this plugin! This project is still in a very early stage and I need feedback to make it better.-->
+        <!--<p>If you are willing to share your experience with me, please contact me at kelvinhung8@gmail.com.</p>-->
+        <!--<p>Or if you prefer, you can leave a feedback at the <a href='https://chrome.google.com/webstore/detail/bible-reading-plans/jogajkcgclkfedbhdcopmpmeeophkkji/support' target='_blank'>plugin feedback page</a>.</p>-->
+        <!--<p>Sincerely,</p>-->
+        <!--<p>Kelvin Hung</p>-->
+        <!--<div style='text-align:center'><a id='feedback-close' href='#'>Close</a></div>-->
+    <!--</div>-->
+
+    <a id='rate-web-store' href='https://chrome.google.com/webstore/detail/daily-bible-verse/jogajkcgclkfedbhdcopmpmeeophkkji/reviews' target='_blank'>Pls Rate @ Web Store</a>
+
+    <!--<a id='help' href='#'>Rate At Chrome Web Store</a>-->
 
     <div id='bottom'>
 
@@ -85,11 +95,11 @@
         </div>
         <div id='added-plans'></div>
         <div id='completed-plans'></div>
-        <!--<p class='debug'>-->
-            <!--<a id='clean-storage' href='#'>Clean storage</a>-->
-            <!--<a id='show-storage' href='#'>Show storage</a>-->
-            <!--<a id='add-day' href='#'>Add day</a>-->
-        <!--</p>-->
+        <p class='debug'>
+            <a id='clean-storage' href='#'>Clean storage</a>
+            <a id='show-storage' href='#'>Show storage</a>
+            <a id='add-day' href='#'>Add day</a>
+        </p>
         <p id='copyright'>Scripture quotations marked (ESV) are from The Holy Bible, English Standard Version®, copyright © 2001 by Crossway Bibles, a publishing ministry of Good News Publishers.</p>
     </div>
 </div>

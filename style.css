@@ -22,8 +22,8 @@ body {
     text-decoration: none;
     font-size:14px;
     position: absolute;
-    top: 10px;
-    right: 10px;
+    bottom: 10px;
+    left: 10px;
     font-weight: 300;
     opacity: 0.7;
 }
@@ -58,7 +58,7 @@ body {
     background-color: rgba(255,255,255,1) !important;
 }
 
-#plans-selector, #user-name-container, #feedback {
+#plans-selector, #user-name-container, #feedback, #memorized-verses-container {
     position: absolute;
     top: 20px;
     left: 10px;
@@ -73,7 +73,7 @@ body {
     z-index: 999;
 }
 
-#plans-selector h1, #user-name-container h1 {
+h1 {
     text-align: center;
     margin: 10px 0;
     color: #fff;
@@ -81,7 +81,7 @@ body {
     font-size: 30px;
 }
 
-#plans-selector h2, #user-name-container h2 {
+h2 {
     text-align: center;
     margin: 10px 0;
     color: #333;
@@ -145,8 +145,7 @@ body {
     right: -2px;
 }
 
-.plan-name {
-    /*font-family: 'Lustria', serif;*/
+.popup-text {
     font-size: 18px;
     color: #fff;
     font-weight: 500;
@@ -696,14 +695,15 @@ input.wrong {
 
 #rate-background p {
     color: #fff;
-    font-size: 16px;
+    font-size: 14px;
 }
 
 #rate-background a {
-    opacity: 0.6;
-    color:#333;
+    opacity: 0.5;
+    color:#555;
     background-color: #fff;
-    padding: 5px 14px;
+    padding: 3px 11px;
+    font-size: 14px;
 }
 
 #rate-background a:hover {
@@ -723,4 +723,48 @@ input.wrong {
 
 .symbol {
     font-size: 16px;
+}
+
+#memorized-link {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    text-align: center;
+    display: none;
+}
+
+#memorized-link span { display: block; }
+
+#memorized-link {
+    text-decoration: none;
+    color: white;
+}
+
+#memorized-link:hover {
+    color: #c6c6c6;
+}
+
+#memorized-link #memorized-count {
+    font-size: 60px;
+    line-height: 55px;
+}
+
+#memorized-link #memorized-label {
+    font-size:16px;
+    font-weight: 300;
+    line-height: 28px;
+    text-shadow: 1px 1px 1px #333;
+}
+
+#memorized-verses {
+    font-size: 18px;
+}
+
+#memorized-verses a {
+    display: block;
+    line-height: 1.7em;
+}
+
+#memorized-verses h2 {
+    color: #fffe58;
 }

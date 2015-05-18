@@ -292,6 +292,43 @@ function showTicks(memorizedCount){
 }
 
 function HTMLRender(){
+    this.fetchMemorized = function(){
+        $.get('http://' + HOST + '/memorized_verses', { user_id: userId }, function(data){
+            var json = JSON.parse(data);
+            $('#memorized-verses').empty();
+            $('#memorized-link').show();
+            $('#memorized-count').text(json.length);
+            var last = '';
+            var versesCount = 0;
+            for(var i=0; i<json.length; i++){
+                var key = json[i][0] + '-' + json[i][1];
+                if (last != key) {
+                    last = key;
+                    versesCount++;
+                    $verse = $('<a />').attr({
+                        href: '#',
+                        class: 'popup-text'
+                    }).text(objPlans[json[i][0]].name + ' Day ' + json[i][1]);
+                    $verse.attr('data-plan-id', json[i][0]);
+                    $verse.attr('data-plan-day', json[i][1]);
+                    $verse.click(memorizedVersesClicked);
+                    $('#memorized-verses').append($verse);
+                }
+            }
+
+            $('#memorized-verses').prepend("<h2>One of the most powerful ways you can transform your spiritual life is to learn to memorize Scripture.</h2>");
+
+            if(versesCount == 0)
+            {
+                $('#memorized-verses').prepend('<h1>You Haven\'t Memorized Any Verses Yet</h1>');
+            }
+            else {
+                $('#memorized-verses').prepend('<h1>You Memorized ' + versesCount + ' Verses ' + json.length + ' Times</h1>');
+            }
+
+//            $('#memorized-verses').append("<h3>&#8220;Guard my words as your most precious possession. Write them down and also keep them deep within your heart.&#8221; <span class=''>Proverbs 7:2</span></h3>");
+        });
+    }
 
     this.fetchBgRating = function(){
 
@@ -396,7 +433,7 @@ function HTMLRender(){
             var plan = objPlans[planId];
             $container = $("<div class='plan-container'>")
             $rightCol = $("<div class='plan-right'>");
-            $rightCol.append("<span class='plan-name'>" + plan.numOfDays + ' Days on ' + plan.name + "</span>");
+            $rightCol.append("<span class='popup-text'>" + plan.numOfDays + ' Days on ' + plan.name + "</span>");
             $meta = $("<span class='plan-meta'>");
             if(plan.added){
                 numPlansAdded++;
@@ -466,22 +503,9 @@ function HTMLRender(){
             var animation = textAnimations[getRandom(1, textAnimations.length)[0]-1];
             $('#passages').textillate({ in: { effect: animation, delay: 30, shuffle: false, callback: function(){
                 bgClear();
-
                 $('#reveal-button').hide().css('visibility','visible').text('Memorize').data('start-memorize', true).fadeIn('slow');
                 usageType = 'VIEWED-LIKE'
                 htmlRender.fetchUsers();
-//                var usageType = '';
-//                if (rated === undefined && day >= 3) {
-//                    $('#message').html('Hi <span class=username>' + userName + '</span>, if you like this plugin, can you rate it at app store?').fadeIn('slow');
-//                    $('#rate-container').show();
-//                    usageType = 'VIEWED-RATE'
-//                }
-//                else {
-//                    $('#message').html('<span class=username>' + userName + '</span>, if you like this passage, memorize it to fix God\'s word in your heart.').fadeIn('slow');
-//                    $('#reveal-button').hide().css('visibility','visible').text('Like').data('start-memorize', true).fadeIn('slow');
-//                    usageType = 'VIEWED-LIKE'
-//                }
-
                 $.get('http://' + HOST + '/usage', { usage_type: usageType, plan_id: planId, day: day, user_id: userId, user_name: userName, details: verses.length });
             }}});
 
@@ -539,11 +563,14 @@ function versesNext(planId, day){
 function versesFetch(planId, day){
     console.log('versesFetch ' + planId + ',' + day);
 
+    $('#passages-container').show();
     var key = 'planId' + planId + '-' + today;
     chrome.storage.sync.get(key, function (data) {
         if (data !== undefined && data[key] !== undefined){
             versesProcess(data[key], planId, day);
-            $.get('http://' + HOST + '/usage', { usage_type: 'OPEN', plan_id: planId, day: day, user_id: userId, user_name: userName });
+            $.get('http://' + HOST + '/usage', { usage_type: 'OPEN', plan_id: planId, day: day, user_id: userId, user_name: userName }, function(){
+                htmlRender.fetchMemorized();
+            });
         }
         else {
             $.get('http://' + HOST + '/verses', { plan_id: planId, day: day, user_id: userId, user_name: userName }, function(verses){
@@ -551,6 +578,7 @@ function versesFetch(planId, day){
                 data[key] = verses;
                 chrome.storage.sync.set(data);
                 versesProcess(verses, planId, day);
+                htmlRender.fetchMemorized();
             });
         }
     });
@@ -643,20 +671,20 @@ function ratedBgClicked(){
     $.get('http://' + HOST + '/usage', { usage_type: 'VIEW-RATED-BG', user_id: userId, user_name: userName, details: $(this).data('rate')});
 }
 
-function rateYesClicked(){
-    var data = {}
-    data['rated'] = 'yes';
-    chrome.storage.sync.set(data);
-    $.get('http://' + HOST + '/usage', { usage_type: 'RATE-YES', user_id: userId, user_name: userName });
-}
-
-function rateNoClicked(){
-    $('#rate-container').fadeOut();
-    var data = {}
-    data['rated'] = 'no';
-    chrome.storage.sync.set(data);
-    $.get('http://' + HOST + '/usage', { usage_type: 'RATE-NO', user_id: userId, user_name: userName });
-}
+//function rateYesClicked(){
+//    var data = {}
+//    data['rated'] = 'yes';
+//    chrome.storage.sync.set(data);
+//    $.get('http://' + HOST + '/usage', { usage_type: 'RATE-YES', user_id: userId, user_name: userName });
+//}
+//
+//function rateNoClicked(){
+//    $('#rate-container').fadeOut();
+//    var data = {}
+//    data['rated'] = 'no';
+//    chrome.storage.sync.set(data);
+//    $.get('http://' + HOST + '/usage', { usage_type: 'RATE-NO', user_id: userId, user_name: userName });
+//}
 
 function revealClicked(){
     var usageType = '';
@@ -727,6 +755,23 @@ function revealClicked(){
     }, timeoutLength);
 }
 
+function memorizedClicked(){
+    $('#memorized-verses-container').show();
+    $('#passages-container').hide();
+    $.get('http://' + HOST + '/usage', { usage_type: 'MEMORIZED-OPENED', user_id: userId, user_name: userName});
+}
+
+function memorizedCloseClicked(){
+    $('.popup').hide();
+    $('#passages-container').show();
+}
+
+function memorizedVersesClicked(){
+    $('#memorized-verses-container').hide();
+    versesFetch($(this).data('plan-id'), $(this).data('plan-day'));
+    $.get('http://' + HOST + '/usage', { usage_type: 'MEMORIZED-VERSES-CLICKED', user_id: userId, user_name: userName, plan_id: $(this).data('plan-id'), day: $(this).data('plan-day')});
+}
+
 $( document ).ready(function() {
     readingPlans.forEach(function(jsonPlan){
         var objPlan = new Plan(jsonPlan);
@@ -770,8 +815,8 @@ $( document ).ready(function() {
     $('#help').click(helpClicked);
     $('#reveal-button, #hint-button').click(revealClicked);
     $('#user-name-submit').click(userNameSubmitClicked);
-    $('#rate-yes-button').click(rateYesClicked);
-    $('#rate-no-button').click(rateNoClicked);
+//    $('#rate-yes-button').click(rateYesClicked);
+//    $('#rate-no-button').click(rateNoClicked);
 
     $('.maincontainer').on('click', '#new-plan-link', function(){
         htmlRender.screenPlanSelector();
@@ -779,12 +824,15 @@ $( document ).ready(function() {
     });
 
     $('#plans-selector').on('click', '#plans-close', function(){
-        $('#plans-selector').hide();
+        $('.popup').hide();
         $('#passages-container, #new-plan-link').show();
     });
 
 //    htmlRender.fetchUsers();
     htmlRender.fetchBgRating();
+
+    $('#memorized-link').click(memorizedClicked);
+    $('#memorized-close').click(memorizedCloseClicked);
 
     // Debug stuffs
     $('#clean-storage').click(function(){
