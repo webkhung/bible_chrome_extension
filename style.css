@@ -26,9 +26,12 @@ body {
     left: 10px;
     font-weight: 300;
     opacity: 0.7;
+    z-index: 10;
 }
 
 #rate-web-store:hover { text-decoration: underline; }
+
+#rate-web-store span { font-size: 20px; }
 
 #new-plan-link {
     color: #ffffff;
@@ -734,7 +737,9 @@ input.wrong {
     opacity: 0.7;
 }
 
-#memorized-link span { display: block; }
+#memorized-link > span { display: block; }
+
+#memorized-link span span { font-size: 12px; }
 
 #memorized-link {
     text-decoration: none;
