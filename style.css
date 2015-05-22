@@ -694,7 +694,8 @@ input.wrong {
     margin-top: 180px;
 }
 
-.buttons-container { text-align: center; }
+#rate-background, .buttons-container { text-align: center; }
+
 
 #rate-background p {
     color: #fff;
@@ -702,16 +703,15 @@ input.wrong {
 }
 
 #rate-background a {
-    opacity: 0.5;
-    color:#555;
-    background-color: #fff;
-    padding: 3px 11px;
+    opacity: 0.7;
+    padding: 0px 3px;
     font-size: 14px;
+    text-decoration:none;
+    display: inline-block;
 }
 
 #rate-background a:hover {
     opacity: 1;
-    background-color: #fffc3f;
 }
 
 #users-count #user-header {

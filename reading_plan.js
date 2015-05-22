@@ -596,7 +596,7 @@ function bgClear(){
 }
 
 function rollBg() {
-    bgImage = "bg" + (Math.floor(Math.random() * 44) + 1) + ".jpg";
+    bgImage = "bg" + (Math.floor(Math.random() * 45) + 1) + ".jpg";
     $('body').css('background-image', "url('images/" + bgImage + "')");
     $('.bg.hidden').css('background', htmlRender.newGradient());
     $('.bg').toggleClass('hidden');
