@@ -135,29 +135,30 @@ function saveData(){
 }
 
 function Game(){
-    this.hideWords = function(text, difficulty, memorizedCount){
+    this.hideWords = function(text, memorizedCount){
         var txttmp = text.split(/\s+/);
         var randoms = getRandom(txttmp.length, txttmp.length);
-        var toPick = 3; // Math.floor(txttmp.length/ Math.min(txttmp.length,ratio+1));
+        var toPick;
         var minCharsCount = 3;
-        // if(difficulty > 3){
-        //  minCharsCount = 3;
-        // }
 
-//        console.log('difficulty ' + difficulty);
-//        console.log('memorizedCount ' + memorizedCount);
-//        console.log('text ' + text);
-//        console.log('txttmp.length ' + txttmp.length);
-//        console.log('toPick ' + toPick);
-//        console.log('difficulty' + difficulty) ;
-//        console.log('--------------') ;
+        if(memorizedCount == 1){
+            toPick = 3;
+        }
+        else if(memorizedCount == 2){
+            toPick = 4;
+        }
+        else {
+            toPick = txttmp.length / 3;
+        }
+
+        toPick = txttmp.length / 3;
 
         var picked = 0;
         var i=0;
         while(picked < toPick && i < randoms.length){
             var currWord = txttmp[randoms[i]-1]
             if(txttmp[randoms[i]-1].length >= minCharsCount){
-                txttmp[randoms[i]-1] = ' <input style=\'width:' + (currWord.length * 18) + 'px\' class=missingWord type=text data-answer=\'' + currWord + '\' placeholder=\'' + game.maskWord(currWord, difficulty) + '\'>';
+                txttmp[randoms[i]-1] = ' <input style=\'width:' + (currWord.length * 18) + 'px\' class=missingWord type=text data-answer=\'' + currWord + '\' placeholder=\'' + game.maskWord(currWord, memorizedCount) + '\'>';
                 picked++;
             }
             i++;
@@ -169,27 +170,19 @@ function Game(){
         return word.substr(0, index) + character + word.substr(index+character.length);
     }
 
-    this.maskWord = function(word, difficulty){
+    this.maskWord = function(word, memorizedCount){
         var wordLen = word.length;
         var maskedWord = Array(wordLen+1).join("*")
 
         var every_n_chars_1_char_reveals = 1;
-        if(difficulty == 5){
+        if(memorizedCount == 3){
             every_n_chars_1_char_reveals = wordLen;
         }
-        else if(difficulty == 4){
-            every_n_chars_1_char_reveals = 4;
-            maskedWord = game.replaceOneCharacter(maskedWord, 0, word.charAt(0))
-        }
-        else if(difficulty == 3){
+        else if(memorizedCount == 2){
             every_n_chars_1_char_reveals = 3;
             maskedWord = game.replaceOneCharacter(maskedWord, 0, word.charAt(0))
         }
-        else if(difficulty == 2){
-            every_n_chars_1_char_reveals = 3;
-            maskedWord = game.replaceOneCharacter(maskedWord, 0, word.charAt(0))
-        }
-        else if(difficulty == 1){
+        else if(memorizedCount == 1){
             every_n_chars_1_char_reveals = 2;
             maskedWord = game.replaceOneCharacter(maskedWord, 0, word.charAt(0))
         }
@@ -203,82 +196,19 @@ function Game(){
     }
 
     this.replaceVerses = function(data, memorizedCount){
-        $p = $(data);
-        var final = '';
+        $p = $('<div>' + data + '</div>');
+        $p.find('.v').remove();
 
-        var totalSentence = 0;
-
-        $p.contents().each(function(){
-            if(this.nodeType == 3 && $(this).parent().prop('className') != 'scripture') {
-                totalSentence++;
-            }
-            else {
-                if ($(this).parent().prop('className') == 'scripture'){
-                }
-                else if($(this).prop('className') == 'v'){
-                }
-                else {
-                    totalSentence++;
-                }
-            }
-        });
-
-        var hideSentence = 0;
-        var difficulty = memorizedCount;
-        if(difficulty == 0){
-            hideSentence = 0;
+        if(memorizedCount == 0){
+            final = $p.text();
         }
-        else if(difficulty == 1){
-            hideSentence = Math.min(1, totalSentence);
-        }
-        else if(difficulty == 2){
-            hideSentence = Math.min(1, totalSentence);
-        }
-        else if(difficulty == 3){
-            hideSentence = Math.min(2, totalSentence);
-        }
-        else if(difficulty == 4){
-            hideSentence = Math.max(1, totalSentence-1);
-        }
-        else if(difficulty == 5){
-            hideSentence = totalSentence;
+        else {
+            $p.find('.scripture').remove();
+            final = game.hideWords($p.text(), memorizedCount);
         }
 
-        var ran = getRandom(hideSentence, totalSentence)
-
-        var sentenceCounter = 0;
-        $p.contents().each(function(){
-            if($(this).parent() && ($(this).parent().prop("tagName").toLowerCase() == 'h2' || $(this).parent().prop("tagName").toLowerCase() == 'h3')){
-
-            }
-            else if(this.nodeType == 3 && $(this).parent().prop('className') != 'scripture') {
-                sentenceCounter++;
-                if(numInArray(sentenceCounter, ran)){
-                    final += game.hideWords($(this).text(), difficulty, memorizedCount);
-                }
-                else {
-                    final += $(this).text();
-                }
-            }
-            else {
-                if ($(this).parent().prop('className') == 'scripture'){
-                    final +=$(this).parent().prop('outerHTML');
-                }
-                else if($(this).prop('className') == 'v'){
-                    final +=$(this).prop('outerHTML');
-                }
-                else {
-                    sentenceCounter++;
-                    if(numInArray(sentenceCounter, ran)){
-                        final += game.hideWords($(this).text(), difficulty, memorizedCount);
-                    }
-                    else {
-                        final += $(this).text();
-                    }
-                }
-            }
-            final = final + ' ';
-        });
+        console.log('memorizedCount ' + memorizedCount);
+        console.log('verse ' + final);
         return final;
     }
 }
@@ -461,12 +391,12 @@ function HTMLRender(){
 
     this.newGradient = function() {
         var c1 = {
-            r: Math.floor(Math.random()*0) + 100,
+            r: Math.floor(Math.random()*30) + 100,
             g: Math.floor(Math.random()*155) + 100,
             b: Math.floor(Math.random()*155) + 100
         };
         var c2 = {
-            r: Math.floor(Math.random()*0) + 150,
+            r: Math.floor(Math.random()*30) + 150,
             g: Math.floor(Math.random()*255) + 0,
             b: Math.floor(Math.random()*255) + 0
         };
@@ -501,6 +431,9 @@ function HTMLRender(){
         // READ SCREEN
         if(memorizedCount == 0){
             var animation = textAnimations[getRandom(1, textAnimations.length)[0]-1];
+//            $('#passages').show();
+//            $('#reveal-button').hide().css('visibility','visible').text('Memorize').data('start-memorize', true).fadeIn('slow');
+
             $('#passages').textillate({ in: { effect: animation, delay: 30, shuffle: false, callback: function(){
                 bgClear();
                 $('#reveal-button').hide().css('visibility','visible').text('Memorize').data('start-memorize', true).fadeIn('slow');
@@ -597,7 +530,7 @@ function bgClear(){
 }
 
 function rollBg() {
-    bgImage = "bg" + (Math.floor(Math.random() * 45) + 1) + ".jpg";
+    bgImage = "bg" + (Math.floor(Math.random() * 58) + 1) + ".jpg";
     $('body').css('background-image', "url('images/" + bgImage + "')");
     $('.bg.hidden').css('background', htmlRender.newGradient());
     $('.bg').toggleClass('hidden');
@@ -614,8 +547,10 @@ function incrementMemorizedCount(){
     memorizedCount++;
     if(memorizedCount == DAILY_MEMORIZED_GOAL){
         $('#message').text('Great Job! You Should Have Memorized The Passage By Now!');
+        $('#hint-button, #ticks').hide();
         showTicks(memorizedCount);
         memorizedCount = 0;
+
     }
 }
 
