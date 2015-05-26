@@ -207,6 +207,7 @@ function Game(){
         var final = '';
 
         var totalSentence = 0;
+
         $p.contents().each(function(){
             if(this.nodeType == 3 && $(this).parent().prop('className') != 'scripture') {
                 totalSentence++;
@@ -292,6 +293,7 @@ function showTicks(memorizedCount){
 }
 
 function HTMLRender(){
+    // Render the top right memorized count and the popup
     this.fetchMemorized = function(){
         $.get('http://' + HOST + '/memorized_verses', { user_id: userId }, function(data){
             var json = JSON.parse(data);
@@ -325,8 +327,6 @@ function HTMLRender(){
             else {
                 $('#memorized-verses').prepend('<h1>You Memorized ' + versesCount + ' Verses ' + json.length + ' Times</h1>');
             }
-
-//            $('#memorized-verses').append("<h3>&#8220;Guard my words as your most precious possession. Write them down and also keep them deep within your heart.&#8221; <span class=''>Proverbs 7:2</span></h3>");
         });
     }
 
@@ -516,6 +516,7 @@ function HTMLRender(){
             $('#reveal-button').css('visibility','visible').text('Done').data('start-memorize', false);
             $('#hint-button').show().removeClass('no-link').data('planId', planId).data('day', day);
             $('#ticks').show();
+            $('#rate-background').hide();
             $('#message').html('Fill in the blank spaces');
             showTicks(memorizedCount);
         }
@@ -583,7 +584,7 @@ function versesFetch(planId, day){
         }
     });
     htmlRender.showAddedPlans(planId);
-    $('#rate-background').show();
+    $('#rate-background').fadeIn('slow');
     $('#passages').html('Loading');
 }
 
