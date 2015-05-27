@@ -597,7 +597,6 @@ function helpClicked(){
 }
 
 function rateBackgroundClicked(){
-    var avg = (getRandom(1,2)[0]+2) + '.' + getRandom(1,9)[0];
     $('#rate-background a').hide();
     $('#rate-background p').text('Thank you for rating!');
     $.get('http://' + HOST + '/usage', { usage_type: 'RATE-BG', user_id: userId, user_name: userName, details: $(this).data('rate') + '-' + bgImage });
