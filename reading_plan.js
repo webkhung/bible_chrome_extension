@@ -198,6 +198,7 @@ function Game(){
     this.replaceVerses = function(data, memorizedCount){
         $p = $('<div>' + data + '</div>');
         $p.find('.v').remove();
+        $p.find('.s1').remove();
 
         if(memorizedCount == 0){
             final = $p.text();
@@ -223,13 +224,63 @@ function showTicks(memorizedCount){
 }
 
 function HTMLRender(){
+    this.fetchMemorizedStats = function() {
+        $.get('http://' + HOST + '/memorized_stats', { user_id: userId }, function(data){
+            var json = JSON.parse(data);
+            var last = '';
+
+            $('#memorized-stats-today-active ul, #memorized-stats-today-correct ul, #memorized-stats-past-active ul').empty();
+
+            $ulTodayActive = $('#memorized-stats-today-active ul');
+            $ulTodayActive.append('<li class=list-header>TODAY\'S MOST ACTIVE:</li>');
+
+            $ulTodayCorrect = $('#memorized-stats-today-correct ul');
+            $ulTodayCorrect.append('<li class=list-header>TODAY\'S MOST CORRECT:</li>');
+
+            $ulPrevActive = $('#memorized-stats-past-active ul');
+            $ulPrevActive.append('<li class=list-header>PAST LEADERS (ACTIVE / CORRECT):</li>');
+
+            for(var i=0; i < json['stats-active'].length; i++){
+                if(json['stats-active'][i]['date'] ==  json['today']) {
+                    var li = $('<li />').text(json['stats-active'][i]['user_name'] + ' x ' + json['stats-active'][i]['count']);
+                    $ulTodayActive.append(li);
+                }
+                else {
+                    if(last != json['stats-active'][i]['date']){
+                        last = json['stats-active'][i]['date'];
+                        var li = $('<li />').attr({'id': 'mem' + json['stats-active'][i]['date']});
+                        li.text(json['stats-active'][i]['date'] + ' ' + json['stats-active'][i]['user_name']);
+                        $ulPrevActive.append(li);
+                    }
+                }
+            }
+
+            last = '';
+            for(var i=0; i < json['stats-correct'].length; i++){
+                if(json['stats-correct'][i]['date'] ==  json['today']) {
+                    var li = $('<li />').text(json['stats-correct'][i]['user_name'] + ' x ' + json['stats-correct'][i]['count']);
+                    $ulTodayCorrect.append(li);
+                }
+                else {
+                    if(last != json['stats-correct'][i]['date']){
+                        last = json['stats-correct'][i]['date'];
+                        var oldText = $('#mem' + json['stats-correct'][i]['date']).text();
+                        $('#mem' + last).text(oldText + ' / ' + json['stats-correct'][i]['user_name']);
+                    }
+                }
+            }
+
+            $('.memorized-stats-container, #memorized-verses-container').slideDown(2000);
+        });
+    }
+
     // Render the top right memorized count and the popup
     this.fetchMemorized = function(){
-        $.get('http://' + HOST + '/memorized_verses', { user_id: userId }, function(data){
+        $.get('http://' + HOST + '/memorized_verses_with_count', { user_id: userId }, function(data){
             var json = JSON.parse(data);
-            $('#memorized-verses').empty();
-            $('#memorized-link').show();
-            $('#memorized-count').text(json.length);
+            $ulMemorizedVerses = $('#memorized-verses-container ul');
+            $ulMemorizedVerses.empty();
+            $ulMemorizedVerses.append('<li class=list-header>YOUR VERSES (click to memorize again)</li>');
             var last = '';
             var versesCount = 0;
             for(var i=0; i<json.length; i++){
@@ -240,22 +291,13 @@ function HTMLRender(){
                     $verse = $('<a />').attr({
                         href: '#',
                         class: 'popup-text'
-                    }).text(objPlans[json[i][0]].name + ' Day ' + json[i][1]);
+                    }).text(objPlans[json[i][0]].name + ' - Day ' + json[i][1] + ' (' + json[i][2] + ') Answered Correctly: '  + json[i][3] + ' Times');
                     $verse.attr('data-plan-id', json[i][0]);
                     $verse.attr('data-plan-day', json[i][1]);
                     $verse.click(memorizedVersesClicked);
-                    $('#memorized-verses').append($verse);
+                    var li = $('<li />').append($verse);
+                    $ulMemorizedVerses.append(li);
                 }
-            }
-
-            $('#memorized-verses').prepend("<h2>One of the most powerful ways you can transform your spiritual life is to learn to memorize Scripture.</h2>");
-
-            if(versesCount == 0)
-            {
-                $('#memorized-verses').prepend('<h1>You Haven\'t Memorized Any Verses Yet</h1>');
-            }
-            else {
-                $('#memorized-verses').prepend('<h1>You Memorized ' + versesCount + ' Verses ' + json.length + ' Times</h1>');
             }
         });
     }
@@ -265,6 +307,7 @@ function HTMLRender(){
         $.get('http://' + HOST + '/bg_rating', function(data){
             var json = JSON.parse(data);
             $ul = $('<ul />');
+            $ul.addClass('vertical-list')
             $('#bg-rating').append($ul);
 
             $ul.append('<li>TOTAL VOTES: '+ json['total'] +'</li><li></li>');
@@ -295,9 +338,6 @@ function HTMLRender(){
     }
 
     this.fetchUsers = function(){
-//        $.get('http://' + HOST + '/users', function(data){
-//            $('#users').html(data);
-//        });
         $.get('http://' + HOST + '/users_count', function(data){
             $('#users-count').html(data);
         });
@@ -405,22 +445,6 @@ function HTMLRender(){
         return 'radial-gradient(at top left, '+c1.rgb+', '+c2.rgb+')';
     }
 
-    this.newGradient2 = function() {
-        var c1 = {
-            r: Math.floor(Math.random()*255),
-            g: Math.floor(Math.random()*255),
-            b: Math.floor(Math.random()*255)
-        };
-        var c2 = {
-            r: Math.floor(Math.random()*255),
-            g: Math.floor(Math.random()*255),
-            b: Math.floor(Math.random()*255)
-        };
-        c1.rgb = 'rgb('+c1.r+','+c1.g+','+c1.b+')';
-        c2.rgb = 'rgb('+c2.r+','+c2.g+','+c2.b+')';
-        return 'radial-gradient(at top left, '+c1.rgb+', '+c2.rgb+')';
-    }
-
     this.screenTodayVerses = function(data, planId, day){
         console.log('screenTodayVerses ' + planId + ',' + day);
         $('#reveal-button').removeClass('no-link').data('planId', planId).data('day', day);
@@ -446,10 +470,12 @@ function HTMLRender(){
         }
         // GAME SCREEN
         else {
+            htmlRender.fetchMemorizedStats();
+            htmlRender.fetchMemorized();
             $('#reveal-button').css('visibility','visible').text('Done').data('start-memorize', false);
             $('#hint-button').show().removeClass('no-link').data('planId', planId).data('day', day);
             $('#ticks').show();
-            $('#rate-background').hide();
+            $('.hide-in-memorize').fadeOut();
             $('#message').html('Fill in the blank spaces');
             showTicks(memorizedCount);
         }
@@ -503,7 +529,6 @@ function versesFetch(planId, day){
         if (data !== undefined && data[key] !== undefined){
             versesProcess(data[key], planId, day);
             $.get('http://' + HOST + '/usage', { usage_type: 'OPEN', plan_id: planId, day: day, user_id: userId, user_name: userName }, function(){
-                htmlRender.fetchMemorized();
             });
         }
         else {
@@ -512,7 +537,6 @@ function versesFetch(planId, day){
                 data[key] = verses;
                 chrome.storage.sync.set(data);
                 versesProcess(verses, planId, day);
-                htmlRender.fetchMemorized();
             });
         }
     });
@@ -522,7 +546,8 @@ function versesFetch(planId, day){
 }
 
 function bgBlock(){
-    $('.bg').removeClass('bgClear').addClass('bgBlock').toggleClass('hidden');
+    $('.bg.hidden').css('background', '').css('background-color', 'rgb(96,223,229)');
+    $('.bg').removeClass('bgClear').addClass('bgBlock');
 }
 
 function bgClear(){
@@ -585,16 +610,16 @@ function userNameSubmitClicked(){
     }
 }
 
-function feedbackCloseClicked(){
-    $('#feedback').hide();
-    var data = {}
-    data['feedback-closed'] = '1';
-    chrome.storage.sync.set(data);
-}
+//function feedbackCloseClicked(){
+//    $('#feedback').hide();
+//    var data = {}
+//    data['feedback-closed'] = '1';
+//    chrome.storage.sync.set(data);
+//}
 
-function helpClicked(){
-    htmlRender.showFeedback();
-}
+//function helpClicked(){
+//    htmlRender.showFeedback();
+//}
 
 function rateBackgroundClicked(){
     $('#rate-background a').hide();
@@ -690,21 +715,14 @@ function revealClicked(){
     }, timeoutLength);
 }
 
-function memorizedClicked(){
-    $('#memorized-verses-container').show();
-    $('#passages-container').hide();
-    $.get('http://' + HOST + '/usage', { usage_type: 'MEMORIZED-OPENED', user_id: userId, user_name: userName});
-}
-
-function memorizedCloseClicked(){
-    $('.popup').hide();
-    $('#passages-container').show();
-}
-
 function memorizedVersesClicked(){
     $('#memorized-verses-container').hide();
     versesFetch($(this).data('plan-id'), $(this).data('plan-day'));
     $.get('http://' + HOST + '/usage', { usage_type: 'MEMORIZED-VERSES-CLICKED', user_id: userId, user_name: userName, plan_id: $(this).data('plan-id'), day: $(this).data('plan-day')});
+}
+
+function trackClicked(usage_type) {
+    $.get('http://' + HOST + '/usage', { usage_type: usage_type, user_id: userId, user_name: userName});
 }
 
 $( document ).ready(function() {
@@ -746,12 +764,13 @@ $( document ).ready(function() {
         $('#help').show();
     });
 
-    $('#feedback-close').click(feedbackCloseClicked);
-    $('#help').click(helpClicked);
     $('#reveal-button, #hint-button').click(revealClicked);
     $('#user-name-submit').click(userNameSubmitClicked);
+//    $('#feedback-close').click(feedbackCloseClicked);
+//    $('#help').click(helpClicked);
 //    $('#rate-yes-button').click(rateYesClicked);
 //    $('#rate-no-button').click(rateNoClicked);
+//    htmlRender.fetchUsers();
 
     $('.maincontainer').on('click', '#new-plan-link', function(){
         htmlRender.screenPlanSelector();
@@ -763,11 +782,9 @@ $( document ).ready(function() {
         $('#passages-container, #new-plan-link').show();
     });
 
-//    htmlRender.fetchUsers();
     htmlRender.fetchBgRating();
 
-    $('#memorized-link').click(memorizedClicked);
-    $('#memorized-close').click(memorizedCloseClicked);
+//    $('#rate-web-store').click(trackClicked('rate-web-store'));
 
     // Debug stuffs
     $('#clean-storage').click(function(){
