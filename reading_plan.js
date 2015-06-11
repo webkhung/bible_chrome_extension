@@ -201,7 +201,7 @@ function Game(){
         $p.find('.s1').remove();
 
         if(memorizedCount == 0){
-            final = $p.text();
+            final = $p.text().replace(/\s+/g,' ');
         }
         else {
             $p.find('.scripture').remove();
