@@ -109,7 +109,7 @@ h2 {
 }
 
 .plan-right {
-    margin-left: 80px;
+    margin-left: 63px;
 }
 
 .plan-right .inner-therm span {
@@ -118,18 +118,18 @@ h2 {
 }
 
 .plan-right .outer-therm {
-    margin: 10px 0 0 0;
+    margin: 3px 0 0 0;
 }
 
 .plan-badge {
     float:left;
-    width:75px;
+    width:57px;
     position: relative;
 }
 
 .circle img {
     position: relative;
-    width: 50px;
+    width: 34px;
     top: 7px;
     left: 9px;
 }
@@ -244,9 +244,8 @@ h2 {
 #bottom .plan-container {
     float: left;
     clear: none;
-    width: 260px;
+    width: 240px;
     height: 75px;
-    margin-right: 8px;
 }
 
 #copyright {
@@ -454,8 +453,8 @@ h2 {
     border-radius: 50%;
     display: inline-block;
     /*margin-right: 10px;*/
-    width: 65px;
-    height: 65px;
+    width: 50px;
+    height: 50px;
 }
 
 .circle1, .circle-solid-1 { border: 2px solid #4de34f; }
@@ -536,10 +535,10 @@ h2 {
 
 .circle .currentDay {
     position: absolute;
-    font-size: 13px;
+    font-size: 11px;
     font-weight: bold;
-    top: 25px;
-    left: 13px;
+    top: 20px;
+    left: 7px;
 }
 
 .progress-circle {

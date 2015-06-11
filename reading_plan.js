@@ -371,7 +371,7 @@ function HTMLRender(){
                     goal : plan.days.length.toString(),
                     raised : plan.completedOn.length.toString(),
                     width : '150px',
-                    height : '26px',
+                    height : '22px',
                     bgColor : '#dadada',
                     barColor : '#f09246',
                     displayTotal: false
@@ -512,7 +512,7 @@ function versesNext(planId, day){
         var randomPlan = randomAddedPlan();
         if(randomPlan){
             console.log('versesNext from random plan');
-            versesFetch(randomPlan.id, randomPlan.numDaysFinished());
+            versesFetch(randomPlan.id, getRandom(1, randomPlan.numDaysFinished())[0]);
             return;
         }
     }
@@ -524,7 +524,7 @@ function versesFetch(planId, day){
     console.log('versesFetch ' + planId + ',' + day);
 
     $('#passages-container').show();
-    var key = 'planId' + planId + '-' + today;
+    var key = 'planId' + planId + '-' + day;
     chrome.storage.sync.get(key, function (data) {
         if (data !== undefined && data[key] !== undefined){
             versesProcess(data[key], planId, day);
