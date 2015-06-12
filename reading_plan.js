@@ -224,53 +224,38 @@ function showTicks(memorizedCount){
 }
 
 function HTMLRender(){
-    this.fetchMemorizedStats = function() {
-        $.get('http://' + HOST + '/memorized_stats', { user_id: userId }, function(data){
+
+    this.fetchMemorizedStatsWeekly = function() {
+        $.get('http://' + HOST + '/memorized_stats_weekly', { user_id: userId }, function(data){
             var json = JSON.parse(data);
-            var last = '';
 
-            $('#memorized-stats-today-active ul, #memorized-stats-today-correct ul, #memorized-stats-past-active ul').empty();
+            $ulWeekly = $('#memorized-stats-weekly').empty();
+            $ulWeekly.append('<p>Join these people to memorize bible verses:</p>');
+            $names = $('<p />');
+            $names.append('<span>This Week:</span>')
+            var current_week = json['current_week_of'];
+            for(var i=0; i < json[current_week].length; i++){
+                var name = json[current_week][i][0];
+                var count = json[current_week][i][1];
+                var li = $('<span />');
+                li.text(name + ' ' + count);
+                $names.append(li);
+            }
+            $ulWeekly.append($names);
 
-            $ulTodayActive = $('#memorized-stats-today-active ul');
-            $ulTodayActive.append('<li class=list-header>TODAY\'S MOST ACTIVE:</li>');
+            $ulPast = $('#memorized-stats-past-weekly ul').empty().addClass('text-right');
+            $ulPast.append('<li class=list-header>PAST\'S LEADERS:</li>');
 
-            $ulTodayCorrect = $('#memorized-stats-today-correct ul');
-            $ulTodayCorrect.append('<li class=list-header>TODAY\'S MOST CORRECT:</li>');
-
-            $ulPrevActive = $('#memorized-stats-past-active ul');
-            $ulPrevActive.append('<li class=list-header>PAST LEADERS (ACTIVE / CORRECT):</li>');
-
-            for(var i=0; i < json['stats-active'].length; i++){
-                if(json['stats-active'][i]['date'] ==  json['today']) {
-                    var li = $('<li />').text(json['stats-active'][i]['user_name'] + ' x ' + json['stats-active'][i]['count']);
-                    $ulTodayActive.append(li);
-                }
-                else {
-                    if(last != json['stats-active'][i]['date']){
-                        last = json['stats-active'][i]['date'];
-                        var li = $('<li />').attr({'id': 'mem' + json['stats-active'][i]['date']});
-                        li.text(json['stats-active'][i]['date'] + ' ' + json['stats-active'][i]['user_name']);
-                        $ulPrevActive.append(li);
-                    }
+            for(var i=0; i < json['weeks'].length; i++){
+                var week = json['weeks'][i];
+                if (week != json['current_week_of']){
+                    var name = json[week][0];
+                    var count = json[week][1];
+                    var li = $('<li />');
+                    li.html('<span>' + week +  ' </span>' + '<span>' + name + ' ' + count + ' </span>');
+                    $ulPast.append(li);
                 }
             }
-
-            last = '';
-            for(var i=0; i < json['stats-correct'].length; i++){
-                if(json['stats-correct'][i]['date'] ==  json['today']) {
-                    var li = $('<li />').text(json['stats-correct'][i]['user_name'] + ' x ' + json['stats-correct'][i]['count']);
-                    $ulTodayCorrect.append(li);
-                }
-                else {
-                    if(last != json['stats-correct'][i]['date']){
-                        last = json['stats-correct'][i]['date'];
-                        var oldText = $('#mem' + json['stats-correct'][i]['date']).text();
-                        $('#mem' + last).text(oldText + ' / ' + json['stats-correct'][i]['user_name']);
-                    }
-                }
-            }
-
-            $('.memorized-stats-container, #memorized-verses-container').slideDown(2000);
         });
     }
 
@@ -461,8 +446,9 @@ function HTMLRender(){
             $('#passages').textillate({ in: { effect: animation, delay: 30, shuffle: false, callback: function(){
                 bgClear();
                 $('#reveal-button').hide().css('visibility','visible').text('Memorize').data('start-memorize', true).fadeIn('slow');
-                usageType = 'VIEWED-LIKE'
-                htmlRender.fetchUsers();
+                $('#memorized-stats-weekly').fadeIn();
+//                htmlRender.fetchUsers();
+                usageType = 'VIEWED-LIKE';
                 $.get('http://' + HOST + '/usage', { usage_type: usageType, plan_id: planId, day: day, user_id: userId, user_name: userName, details: verses.length });
             }}});
 
@@ -470,8 +456,8 @@ function HTMLRender(){
         }
         // GAME SCREEN
         else {
-            htmlRender.fetchMemorizedStats();
             htmlRender.fetchMemorized();
+            $('#memorized-verses-container, #memorized-stats-past-weekly').slideDown(2000);
             $('#reveal-button').css('visibility','visible').text('Done').data('start-memorize', false);
             $('#hint-button').show().removeClass('no-link').data('planId', planId).data('day', day);
             $('#ticks').show();
@@ -766,11 +752,12 @@ $( document ).ready(function() {
 
     $('#reveal-button, #hint-button').click(revealClicked);
     $('#user-name-submit').click(userNameSubmitClicked);
+
 //    $('#feedback-close').click(feedbackCloseClicked);
 //    $('#help').click(helpClicked);
 //    $('#rate-yes-button').click(rateYesClicked);
 //    $('#rate-no-button').click(rateNoClicked);
-//    htmlRender.fetchUsers();
+//    $('#rate-web-store').click(trackClicked('rate-web-store'));
 
     $('.maincontainer').on('click', '#new-plan-link', function(){
         htmlRender.screenPlanSelector();
@@ -783,8 +770,7 @@ $( document ).ready(function() {
     });
 
     htmlRender.fetchBgRating();
-
-//    $('#rate-web-store').click(trackClicked('rate-web-store'));
+    htmlRender.fetchMemorizedStatsWeekly();
 
     // Debug stuffs
     $('#clean-storage').click(function(){
