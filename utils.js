@@ -167,7 +167,6 @@ function getRandom(pick, max) {
 //                });
 
 function randomAddedPlan(){
-    return objPlans['5'];
     var allPlanIds = [];
     for(var planId in objPlans){
         if(objPlans[planId].added && objPlans[planId].lastCompletedDate() == today) {

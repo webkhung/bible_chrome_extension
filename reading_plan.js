@@ -90,6 +90,20 @@ var readingPlans = [
         "badge": "",
         "description": "",
         "days": ["Matthew.6:21","Malachi.3:10","Ecclesiastes.5:10","Romans.13:8","Psalm.37:16-17","Proverbs.13:11","Hebrews.13:5","Matthew.19:21","Proverbs.17:16","Matthew.6:24","Luke.3:14","Exodus.22:25","1Timothy.6:10","Deuteronomy.23:19","Matthew.21:12-13","1Timothy.6:17-19","Luke.12:33","Deuteronomy.15:7","Matthew.6:1-4","Mark.12:41-44","Proverbs.10:4","Revelation.3:17","Luke.16:13","Matthew.13:22","2Chronicles.1:11-12","1Peter.5:2-3","1Samuel.2:7","Proverbs.3:9"]
+    },
+    {
+        "id": "12",
+        "name": "Stress",
+        "badge": "",
+        "description": "",
+        "days": ["1Timothy.6:17","Matthew.6:8","Psalm.56:6","Psalm.23:4","Exodus.34:21"]
+    },
+    {
+        "id": "13",
+        "name": "Finances",
+        "badge": "",
+        "description": "",
+        "days": ["Galatians.6:9","3John.1:8","Ecclesiastes.11:1-2","1Timothy.6:18","Proverbs.21:5","Deuteronomy.8:18","Matthew.6:24"]
     }
 ]
 
@@ -150,8 +164,6 @@ function Game(){
         else {
             toPick = txttmp.length / 3;
         }
-
-        toPick = txttmp.length / 3;
 
         var picked = 0;
         var i=0;
@@ -228,12 +240,15 @@ function HTMLRender(){
     this.fetchMemorizedStatsWeekly = function() {
         $.get('http://' + HOST + '/memorized_stats_weekly', { user_id: userId }, function(data){
             var json = JSON.parse(data);
-
+            var current_week = json['current_week_of'];
+            if(json[current_week] === undefined) {
+                return;
+            }
             $ulWeekly = $('#memorized-stats-weekly').empty();
             $ulWeekly.append('<p>Join these people to memorize bible verses:</p>');
             $names = $('<p />');
             $names.append('<span>This Week:</span>')
-            var current_week = json['current_week_of'];
+
             for(var i=0; i < json[current_week].length; i++){
                 var name = json[current_week][i][0];
                 var count = json[current_week][i][1];
@@ -263,6 +278,8 @@ function HTMLRender(){
     this.fetchMemorized = function(){
         $.get('http://' + HOST + '/memorized_verses_with_count', { user_id: userId }, function(data){
             var json = JSON.parse(data);
+            if(json.length == 0) return;
+
             $ulMemorizedVerses = $('#memorized-verses-container ul');
             $ulMemorizedVerses.empty();
             $ulMemorizedVerses.append('<li class=list-header>YOUR VERSES (click to memorize again)</li>');
@@ -577,7 +594,7 @@ function addPlanLinkClicked(event){
     htmlRender.showAddedPlans();
     versesNext();
     $('#plans-selector').hide();
-    $('#passages-container, #new-plan-link').show();
+    $('.hide-in-select-plans').show();
     saveData();
 }
 
@@ -761,12 +778,12 @@ $( document ).ready(function() {
 
     $('.maincontainer').on('click', '#new-plan-link', function(){
         htmlRender.screenPlanSelector();
-        $('#passages-container').hide();
+        $('.hide-in-select-plans').hide();
     });
 
     $('#plans-selector').on('click', '#plans-close', function(){
         $('.popup').hide();
-        $('#passages-container, #new-plan-link').show();
+        $('.hide-in-select-plans').show();
     });
 
     htmlRender.fetchBgRating();
