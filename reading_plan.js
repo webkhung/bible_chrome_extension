@@ -240,6 +240,21 @@ function HTMLRender(){
     this.fetchMemorizedStatsWeekly = function() {
         $.get('http://' + HOST + '/memorized_stats_weekly', { user_id: userId }, function(data){
             var json = JSON.parse(data);
+
+            $ulPast = $('#memorized-stats-past-weekly ul').empty().addClass('text-right');
+            $ulPast.append('<li class=list-header>PAST\'S LEADERS:</li>');
+
+            for(var i=0; i < json['weeks'].length; i++){
+                var week = json['weeks'][i];
+                if (week != json['current_week_of']){
+                    var name = json[week][0];
+                    var count = json[week][1];
+                    var li = $('<li />');
+                    li.html('<span>' + week +  ' </span>' + '<span>' + name + ' ' + count + ' </span>');
+                    $ulPast.append(li);
+                }
+            }
+
             var current_week = json['current_week_of'];
             if(json[current_week] === undefined) {
                 return;
@@ -257,20 +272,6 @@ function HTMLRender(){
                 $names.append(li);
             }
             $ulWeekly.append($names);
-
-            $ulPast = $('#memorized-stats-past-weekly ul').empty().addClass('text-right');
-            $ulPast.append('<li class=list-header>PAST\'S LEADERS:</li>');
-
-            for(var i=0; i < json['weeks'].length; i++){
-                var week = json['weeks'][i];
-                if (week != json['current_week_of']){
-                    var name = json[week][0];
-                    var count = json[week][1];
-                    var li = $('<li />');
-                    li.html('<span>' + week +  ' </span>' + '<span>' + name + ' ' + count + ' </span>');
-                    $ulPast.append(li);
-                }
-            }
         });
     }
 
@@ -603,6 +604,9 @@ function userNameSubmitClicked(){
     if(name.length < 3) {
         alert('Your name is too short');
     }
+    else if(name.length > 30) {
+        alert('Your name is too long');
+    }
     else {
         userName = name;
         saveData();
@@ -785,6 +789,12 @@ $( document ).ready(function() {
         $('.popup').hide();
         $('.hide-in-select-plans').show();
     });
+
+
+    $('#home a').click(function(){
+        trackClicked('home-clicked')
+    });
+
 
     htmlRender.fetchBgRating();
     htmlRender.fetchMemorizedStatsWeekly();

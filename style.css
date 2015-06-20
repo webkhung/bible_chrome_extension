@@ -58,6 +58,15 @@ body {
     top: 30px;
 }
 
+
+#home {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    z-index: 999;
+    opacity: 0.7;
+}
+
 /* Plan */
 #feedback {
     font-size: 18px;
@@ -640,8 +649,8 @@ input.wrong {
 ul.vertical-list {
     list-style-type: none;
     color: #fff;
-    font-size: 12px;
-    opacity: 0.7;
+    font-size: 11px;
+    opacity: 0.5;
     text-align: right;
     padding-left: 0;
     margin-left: 0;
@@ -650,9 +659,9 @@ ul.vertical-list {
 
 ul.vertical-list li a {
     color: white;
-    font-size: 13px;
+    font-size: 11px;
     text-decoration: none;
-    line-height: 1.5em;
+    line-height: 1.6em;
 }
 
 ul.vertical-list li a:hover {
