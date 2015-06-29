@@ -9,7 +9,7 @@ var HOST = 'biblereadingplans.herokuapp.com';
 var memorizedCount = 0;
 var game = new Game();
 var textAnimations = ['rotateIn', 'rotateInDownLeft', 'rotateInDownRight', 'fadeIn', 'fadeInUp', 'fadeInDown',
-    'fadeInLeft', 'fadeInRight', 'fadeInDownBig', 'bounceIn', 'bounceInDown', 'flash']; // pulse, flip, 'fadeInLeftBig', 'fadeInRightBig'
+    'fadeInLeft', 'fadeInRight', 'fadeInDownBig', 'bounceIn', 'bounceInDown']; // pulse, flip, 'fadeInLeftBig', 'fadeInRightBig'
 var rated = false;
 var bgImage;
 
@@ -260,9 +260,9 @@ function HTMLRender(){
                 return;
             }
             $ulWeekly = $('#memorized-stats-weekly').empty();
-            $ulWeekly.append('<p>Join these people to memorize bible verses:</p>');
+//            $ulWeekly.append('<p>Join these people to memorize bible verses:</p>');
             $names = $('<p />');
-            $names.append('<span>This Week:</span>')
+            $names.append('<span>People memorize bible verses this week:</span>')
 
             for(var i=0; i < json[current_week].length; i++){
                 var name = json[current_week][i][0];
@@ -306,15 +306,20 @@ function HTMLRender(){
     }
 
     this.fetchBgRating = function(){
-
         $.get('http://' + HOST + '/bg_rating', function(data){
             var json = JSON.parse(data);
-            $ul = $('<ul />');
-            $ul.addClass('vertical-list')
+
+            if (json['high'].length == 0){
+                return;
+            }
+            
+            $ul = $('<div />');
+//            $ul.addClass('horizontal-list')
             $('#bg-rating').append($ul);
 
-            $ul.append('<li>TOTAL VOTES: '+ json['total'] +'</li><li></li>');
-            $ul.append('<li><span class=symbol>&#10003;</span> HIGHLY RATED:</li>');
+//            $ul.append('<span>TOTAL VOTES: '+ json['total'] +'</span><span></span>');
+//            $ul.append('<span><span class=symbol2>&#10003;</span> HIGHLY RATED:</span>');
+            $ul.append('<span>TOP RATED BACKGROUNDS:</span>');
             for(var i=0; i < json['high'].length && i < 5; i++){
                 var linkBg = $('<a />').attr({
                     href: 'images/' + json['high'][i],
@@ -322,21 +327,23 @@ function HTMLRender(){
                 }).text(json['high'][i].split('.')[0]);
                 linkBg.attr('data-rate', 'high');
                 linkBg.click(ratedBgClicked);
-                var li = $('<li />');
-                $ul.append(li.append(linkBg));
+                var span = $('<span />');
+                $ul.append(span.append(linkBg));
             }
 
-            $ul.append('<li><span class=symbol>&#10008;</span> LOWLY RATED:</li>');
-            for(var i=0; i < json['low'].length && i < 5; i++){
-                var linkBg = $('<a />').attr({
-                    href: 'images/' + json['low'][i],
-                    target: '_blank'
-                }).text(json['low'][i].split('.')[0]);
-                linkBg.attr('data-rate', 'low');
-                linkBg.click(ratedBgClicked);
-                var li = $('<li />');
-                $ul.append(li.append(linkBg));
-            }
+//            $ul.append('<span><span class=symbol2>&#10008;</span> LOWLY RATED:</span>');
+//            for(var i=0; i < json['low'].length && i < 5; i++){
+//                var linkBg = $('<a />').attr({
+//                    href: 'images/' + json['low'][i],
+//                    target: '_blank'
+//                }).text(json['low'][i].split('.')[0]);
+//                linkBg.attr('data-rate', 'low');
+//                linkBg.click(ratedBgClicked);
+//                var span = $('<span />');
+//                $ul.append(span.append(linkBg));
+//            }
+
+            $('#rate-background').append()
         });
     }
 
@@ -433,19 +440,27 @@ function HTMLRender(){
     }
 
     this.newGradient = function() {
-        var c1 = {
-            r: Math.floor(Math.random()*30) + 100,
-            g: Math.floor(Math.random()*155) + 100,
-            b: Math.floor(Math.random()*155) + 100
-        };
-        var c2 = {
-            r: Math.floor(Math.random()*30) + 150,
-            g: Math.floor(Math.random()*255) + 0,
-            b: Math.floor(Math.random()*255) + 0
-        };
-        c1.rgb = 'rgb('+c1.r+','+c1.g+','+c1.b+')';
-        c2.rgb = 'rgb('+c2.r+','+c2.g+','+c2.b+')';
-        return 'radial-gradient(at top left, '+c1.rgb+', '+c2.rgb+')';
+        var inside = ['ff0000', '70e1f5', '185a9d', 'BB377D'];
+        var outside = ['4776E6', 'C9FFBF', '43cea2', 'FBD3E9'];
+
+        var rand = getRandom(1, inside.length);
+
+        // rand[0] = 4;
+
+        var c1 = inside[rand[0]-1];
+        var c2 = outside[rand[0]-1];
+
+        var R = hexToR("#" + c1);
+        var G = hexToG("#" + c1);
+        var B = hexToB("#" + c1);
+        var _c1 = 'rgba('+R+','+G+','+B+',0.2)';
+
+        R = hexToR("#" + c2);
+        G = hexToG("#" + c2);
+        B = hexToB("#" + c2);
+        var _c2 = 'rgba('+R+','+G+','+B+',1)';
+
+        return 'radial-gradient('+_c1+', '+_c2+')';
     }
 
     this.screenTodayVerses = function(data, planId, day){
@@ -475,6 +490,7 @@ function HTMLRender(){
         // GAME SCREEN
         else {
             htmlRender.fetchMemorized();
+            htmlRender.fetchMemorizedStatsWeekly();
             $('#memorized-verses-container, #memorized-stats-past-weekly').slideDown(2000);
             $('#reveal-button').css('visibility','visible').text('Done').data('start-memorize', false);
             $('#hint-button').show().removeClass('no-link').data('planId', planId).data('day', day);
@@ -550,7 +566,7 @@ function versesFetch(planId, day){
 }
 
 function bgBlock(){
-    $('.bg.hidden').css('background', '').css('background-color', 'rgb(96,223,229)');
+    $('.bg.hidden').css('background', '').css('background-color', 'rgb(47,154,231)');
     $('.bg').removeClass('bgClear').addClass('bgBlock');
 }
 
@@ -559,7 +575,7 @@ function bgClear(){
 }
 
 function rollBg() {
-    bgImage = "bg" + (Math.floor(Math.random() * 58) + 1) + ".jpg";
+    bgImage = "bg" + (Math.floor(Math.random() * 30) + 1) + ".jpg";
     $('body').css('background-image', "url('images/" + bgImage + "')");
     $('.bg.hidden').css('background', htmlRender.newGradient());
     $('.bg').toggleClass('hidden');
@@ -617,20 +633,19 @@ function userNameSubmitClicked(){
     }
 }
 
-//function feedbackCloseClicked(){
-//    $('#feedback').hide();
-//    var data = {}
-//    data['feedback-closed'] = '1';
-//    chrome.storage.sync.set(data);
-//}
-
-//function helpClicked(){
-//    htmlRender.showFeedback();
-//}
-
 function rateBackgroundClicked(){
-    $('#rate-background a').hide();
-    $('#rate-background p').text('Thank you for rating!');
+    var rating = $(this).data('rate');
+    if(rating == '1'){
+        $('#rate-background p').text('How about this one?');
+        bgImage = "bg" + (Math.floor(Math.random() * 31) + 1) + ".jpg";
+        $('body').css('background-image', "url('images/" + bgImage + "')");
+    }
+    else if(rating == '5'){
+        $('#rate-background a').hide();
+        $('#rate-background p').text('Thank you for rating!');
+        htmlRender.fetchBgRating();
+    }
+
     $.get('http://' + HOST + '/usage', { usage_type: 'RATE-BG', user_id: userId, user_name: userName, details: $(this).data('rate') + '-' + bgImage });
 }
 
@@ -651,6 +666,17 @@ function ratedBgClicked(){
 //    data['rated'] = 'no';
 //    chrome.storage.sync.set(data);
 //    $.get('http://' + HOST + '/usage', { usage_type: 'RATE-NO', user_id: userId, user_name: userName });
+//}
+
+//function feedbackCloseClicked(){
+//    $('#feedback').hide();
+//    var data = {}
+//    data['feedback-closed'] = '1';
+//    chrome.storage.sync.set(data);
+//}
+
+//function helpClicked(){
+//    htmlRender.showFeedback();
 //}
 
 function revealClicked(){
@@ -732,6 +758,22 @@ function trackClicked(usage_type) {
     $.get('http://' + HOST + '/usage', { usage_type: usage_type, user_id: userId, user_name: userName});
 }
 
+function greeting(){
+    var myDate = new Date();
+    var hrs = myDate.getHours();
+
+    var greet;
+
+    if (hrs >= 4 && hrs < 12)
+        greet = 'Good Morning';
+    else if (hrs >= 12 && hrs <= 18)
+        greet = 'Good Afternoon';
+    else
+        greet = 'Good Evening';
+
+    $('#home').text(greet + ', ' + userName)
+}
+
 $( document ).ready(function() {
     readingPlans.forEach(function(jsonPlan){
         var objPlan = new Plan(jsonPlan);
@@ -763,6 +805,7 @@ $( document ).ready(function() {
         else {
             userName = userData['userName'];
             versesNext();
+            greeting();
         }
 
         rated = userData['rated'];
@@ -794,10 +837,6 @@ $( document ).ready(function() {
     $('#home a').click(function(){
         trackClicked('home-clicked')
     });
-
-
-    htmlRender.fetchBgRating();
-    htmlRender.fetchMemorizedStatsWeekly();
 
     // Debug stuffs
     $('#clean-storage').click(function(){
