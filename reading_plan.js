@@ -305,53 +305,47 @@ function HTMLRender(){
         });
     }
 
-    this.fetchBgRating = function(){
-        $.get('http://' + HOST + '/bg_rating', function(data){
-            var json = JSON.parse(data);
-
-            if (json['high'].length == 0){
-                return;
-            }
-            
-            $ul = $('<div />');
-//            $ul.addClass('horizontal-list')
-            $('#bg-rating').append($ul);
-
-//            $ul.append('<span>TOTAL VOTES: '+ json['total'] +'</span><span></span>');
-//            $ul.append('<span><span class=symbol2>&#10003;</span> HIGHLY RATED:</span>');
-            $ul.append('<span>TOP RATED BACKGROUNDS:</span>');
-            for(var i=0; i < json['high'].length && i < 5; i++){
-                var linkBg = $('<a />').attr({
-                    href: 'images/' + json['high'][i],
-                    target: '_blank'
-                }).text(json['high'][i].split('.')[0]);
-                linkBg.attr('data-rate', 'high');
-                linkBg.click(ratedBgClicked);
-                var span = $('<span />');
-                $ul.append(span.append(linkBg));
-            }
-
-//            $ul.append('<span><span class=symbol2>&#10008;</span> LOWLY RATED:</span>');
-//            for(var i=0; i < json['low'].length && i < 5; i++){
+//    this.fetchBgRating = function(){
+//        $.get('http://' + HOST + '/bg_rating', function(data){
+//            var json = JSON.parse(data);
+//
+//            if (json['high'].length == 0){
+//                return;
+//            }
+//
+//            $ul = $('<div />');
+////            $ul.addClass('horizontal-list')
+//            $('#bg-rating').append($ul);
+//
+////            $ul.append('<span>TOTAL VOTES: '+ json['total'] +'</span><span></span>');
+////            $ul.append('<span><span class=symbol2>&#10003;</span> HIGHLY RATED:</span>');
+//            $ul.append('<span>TOP RATED BACKGROUNDS:</span>');
+//            for(var i=0; i < json['high'].length && i < 5; i++){
 //                var linkBg = $('<a />').attr({
-//                    href: 'images/' + json['low'][i],
+//                    href: 'images/' + json['high'][i],
 //                    target: '_blank'
-//                }).text(json['low'][i].split('.')[0]);
-//                linkBg.attr('data-rate', 'low');
+//                }).text(json['high'][i].split('.')[0]);
+//                linkBg.attr('data-rate', 'high');
 //                linkBg.click(ratedBgClicked);
 //                var span = $('<span />');
 //                $ul.append(span.append(linkBg));
 //            }
-
-            $('#rate-background').append()
-        });
-    }
-
-    this.fetchUsers = function(){
-        $.get('http://' + HOST + '/users_count', function(data){
-            $('#users-count').html(data);
-        });
-    }
+//
+////            $ul.append('<span><span class=symbol2>&#10008;</span> LOWLY RATED:</span>');
+////            for(var i=0; i < json['low'].length && i < 5; i++){
+////                var linkBg = $('<a />').attr({
+////                    href: 'images/' + json['low'][i],
+////                    target: '_blank'
+////                }).text(json['low'][i].split('.')[0]);
+////                linkBg.attr('data-rate', 'low');
+////                linkBg.click(ratedBgClicked);
+////                var span = $('<span />');
+////                $ul.append(span.append(linkBg));
+////            }
+//
+//            $('#rate-background').append()
+//        });
+//    }
 
     this.showAddedPlans = function(selectedPlanId){
         $plan = $('#added-plans');
@@ -393,7 +387,10 @@ function HTMLRender(){
             }
         }
 
-        $('#added-plan-' + selectedPlanId + ' .circle').addClass('blink_me');
+        if(selectedPlanId !== undefined){
+            $('#added-plan-' + selectedPlanId + ' .circle').addClass('blink_me');
+            $('#passage-header').text(objPlans[selectedPlanId].name);
+        }
     }
 
     this.screenUserName = function() {
@@ -413,7 +410,8 @@ function HTMLRender(){
             var plan = objPlans[planId];
             $container = $("<div class='plan-container'>")
             $rightCol = $("<div class='plan-right'>");
-            $rightCol.append("<span class='popup-text'>" + plan.numOfDays + ' Days on ' + plan.name + "</span>");
+            $rightCol.append("<div class='plan-name'>" + plan.name + "</div>");
+//            $rightCol.append("<div class='plan-subtext'>" + plan.numOfDays + ' Days ' + "</div>");
             $meta = $("<span class='plan-meta'>");
             if(plan.added){
                 numPlansAdded++;
@@ -435,7 +433,7 @@ function HTMLRender(){
         }
         var addPlansText = '<h1><span class=username>' + userName + ',</span> Make God\'s Word Part Of Your Day!</h1><h2>Select a Plan Below</h2>';
         $planSelector.find('#plansSelectorHeader').html(addPlansText);
-        $planSelector.append("<div style='text-align: center'><a id='plans-close' class='myButton' href='#'>Close</a></div>");
+        $planSelector.append("<div style='text-align: center; clear: both'><a id='plans-close' class='myButton' href='#'>Close</a></div>");
         $planSelector.show();
     }
 
@@ -480,7 +478,6 @@ function HTMLRender(){
                 bgClear();
                 $('#reveal-button').hide().css('visibility','visible').text('Memorize').data('start-memorize', true).fadeIn('slow');
                 $('#memorized-stats-weekly').fadeIn();
-//                htmlRender.fetchUsers();
                 usageType = 'VIEWED-LIKE';
                 $.get('http://' + HOST + '/usage', { usage_type: usageType, plan_id: planId, day: day, user_id: userId, user_name: userName, details: verses.length });
             }}});
@@ -575,7 +572,7 @@ function bgClear(){
 }
 
 function rollBg() {
-    bgImage = "bg" + (Math.floor(Math.random() * 30) + 1) + ".jpg";
+    bgImage = "bg" + (Math.floor(Math.random() * 33) + 1) + ".jpg";
     $('body').css('background-image', "url('images/" + bgImage + "')");
     $('.bg.hidden').css('background', htmlRender.newGradient());
     $('.bg').toggleClass('hidden');
@@ -633,25 +630,25 @@ function userNameSubmitClicked(){
     }
 }
 
-function rateBackgroundClicked(){
-    var rating = $(this).data('rate');
-    if(rating == '1'){
-        $('#rate-background p').text('How about this one?');
-        bgImage = "bg" + (Math.floor(Math.random() * 31) + 1) + ".jpg";
-        $('body').css('background-image', "url('images/" + bgImage + "')");
-    }
-    else if(rating == '5'){
-        $('#rate-background a').hide();
-        $('#rate-background p').text('Thank you for rating!');
-        htmlRender.fetchBgRating();
-    }
+//function rateBackgroundClicked(){
+//    var rating = $(this).data('rate');
+//    if(rating == '1'){
+//        $('#rate-background p').text('How about this one?');
+//        bgImage = "bg" + (Math.floor(Math.random() * 31) + 1) + ".jpg";
+//        $('body').css('background-image', "url('images/" + bgImage + "')");
+//    }
+//    else if(rating == '5'){
+//        $('#rate-background a').hide();
+//        $('#rate-background p').text('Thank you for rating!');
+//        htmlRender.fetchBgRating();
+//    }
+//
+//    $.get('http://' + HOST + '/usage', { usage_type: 'RATE-BG', user_id: userId, user_name: userName, details: $(this).data('rate') + '-' + bgImage });
+//}
 
-    $.get('http://' + HOST + '/usage', { usage_type: 'RATE-BG', user_id: userId, user_name: userName, details: $(this).data('rate') + '-' + bgImage });
-}
-
-function ratedBgClicked(){
-    $.get('http://' + HOST + '/usage', { usage_type: 'VIEW-RATED-BG', user_id: userId, user_name: userName, details: $(this).data('rate')});
-}
+//function ratedBgClicked(){
+//    $.get('http://' + HOST + '/usage', { usage_type: 'VIEW-RATED-BG', user_id: userId, user_name: userName, details: $(this).data('rate')});
+//}
 
 //function rateYesClicked(){
 //    var data = {}
@@ -771,7 +768,7 @@ function greeting(){
     else
         greet = 'Good Evening';
 
-    $('#home').text(greet + ', ' + userName)
+    $('#home span').text(greet + ', ' + userName.substring(0,30) + '!')
 }
 
 $( document ).ready(function() {
@@ -857,7 +854,7 @@ $( document ).ready(function() {
         versesNext();
     });
 
-    $('#rate1, #rate2, #rate3, #rate4, #rate5').click(rateBackgroundClicked);
+//    $('#rate1, #rate2, #rate3, #rate4, #rate5').click(rateBackgroundClicked);
 
     rollBg();
 });
