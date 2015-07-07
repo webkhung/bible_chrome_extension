@@ -44,7 +44,7 @@ var readingPlans = [
     },
     {
         "id": "5",
-        "name": "Worry",
+        "name": "Do Not Worry",
         "badge": "",
         "description": "",
         "days": ["Proverbs.3:5-6", "Philippians.4:6-7", "Matthew.11:28-30", "John.14:27", "Jeremiah.17:5-8", "Colossians.3:15", "2Thessalonians.3:16", "Psalm.55:22", "Proverbs.12:25", "1Peter.5:6-8", "Psalm.23:4", "Hebrews.13:5-6"]
@@ -65,7 +65,7 @@ var readingPlans = [
     },
     {
         "id": "8",
-        "name": "Anger",
+        "name": "Do Not Anger",
         "badge": "",
         "description": "",
         "days": ["James.1:19-20","Proverbs.29:11","James.1:20","Proverbs.19:11","Ecclesiastes.7:9","Proverbs.15:1","Proverbs.15:18","Colossians.3:8","James.4:1-2","Proverbs.16:32","Proverbs.22:24","Matthew.5:22","Psalm.37:8-9","Psalm.7:11","2 Kings.11:9-10","2 Kings.17:18","Proverbs.14:29"]
@@ -93,7 +93,7 @@ var readingPlans = [
     },
     {
         "id": "12",
-        "name": "Stress",
+        "name": "Do Not Stress",
         "badge": "",
         "description": "",
         "days": ["1Timothy.6:17","Matthew.6:8","Psalm.56:6","Psalm.23:4","Exodus.34:21"]
@@ -389,7 +389,7 @@ function HTMLRender(){
 
         if(selectedPlanId !== undefined){
             $('#added-plan-' + selectedPlanId + ' .circle').addClass('blink_me');
-            $('#passage-header').text(objPlans[selectedPlanId].name);
+            $('#passage-header').hide().text(objPlans[selectedPlanId].name).fadeIn(2000);
         }
     }
 
@@ -572,7 +572,7 @@ function bgClear(){
 }
 
 function rollBg() {
-    bgImage = "bg" + (Math.floor(Math.random() * 33) + 1) + ".jpg";
+    bgImage = "bg" + (Math.floor(Math.random() * 31) + 1) + ".jpg";
     $('body').css('background-image', "url('images/" + bgImage + "')");
     $('.bg.hidden').css('background', htmlRender.newGradient());
     $('.bg').toggleClass('hidden');

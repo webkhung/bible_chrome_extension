@@ -172,7 +172,7 @@ h2 {
 
 #plans-selector .plan-name {
 
-    font-size: 24px;
+    font-size: 22px;
     color: #5E5E5E;
     font-weight: 500;
 }
@@ -436,12 +436,12 @@ h2 {
 }
 
 .myButtonSmallLink {
-    color: #0D7FEF;
+    color: #efa715;
     font-weight: bold;
 }
 
 .myButtonSmallLink:hover {
-    color: #4b9522;
+    color: #ef9329;
 }
 
 .debug {
@@ -736,7 +736,8 @@ ul.vertical-list li a:hover {
 }
 
 #passages-container #passage-header {
-    font-size: 60px;
+    font-size: 40px;
+    font-weight: bold;
     text-align: center;
     opacity: 0.7;
     color: white;
