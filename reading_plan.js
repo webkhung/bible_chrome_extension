@@ -4,14 +4,16 @@ var userId = '';
 var userName = '';
 var htmlRender = new HTMLRender();
 var DAILY_MEMORIZED_GOAL = 4;
-var HOST = 'biblereadingplans.herokuapp.com';
-//var HOST = 'localhost:3001';
+//var HOST = 'biblereadingplans.herokuapp.com';
+var HOST = 'localhost:3001';
 var memorizedCount = 0;
 var game = new Game();
 var textAnimations = ['rotateIn', 'rotateInDownLeft', 'rotateInDownRight', 'fadeIn', 'fadeInUp', 'fadeInDown',
     'fadeInLeft', 'fadeInRight', 'fadeInDownBig', 'bounceIn', 'bounceInDown']; // pulse, flip, 'fadeInLeftBig', 'fadeInRightBig'
 var rated = false;
 var bgImage;
+var lastReadDate;
+var lastSite;
 
 var readingPlans = [
     {
@@ -104,7 +106,52 @@ var readingPlans = [
         "badge": "",
         "description": "",
         "days": ["Galatians.6:9","3John.1:8","Ecclesiastes.11:1-2","1Timothy.6:18","Proverbs.21:5","Deuteronomy.8:18","Matthew.6:24"]
+    },
+    {
+        "id": "100",
+        "name": "Genesis",
+        "badge": "",
+        "description": "",
+        "type" : "book",
+        "days": ["Genesis.1-2", "Genesis.3-5", "Genesis.6-8", "Genesis.9-11", "Genesis.12-14", "Genesis.15-17", "Genesis.18-19", "Genesis.20-22", "Genesis.23-24", "Genesis.25-26", "Genesis.27-28", "Genesis.29-30", "Genesis.31-32", "Genesis.33-35", "Genesis.36-37", "Genesis.38-40", "Genesis.41", "Genesis.42-43", "Genesis.44-45", "Genesis.46-48", "Genesis.49-50"]
+    },
+    {
+        "id": "101",
+        "name": "John",
+        "badge": "",
+        "description": "",
+        "type" : "book",
+        "days": ["John.1:1-28", "John.1:29-51", "John.2:1-25" , "John.3:1-21", "John.3:22-36" , "John.4:1-26" , "John.4:27-54", "John.5:1-30", "John.5:31-6:14", "John.6:15-50" , "John.6:60-7:9", "John.7:10-44", "John.7:45-8:20", "John.8:21-47", "John.8:48-9:12", "John.9:13-41", "John.10:1-21", "John.10:22-11:16", "John.11:17-44", "John.11:45-12:19", "John.12:20-50", "John.13:1-30", "John.13:31-14:18", "John.14:19-15:17", "John.15:18-16:24", "John.16:25-17:19", "John.17:20-18:11", "John.18:12-40", "John.19:1-30", "John.19:31-20:18", "John.20:19-21:25"]
+    },
+    {
+        "id": "102",
+        "name": "Luke",
+        "badge": "",
+        "description": "",
+        "type" : "book",
+        "days": ["Luke.1", "Luke.2", "Luke.3", "Luke.4", "Luke.5", "Luke.6", "Luke.7", "Luke.8", "Luke.9", "Luke.10", "Luke.11", "Luke.12", "Luke.13", "Luke.14", "Luke.15", "Luke.16", "Luke.17", "Luke.18", "Luke.19", "Luke.20", "Luke.21", "Luke.22", "Luke.23", "Luke.24"]
+    },
+    {
+        "id": "103",
+        "name": "Matthew",
+        "badge": "",
+        "description": "",
+        "type" : "book",
+        "days": ["Matthew.1", "Matthew.2", "Matthew.3", "Matthew.4", "Matthew.5", "Matthew.6", "Matthew.7", "Matthew.8", "Matthew.9", "Matthew.10", "Matthew.11", "Matthew.12", "Matthew.13", "Matthew.14", "Matthew.15", "Matthew.16", "Matthew.17", "Matthew.18", "Matthew.19", "Matthew.20", "Matthew.21", "Matthew.22", "Matthew.23", "Matthew.24", "Matthew.25", "Matthew.26", "Matthew.27"]
+    },
+    {
+        "id": "104",
+        "name": "Mark",
+        "badge": "",
+        "description": "",
+        "type" : "book",
+        "days": ["Mark.1", "Mark.2", "Mark.3", "Mark.4", "Mark.5", "Mark.6", "Mark.7", "Mark.8", "Mark.9", "Mark.10", "Mark.11", "Mark.12", "Mark.13", "Mark.14", "Mark.15", "Mark.16"]
     }
+
+
+
+
+    // Remember to add circle css (styles.css line 490)
 ]
 
 function Plan(json){
@@ -120,7 +167,7 @@ function Plan(json){
     this.numDaysFinished = function() { return this.completedOn.length; }
     this.lastCompletedDate = function() { return this.completedOn[this.completedOn.length - 1]; }
     this.dayCompleted = function(){
-        this.completedOn[this.completedOn.length] = today; // formatDate(new Date());
+        this.completedOn[this.completedOn.length] = today;
     }
     this.nextVerse = function(){
         if(this.completed()){
@@ -133,6 +180,10 @@ function Plan(json){
     this.completed = function(){
         return this.added && this.numDaysFinished() >= this.numOfDays;
     }
+    this.todayCompleted = function(){
+        return this.completedOn[this.completedOn.length-1] == today;
+    }
+    this.type = json["type"];
 }
 
 function saveData(){
@@ -260,7 +311,6 @@ function HTMLRender(){
                 return;
             }
             $ulWeekly = $('#memorized-stats-weekly').empty();
-//            $ulWeekly.append('<p>Join these people to memorize bible verses:</p>');
             $names = $('<p />');
             $names.append('<span>People memorize bible verses this week:</span>')
 
@@ -305,47 +355,33 @@ function HTMLRender(){
         });
     }
 
-//    this.fetchBgRating = function(){
-//        $.get('http://' + HOST + '/bg_rating', function(data){
+    this.fetchStartupData = function(){
+        $.get('http://' + HOST + '/menu', function(data){
+            $('.responsive-menu').append(data);
+
+            var latestNewsDate = $('.responsive-menu').find('#news').data('latest-news-update')
+
+            if(lastReadDate === undefined || (new Date(lastReadDate)) < (new Date(latestNewsDate))){
+                $('#news').addClass('has-news');
+                $('#menu-notification').show();
+            }
+
 //            var json = JSON.parse(data);
 //
-//            if (json['high'].length == 0){
-//                return;
+//            if(lastReadDate === undefined || (new Date(lastReadDate)) < (new Date(json['latestNewsDate']))){
+//                $('#news').addClass('has-news');
+//                $('#menu-notification').show();
 //            }
+//            $('#news').data('date', json['latestNewsDate']);
 //
-//            $ul = $('<div />');
-////            $ul.addClass('horizontal-list')
-//            $('#bg-rating').append($ul);
-//
-////            $ul.append('<span>TOTAL VOTES: '+ json['total'] +'</span><span></span>');
-////            $ul.append('<span><span class=symbol2>&#10003;</span> HIGHLY RATED:</span>');
-//            $ul.append('<span>TOP RATED BACKGROUNDS:</span>');
-//            for(var i=0; i < json['high'].length && i < 5; i++){
-//                var linkBg = $('<a />').attr({
-//                    href: 'images/' + json['high'][i],
-//                    target: '_blank'
-//                }).text(json['high'][i].split('.')[0]);
-//                linkBg.attr('data-rate', 'high');
-//                linkBg.click(ratedBgClicked);
-//                var span = $('<span />');
-//                $ul.append(span.append(linkBg));
-//            }
-//
-////            $ul.append('<span><span class=symbol2>&#10008;</span> LOWLY RATED:</span>');
-////            for(var i=0; i < json['low'].length && i < 5; i++){
-////                var linkBg = $('<a />').attr({
-////                    href: 'images/' + json['low'][i],
-////                    target: '_blank'
-////                }).text(json['low'][i].split('.')[0]);
-////                linkBg.attr('data-rate', 'low');
-////                linkBg.click(ratedBgClicked);
-////                var span = $('<span />');
-////                $ul.append(span.append(linkBg));
+//            var site = json['site'];
+////            if (site != lastSite) {
+////                $('#site').addClass('has-news')
 ////            }
 //
-//            $('#rate-background').append()
-//        });
-//    }
+//            $('#site').attr('href', site);
+        });
+    }
 
     this.showAddedPlans = function(selectedPlanId){
         $plan = $('#added-plans');
@@ -360,7 +396,10 @@ function HTMLRender(){
                     $container.append("<div class='plan-badge'><span class='circle circle-solid-" + planId + "'><img src='images/star.png'></span></div>");
                 }
                 else {
-                    $container.append("<div class='plan-badge'><span class='circle circle-solid-" + planId + "'><span class='currentDay'>Day " + plan.completedOn.length + "</span></span></div>");
+                    var days = plan.completedOn.length;
+                    if (plan.type == 'book' && !plan.todayCompleted())
+                        days++;
+                    $container.append("<div class='plan-badge'><span class='circle circle-solid-" + planId + "'><span class='currentDay'>Day " + days + "</span></span></div>");
                 }
 
                 $rightCol = $("<div class='plan-right'>");
@@ -406,12 +445,13 @@ function HTMLRender(){
         $planSelector.append('<div id="plansSelectorHeader"></div>');
 
         var numPlansAdded = 0;
+        var bFirstBook = false;
         for(var planId in objPlans){
             var plan = objPlans[planId];
             $container = $("<div class='plan-container'>")
             $rightCol = $("<div class='plan-right'>");
             $rightCol.append("<div class='plan-name'>" + plan.name + "</div>");
-//            $rightCol.append("<div class='plan-subtext'>" + plan.numOfDays + ' Days ' + "</div>");
+            // $rightCol.append("<div class='plan-subtext'>" + plan.numOfDays + ' Days ' + "</div>");
             $meta = $("<span class='plan-meta'>");
             if(plan.added){
                 numPlansAdded++;
@@ -427,11 +467,23 @@ function HTMLRender(){
                 addPlanLink.click({ param1: planId }, addPlanLinkClicked)
                 $meta.append(addPlanLink);
             }
+
+            if(plan.type == 'book'){
+                $rightCol.append("<div class='plan-subtext'>(" + plan.numOfDays + ' Days ' + ")</div>");
+            }
+
             $rightCol.append($meta);
             $container.append($rightCol);
+
+            if(plan.type == 'book' && !bFirstBook){
+                bFirstBook = true;
+                $planSelector.append("<div style='text-align: center; clear: both'><h2>Add a Plan By Book <span style='font-style: italic;'>(Beta)</span></h2><div class='by-book-sub-text'>We want to help make reading God’s Word easier, so we included full books to our reading plans!  Give it a try, and let us know what you think.</div></div>");
+            }
+
             $planSelector.append($container);
         }
-        var addPlansText = '<h1><span class=username>' + userName + ',</span> Make God\'s Word Part Of Your Day!</h1><h2>Select a Plan Below</h2>';
+        var addPlansText = '<h2>Add a Plan By Topic:</h2>';
+//        var addPlansText = '<h1><span class=username>' + userName + ',</span> Make God\'s Word Part Of Your Day!</h1><h2>By Topic:</h2>';
         $planSelector.find('#plansSelectorHeader').html(addPlansText);
         $planSelector.append("<div style='text-align: center; clear: both'><a id='plans-close' class='myButton' href='#'>Close</a></div>");
         $planSelector.show();
@@ -461,50 +513,67 @@ function HTMLRender(){
         return 'radial-gradient('+_c1+', '+_c2+')';
     }
 
-    this.screenTodayVerses = function(data, planId, day){
+    this.screenTodayVerses = function(verses, planId, day){
         console.log('screenTodayVerses ' + planId + ',' + day);
         $('#reveal-button').removeClass('no-link').data('planId', planId).data('day', day);
 
-        var verses = game.replaceVerses(data, memorizedCount);
-        $('#passages').empty().append(verses);
-
-        // READ SCREEN
-        if(memorizedCount == 0){
-            var animation = textAnimations[getRandom(1, textAnimations.length)[0]-1];
-//            $('#passages').show();
-//            $('#reveal-button').hide().css('visibility','visible').text('Memorize').data('start-memorize', true).fadeIn('slow');
-
-            $('#passages').textillate({ in: { effect: animation, delay: 30, shuffle: false, callback: function(){
-                bgClear();
-                $('#reveal-button').hide().css('visibility','visible').text('Memorize').data('start-memorize', true).fadeIn('slow');
-                $('#memorized-stats-weekly').fadeIn();
-                usageType = 'VIEWED-LIKE';
-                $.get('http://' + HOST + '/usage', { usage_type: usageType, plan_id: planId, day: day, user_id: userId, user_name: userName, details: verses.length });
-            }}});
-
-            $('#hint-button, #ticks').hide();
+        if(objPlans[planId].type == 'book'){
+            var dayFinished = objPlans[planId].numDaysFinished();
+            var key = planId + '_' + (dayFinished + 1);
+            chrome.storage.sync.get(key, function (data) {
+                var partFinished = 0;
+                if (data !== undefined && data[key] !== undefined){
+                    partFinished = data[key];
+                }
+                $p = $('<div>' + verses + '</div>');
+                $paragraphies = $p.find('.p');
+                verses = $paragraphies[partFinished];
+                $('#passages').empty().append(verses).show();
+                var msgText = 'Today ' + partFinished + ' / ' + $paragraphies.length + ' Completed';
+                $('#message').html(msgText).show();
+                $('#reveal-button').hide().css('visibility','visible').text('Next').fadeIn('slow')
+                    .data('total-parts', $paragraphies.length).data('part', partFinished + 1)
+                    .data('read-book', true);
+            });
         }
-        // GAME SCREEN
         else {
-            htmlRender.fetchMemorized();
-            htmlRender.fetchMemorizedStatsWeekly();
-            $('#memorized-verses-container, #memorized-stats-past-weekly').slideDown(2000);
-            $('#reveal-button').css('visibility','visible').text('Done').data('start-memorize', false);
-            $('#hint-button').show().removeClass('no-link').data('planId', planId).data('day', day);
-            $('#ticks').show();
-            $('.hide-in-memorize').fadeOut();
-            $('#message').html('Fill in the blank spaces');
-            showTicks(memorizedCount);
-        }
-    }
+            verses = game.replaceVerses(verses, memorizedCount);
+            $('#passages').empty().append(verses);
 
-    this.showFeedback = function(){
-        $('#feedback').show();
+            // READ SCREEN
+            if(memorizedCount == 0){
+                var animation = textAnimations[getRandom(1, textAnimations.length)[0]-1];
+    //            $('#passages').show();
+    //            $('#reveal-button').hide().css('visibility','visible').text('Memorize').data('start-memorize', true).fadeIn('slow');
+
+                $('#passages').textillate({ in: { effect: animation, delay: 30, shuffle: false, callback: function(){
+                    bgClear();
+                    $('#reveal-button').hide().css('visibility','visible').text('Memorize').data('start-memorize', true).fadeIn('slow');
+                    $('#memorized-stats-weekly').fadeIn();
+                    usageType = 'VIEWED-LIKE';
+                    $.get('http://' + HOST + '/usage', { usage_type: usageType, plan_id: planId, day: day, user_id: userId, user_name: userName, details: verses.length });
+                }}});
+
+                $('#hint-button, #ticks').hide();
+            }
+            // GAME SCREEN
+            else {
+                htmlRender.fetchMemorized();
+                htmlRender.fetchMemorizedStatsWeekly();
+                $('#memorized-verses-container, #memorized-stats-past-weekly').slideDown(2000);
+                $('#reveal-button').css('visibility','visible').text('Done').data('start-memorize', false);
+                $('#hint-button').show().removeClass('no-link').data('planId', planId).data('day', day);
+                $('#ticks').show();
+                $('.hide-in-memorize').fadeOut();
+                $('#message').html('Fill in the blank spaces');
+                showTicks(memorizedCount);
+            }
+        }
     }
 }
 
 function versesProcess(data, planId, day){
-    console.log('versesProcess ' + ',' + data  + ',' + planId  + ',' + day);
+    console.log('versesProcess ' + planId  + ',' + day);
     htmlRender.screenTodayVerses(data, planId, day);
 }
 
@@ -519,9 +588,15 @@ function versesNext(planId, day){
         for(var planId in objPlans){
             var plan = objPlans[planId];
             if(plan.added && !plan.completed() && plan.lastCompletedDate() != today) {
-                versesTodayCompleted(planId);
-                var day = plan.numDaysFinished();
-                versesFetch(planId, day);
+                if(objPlans[planId].type == 'book'){
+                    var day = plan.numDaysFinished() + 1;
+                    versesFetch(planId, day);
+                }
+                else {
+                    versesTodayCompleted(planId);
+                    var day = plan.numDaysFinished();
+                    versesFetch(planId, day);
+                }
                 return;
             }
         }
@@ -541,6 +616,8 @@ function versesFetch(planId, day){
     console.log('versesFetch ' + planId + ',' + day);
 
     $('#passages-container').show();
+    $('#message, #reveal-button').hide();
+
     var key = 'planId' + planId + '-' + day;
     chrome.storage.sync.get(key, function (data) {
         if (data !== undefined && data[key] !== undefined){
@@ -552,7 +629,9 @@ function versesFetch(planId, day){
             $.get('http://' + HOST + '/verses', { plan_id: planId, day: day, user_id: userId, user_name: userName }, function(verses){
                 var data = {}
                 data[key] = verses;
-                chrome.storage.sync.set(data);
+                if(objPlans[planId].type != 'book'){
+                    chrome.storage.sync.set(data);
+                }
                 versesProcess(verses, planId, day);
             });
         }
@@ -626,55 +705,10 @@ function userNameSubmitClicked(){
         $('#user-name-container').fadeOut('slow', function(){
             versesNext();
             $('#new-plan-link').show();
+            htmlRender.fetchStartupData();
         });
     }
 }
-
-//function rateBackgroundClicked(){
-//    var rating = $(this).data('rate');
-//    if(rating == '1'){
-//        $('#rate-background p').text('How about this one?');
-//        bgImage = "bg" + (Math.floor(Math.random() * 31) + 1) + ".jpg";
-//        $('body').css('background-image', "url('images/" + bgImage + "')");
-//    }
-//    else if(rating == '5'){
-//        $('#rate-background a').hide();
-//        $('#rate-background p').text('Thank you for rating!');
-//        htmlRender.fetchBgRating();
-//    }
-//
-//    $.get('http://' + HOST + '/usage', { usage_type: 'RATE-BG', user_id: userId, user_name: userName, details: $(this).data('rate') + '-' + bgImage });
-//}
-
-//function ratedBgClicked(){
-//    $.get('http://' + HOST + '/usage', { usage_type: 'VIEW-RATED-BG', user_id: userId, user_name: userName, details: $(this).data('rate')});
-//}
-
-//function rateYesClicked(){
-//    var data = {}
-//    data['rated'] = 'yes';
-//    chrome.storage.sync.set(data);
-//    $.get('http://' + HOST + '/usage', { usage_type: 'RATE-YES', user_id: userId, user_name: userName });
-//}
-//
-//function rateNoClicked(){
-//    $('#rate-container').fadeOut();
-//    var data = {}
-//    data['rated'] = 'no';
-//    chrome.storage.sync.set(data);
-//    $.get('http://' + HOST + '/usage', { usage_type: 'RATE-NO', user_id: userId, user_name: userName });
-//}
-
-//function feedbackCloseClicked(){
-//    $('#feedback').hide();
-//    var data = {}
-//    data['feedback-closed'] = '1';
-//    chrome.storage.sync.set(data);
-//}
-
-//function helpClicked(){
-//    htmlRender.showFeedback();
-//}
 
 function revealClicked(){
     var usageType = '';
@@ -690,6 +724,29 @@ function revealClicked(){
         timeoutLength = 0;
         $('#message').empty();
         incrementMemorizedCount();
+    }
+    else if($(this).data('read-book')) {
+        $('#reveal-button').hide();
+        var part = parseInt($(this).data('part'));
+        var totalParts = parseInt($(this).data('total-parts'));
+
+        var dayFinished = objPlans[planId].numDaysFinished();
+        var key = planId + '_' + (dayFinished + 1);
+
+        var data = {};
+        data[key] = part;
+        chrome.storage.sync.set(data, function(){
+            if(part == totalParts){
+                versesTodayCompleted(planId);
+                $('#message').text('Good Job!  You have finished today\'s verse!').fadeIn('slow');
+            }
+            else {
+                $('#message').empty();
+                versesNext(planId, day);
+            }
+        });
+
+        return;
     }
     else {
         var bHint = $(this).attr('id') == 'hint-button';
@@ -751,24 +808,46 @@ function memorizedVersesClicked(){
     $.get('http://' + HOST + '/usage', { usage_type: 'MEMORIZED-VERSES-CLICKED', user_id: userId, user_name: userName, plan_id: $(this).data('plan-id'), day: $(this).data('plan-day')});
 }
 
-function trackClicked(usage_type) {
-    $.get('http://' + HOST + '/usage', { usage_type: usage_type, user_id: userId, user_name: userName});
+function trackClicked(usage_type, details) {
+    $.get('http://' + HOST + '/usage', { usage_type: usage_type, user_id: userId, user_name: userName, details: details});
 }
 
-function greeting(){
-    var myDate = new Date();
-    var hrs = myDate.getHours();
+//function greeting(){
+//    var myDate = new Date();
+//    var hrs = myDate.getHours();
+//
+//    var greet;
+//
+//    if (hrs >= 4 && hrs < 12)
+//        greet = 'Good Morning';
+//    else if (hrs >= 12 && hrs <= 18)
+//        greet = 'Good Afternoon';
+//    else
+//        greet = 'Good Evening';
+//
+//    $('#home span').text(greet + ', ' + userName.substring(0,30) + '!')
+//}
 
-    var greet;
+function menuClicked(){
+    trackClicked('menu-clicked');
+    $('.responsive-menu').toggleClass('expand')
+}
 
-    if (hrs >= 4 && hrs < 12)
-        greet = 'Good Morning';
-    else if (hrs >= 12 && hrs <= 18)
-        greet = 'Good Afternoon';
-    else
-        greet = 'Good Evening';
+function menuItemClicked(){
+    var linkId = $(this).attr('id');
+    trackClicked(linkId + '-clicked');
 
-    $('#home span').text(greet + ', ' + userName.substring(0,30) + '!')
+    if(linkId == 'news'){
+        $('#menu-notification').hide();
+        var data = {};
+        data['lastReadDate'] = $(this).data('latest-news-update');
+        chrome.storage.sync.set(data);
+    }
+    else if(linkId == 'site'){
+        var data = {};
+        data['lastSite'] = $(this).attr('href');
+        chrome.storage.sync.set(data);
+    }
 }
 
 $( document ).ready(function() {
@@ -802,23 +881,20 @@ $( document ).ready(function() {
         else {
             userName = userData['userName'];
             versesNext();
-            greeting();
+            htmlRender.fetchStartupData();
         }
 
-        rated = userData['rated'];
+        $('.username').text(userData['userName']);
 
-        $('#superuser-name').text(userData['userName']);
-        $('#help').show();
+        lastReadDate = userData['lastReadDate'];
+        lastSite = userData['lastSite'];
+        rated = userData['rated'];
     });
 
     $('#reveal-button, #hint-button').click(revealClicked);
     $('#user-name-submit').click(userNameSubmitClicked);
-
-//    $('#feedback-close').click(feedbackCloseClicked);
-//    $('#help').click(helpClicked);
-//    $('#rate-yes-button').click(rateYesClicked);
-//    $('#rate-no-button').click(rateNoClicked);
-//    $('#rate-web-store').click(trackClicked('rate-web-store'));
+    $('.responsive-menu').on('click', 'a', menuItemClicked);
+    $('.menu-btn').click(menuClicked)
 
     $('.maincontainer').on('click', '#new-plan-link', function(){
         htmlRender.screenPlanSelector();
@@ -828,11 +904,6 @@ $( document ).ready(function() {
     $('#plans-selector').on('click', '#plans-close', function(){
         $('.popup').hide();
         $('.hide-in-select-plans').show();
-    });
-
-
-    $('#home a').click(function(){
-        trackClicked('home-clicked')
     });
 
     // Debug stuffs
@@ -853,8 +924,6 @@ $( document ).ready(function() {
         htmlRender.showAddedPlans();
         versesNext();
     });
-
-//    $('#rate1, #rate2, #rate3, #rate4, #rate5').click(rateBackgroundClicked);
 
     rollBg();
 });
