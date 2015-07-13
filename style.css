@@ -245,13 +245,17 @@ h2 {
 }
 
 
-#passages .p {
+#passages .p , #passages .m {
     font-size: 15px;
 }
 
 #passages p {
     display: inline-block;
     margin: 10px 0;
+}
+
+#passages sup {
+    padding-left: 5x;
 }
 
 #passages a {

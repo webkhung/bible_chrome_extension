@@ -4,8 +4,8 @@ var userId = '';
 var userName = '';
 var htmlRender = new HTMLRender();
 var DAILY_MEMORIZED_GOAL = 4;
-//var HOST = 'biblereadingplans.herokuapp.com';
-var HOST = 'localhost:3001';
+var HOST = 'biblereadingplans.herokuapp.com';
+//var HOST = 'localhost:3001';
 var memorizedCount = 0;
 var game = new Game();
 var textAnimations = ['rotateIn', 'rotateInDownLeft', 'rotateInDownRight', 'fadeIn', 'fadeInUp', 'fadeInDown',
@@ -365,21 +365,6 @@ function HTMLRender(){
                 $('#news').addClass('has-news');
                 $('#menu-notification').show();
             }
-
-//            var json = JSON.parse(data);
-//
-//            if(lastReadDate === undefined || (new Date(lastReadDate)) < (new Date(json['latestNewsDate']))){
-//                $('#news').addClass('has-news');
-//                $('#menu-notification').show();
-//            }
-//            $('#news').data('date', json['latestNewsDate']);
-//
-//            var site = json['site'];
-////            if (site != lastSite) {
-////                $('#site').addClass('has-news')
-////            }
-//
-//            $('#site').attr('href', site);
         });
     }
 
@@ -428,7 +413,8 @@ function HTMLRender(){
 
         if(selectedPlanId !== undefined){
             $('#added-plan-' + selectedPlanId + ' .circle').addClass('blink_me');
-            $('#passage-header').hide().text(objPlans[selectedPlanId].name).fadeIn(2000);
+            var fadeInTime = objPlans[selectedPlanId].type == 'book' ? 0 : 2000;
+            $('#passage-header').hide().text(objPlans[selectedPlanId].name).fadeIn(fadeInTime);
         }
     }
 
@@ -526,11 +512,43 @@ function HTMLRender(){
                     partFinished = data[key];
                 }
                 $p = $('<div>' + verses + '</div>');
-                $paragraphies = $p.find('.p');
+
+                var $pNew = $('<div></div>');
+                var $pTemp;
+                var b_q1 = false;
+                $p.find('.p, .q1, .q2, .m').each(function(){
+                    if($(this).hasClass('p') || $(this).hasClass('m')){
+                        if($pTemp !== undefined){
+                            $pNew.append($pTemp);
+                            $pTemp = undefined;
+                            b_q1 = false;
+                        }
+                        $pNew.append($(this));
+                    }
+                    else if($(this).hasClass('q1')){
+                        if(!b_q1) {
+                            b_q1 = true;
+                            $pTemp = $('<p class=p></p>');
+                        }
+                        $pTemp.append($(this).html());
+                    }
+                    else if($(this).hasClass('q2')){
+                        $pTemp.append($(this).html());
+                    }
+                });
+                if($pTemp !== undefined){
+                    $pNew.append($pTemp);
+                }
+
+                $paragraphies = $pNew.find('.p, .m');
+
                 verses = $paragraphies[partFinished];
                 $('#passages').empty().append(verses).show();
-                var msgText = 'Today ' + partFinished + ' / ' + $paragraphies.length + ' Completed';
-                $('#message').html(msgText).show();
+                var msgText = 'Today ' + (partFinished + 1) + ' / ' + $paragraphies.length;
+//                $('#message').html(msgText).show();
+                var animation = textAnimations[getRandom(1, textAnimations.length)[0]-1];
+//                $('#message').empty().hide();
+                $('#message').html(msgText).show().textillate({ in: { effect: animation, delay: 30, shuffle: false}});
                 $('#reveal-button').hide().css('visibility','visible').text('Next').fadeIn('slow')
                     .data('total-parts', $paragraphies.length).data('part', partFinished + 1)
                     .data('read-book', true);
@@ -729,10 +747,8 @@ function revealClicked(){
         $('#reveal-button').hide();
         var part = parseInt($(this).data('part'));
         var totalParts = parseInt($(this).data('total-parts'));
-
         var dayFinished = objPlans[planId].numDaysFinished();
         var key = planId + '_' + (dayFinished + 1);
-
         var data = {};
         data[key] = part;
         chrome.storage.sync.set(data, function(){
@@ -745,6 +761,9 @@ function revealClicked(){
                 versesNext(planId, day);
             }
         });
+
+        var details = part + '/' + totalParts;
+        $.get('http://' + HOST + '/usage', { usage_type: 'BOOK', plan_id: $(this).data('planId'), day: $(this).data('day'), user_id: userId, user_name: userName, details: details }, function(data){});
 
         return;
     }
