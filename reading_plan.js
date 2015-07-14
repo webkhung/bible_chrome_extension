@@ -579,7 +579,7 @@ function HTMLRender(){
                 htmlRender.fetchMemorized();
                 htmlRender.fetchMemorizedStatsWeekly();
                 $('#memorized-verses-container, #memorized-stats-past-weekly').slideDown(2000);
-                $('#reveal-button').css('visibility','visible').text('Done').data('start-memorize', false);
+                $('#reveal-button').css('visibility','visible').show().text('Done').data('start-memorize', false);
                 $('#hint-button').show().removeClass('no-link').data('planId', planId).data('day', day);
                 $('#ticks').show();
                 $('.hide-in-memorize').fadeOut();
