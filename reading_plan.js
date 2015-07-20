@@ -356,19 +356,25 @@ function HTMLRender(){
     }
 
     this.fetchStartupData = function(){
-        $.get('http://' + HOST + '/menu', function(data){
-            $('.responsive-menu').append(data);
+        $.get('http://' + HOST + '/startup_data', function(data){
 
-            var latestNewsDate = $('.responsive-menu').find('#news').data('latest-news-update')
+            var json = JSON.parse(data);
 
-            if(lastReadDate === undefined || (new Date(lastReadDate)) < (new Date(latestNewsDate))){
-                $('#news').addClass('has-news');
-                $('#menu-notification').show();
-            }
+            $('.responsive-menu').append(json['menu']);
+            $('#sotw').attr('href', json['site_of_the_week']);
+
+//            $('.responsive-menu').append(data);
+
+//            var latestNewsDate = $('.responsive-menu').find('#news').data('latest-news-update')
+//
+//            if(lastReadDate === undefined || (new Date(lastReadDate)) < (new Date(latestNewsDate))){
+//                $('#news').addClass('has-news');
+//                $('#menu-notification').show();
+//            }
         });
     }
 
-    this.showAddedPlans = function(selectedPlanId){
+    this.showAddedPlans = function(selectedPlanId, day){
         $plan = $('#added-plans');
         $plan.empty();
         for(var planId in objPlans){
@@ -377,15 +383,17 @@ function HTMLRender(){
                 $container = $("<div class='plan-container'>")
                 $container.attr('id', 'added-plan-' + plan.id);
 
-                if(plan.completed()) {
-                    $container.append("<div class='plan-badge'><span class='circle circle-solid-" + planId + "'><img src='images/star.png'></span></div>");
-                }
-                else {
-                    var days = plan.completedOn.length;
-                    if (plan.type == 'book' && !plan.todayCompleted())
-                        days++;
-                    $container.append("<div class='plan-badge'><span class='circle circle-solid-" + planId + "'><span class='currentDay'>Day " + days + "</span></span></div>");
-                }
+//                if(plan.completed()) {
+//                    $container.append("<div class='plan-badge'><span class='circle circle-solid-" + planId + "'><span class='currentDay'>&#x2713;</span></span></div>");
+//                }
+//                else {
+//                    var days = plan.completedOn.length;
+//                    if (plan.type == 'book' && !plan.todayCompleted())
+//                        days++;
+//                    $container.append("<div class='plan-badge'><span class='circle circle-solid-" + planId + "'><span class='currentDay'>" + days + "</span></span></div>");
+//                }
+
+                $container.append("<div class='plan-badge'><span class='circle circle-solid-" + planId + "'></span></div>");
 
                 $rightCol = $("<div class='plan-right'>");
 
@@ -399,12 +407,12 @@ function HTMLRender(){
                     goal : plan.days.length.toString(),
                     raised : plan.completedOn.length.toString(),
                     width : '150px',
-                    height : '22px',
+                    height : '7px',
                     bgColor : '#dadada',
                     barColor : '#f09246',
                     displayTotal: false
                 });
-                $rightCol.append($jqmeter);
+//                $rightCol.append($jqmeter);
 
                 $container.append($rightCol);
                 $plan.append($container);
@@ -414,7 +422,10 @@ function HTMLRender(){
         if(selectedPlanId !== undefined){
             $('#added-plan-' + selectedPlanId + ' .circle').addClass('blink_me');
             var fadeInTime = objPlans[selectedPlanId].type == 'book' ? 0 : 2000;
-            $('#passage-header').hide().text(objPlans[selectedPlanId].name).fadeIn(fadeInTime);
+            var strCompleted = (objPlans[selectedPlanId].completed()) ? ' (Completed)' : '';
+            var strDays = '<div>Day ' + day + ' of ' + objPlans[selectedPlanId].numOfDays + strCompleted + '</div>';
+            var header = objPlans[selectedPlanId].name + strDays;
+            $('#passage-header').hide().html(header).fadeIn(fadeInTime);
         }
     }
 
@@ -442,15 +453,19 @@ function HTMLRender(){
             if(plan.added){
                 numPlansAdded++;
                 if(plan.completed()){
-                    $meta.append(" Completed <img src='images/star22.png'>");
+                    $meta.append(" Completed!");
                 }
                 else {
                     $meta.append(' Added');
+
+                    var removePlanLink = $('<a />').attr({ class: 'myButtonSmallLink removeClick', href: '#' }).text('Remove');
+                    removePlanLink.click({ param1: planId, param2: false }, addPlanLinkClicked)
+                    $meta.append(removePlanLink);
                 }
             }
             else {
                 var addPlanLink = $('<a />').attr({ class: 'myButtonSmallLink', href: '#' }).text('Add');
-                addPlanLink.click({ param1: planId }, addPlanLinkClicked)
+                addPlanLink.click({ param1: planId, param2: true }, addPlanLinkClicked)
                 $meta.append(addPlanLink);
             }
 
@@ -621,8 +636,15 @@ function versesNext(planId, day){
 
         var randomPlan = randomAddedPlan();
         if(randomPlan){
+            var day;
+            if(randomPlan.completed()){
+                day = getRandom(1, randomPlan.numDaysFinished())[0];
+            }
+            else {
+                day = randomPlan.numDaysFinished();
+            }
             console.log('versesNext from random plan');
-            versesFetch(randomPlan.id, getRandom(1, randomPlan.numDaysFinished())[0]);
+            versesFetch(randomPlan.id, day);
             return;
         }
     }
@@ -654,7 +676,7 @@ function versesFetch(planId, day){
             });
         }
     });
-    htmlRender.showAddedPlans(planId);
+    htmlRender.showAddedPlans(planId, day);
     $('#rate-background').fadeIn('slow');
     $('#passages').html('Loading');
 }
@@ -701,7 +723,7 @@ function clearInput(){
 
 function addPlanLinkClicked(event){
     var planId = event.data.param1;
-    objPlans[planId].added = true;
+    objPlans[planId].added = event.data.param2;
     htmlRender.showAddedPlans();
     versesNext();
     $('#plans-selector').hide();
@@ -856,17 +878,17 @@ function menuItemClicked(){
     var linkId = $(this).attr('id');
     trackClicked(linkId + '-clicked');
 
-    if(linkId == 'news'){
-        $('#menu-notification').hide();
-        var data = {};
-        data['lastReadDate'] = $(this).data('latest-news-update');
-        chrome.storage.sync.set(data);
-    }
-    else if(linkId == 'site'){
-        var data = {};
-        data['lastSite'] = $(this).attr('href');
-        chrome.storage.sync.set(data);
-    }
+//    if(linkId == 'news'){
+//        $('#menu-notification').hide();
+//        var data = {};
+//        data['lastReadDate'] = $(this).data('latest-news-update');
+//        chrome.storage.sync.set(data);
+//    }
+//    else if(linkId == 'site'){
+//        var data = {};
+//        data['lastSite'] = $(this).attr('href');
+//        chrome.storage.sync.set(data);
+//    }
 }
 
 $( document ).ready(function() {
@@ -913,6 +935,7 @@ $( document ).ready(function() {
     $('#reveal-button, #hint-button').click(revealClicked);
     $('#user-name-submit').click(userNameSubmitClicked);
     $('.responsive-menu').on('click', 'a', menuItemClicked);
+    $('#sotw').click(menuItemClicked);
     $('.menu-btn').click(menuClicked)
 
     $('.maincontainer').on('click', '#new-plan-link', function(){
