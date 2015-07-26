@@ -330,7 +330,7 @@ function Game(){
         }
         else {
             $scripture = $p.find('.scripture').remove();
-            final = game.hideWords($p.text(), memorizedCount, $scripture);
+            final = game.hideWords($p.text().replace(/“/g,''), memorizedCount, $scripture);
         }
 
         console.log('memorizedCount ' + memorizedCount);
