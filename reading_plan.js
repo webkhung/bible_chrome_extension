@@ -13,20 +13,26 @@ var textAnimations = ['rotateIn', 'rotateInDownLeft', 'rotateInDownRight', 'fade
 var rated = false;
 var bgImage;
 var lastReadDate;
-var lastSite;
 
 var readingPlans = [
     {
+        "id": "14",
+        "name": "Top Memorized",
+        "badge": "",
+        "description": "",
+        "days": ["John.3:16","Philippians.4:6","Romans.12:2","Galatians.2:20","Romans.6:23","Romans.12:1","Ephesians.2:8","Philippians.4:7","Romans.8:28","Psalms.1:1","Romans.5:8","Proverbs.3:5","Hebrews.12:1","Romans.3:23","Genesis.1:1","Proverbs.3:6","Philippians.4:8","Psalms.119:11","Psalms.1:2","Galatians.5:22","2.Timothy.3:16","Philippians.4:13","Psalms.23:1","Ephesians.2:9","John.1:1","Psalms.1:3","2.Corinthians.5:17","Psalms.23:6","Psalms.23:4","Psalms.23:2","Psalms.23:3","1.John.1:9","Psalms.23:5","James.1:2","Psalms.1:6","Joshua.1:8","Psalms.1:5","Psalms.1:4","Jeremiah.29:11","2.Timothy.3:17","James.1:3","Galatians.5:23","Hebrews.4:12","Romans.8:1","John.3:17","Hebrews.11:1","James.1:4","James.1:5","John.1:2","Matthew.5:16"]
+    },
+    {
         "id": "1",
         "name": "Being Thankful",
-        "badge": "images/greystyle_08_badge.png",
+        "badge": "",
         "description": "",
         "days": ["1Chronicles.23:30","John.14:27","Romans.5:5","Matthew.6:26","Psalm.20:4","Colossians.3:17","1Thessalonians.5:18","James.1:17","Philippians.4:6"]
     },
     {
         "id": "2",
         "name": "Love Part 1",
-        "badge": "images/greenstyle_08_badge.png",
+        "badge": "",
         "description": "",
         "days": ["Luke.6:31","Luke.6:35","John.8:13","Romans.12:9","Mark.12:31","Romans.13:10","1Corinthians.13:4-8","1Corinthians.13:13","Ephesians.4:2","1Peter.4:8","1John.4:7","1John.4:18-19","John.15:13","Ephesians.5:25"]
     },
@@ -40,7 +46,7 @@ var readingPlans = [
     {
         "id": "4",
         "name": "Temptation",
-        "badge": "images/greenstyle_08_badge.png",
+        "badge": "",
         "description": "",
         "days": ["James.1:14", "Hebrews.2.18", "Hebrews.4.15", "James.4.7", "Romans.6.6-13", "Ephesians6.10-11", "1Peter.5:8-9"]
     },
@@ -146,12 +152,31 @@ var readingPlans = [
         "description": "",
         "type" : "book",
         "days": ["Mark.1", "Mark.2", "Mark.3", "Mark.4", "Mark.5", "Mark.6", "Mark.7", "Mark.8", "Mark.9", "Mark.10", "Mark.11", "Mark.12", "Mark.13", "Mark.14", "Mark.15", "Mark.16"]
+    },
+    {
+        "id": "105",
+        "name": "Acts",
+        "badge": "",
+        "description": "",
+        "type" : "book",
+        "days": ["Acts.1", "Acts.2", "Acts.3", "Acts.4", "Acts.5", "Acts.6", "Acts.7", "Acts.8", "Acts.9", "Acts.10", "Acts.11", "Acts.12", "Acts.13", "Acts.14", "Acts.15", "Acts.16", "Acts.17", "Acts.18", "Acts.19", "Acts.20", "Acts.21", "Acts.22", "Acts.23", "Acts.24", "Acts.25", "Acts.26", "Acts.27", "Acts.28"]
+    },
+    {
+        "id": "106",
+        "name": "Psalms",
+        "badge": "",
+        "description": "",
+        "type" : "book",
+        "days": ["psalm.1", "psalm.2", "psalm.3", "psalm.4", "psalm.5", "psalm.6", "psalm.7", "psalm.8", "psalm.9", "psalm.10", "psalm.11", "psalm.12", "psalm.13", "psalm.14", "psalm.15", "psalm.16", "psalm.17", "psalm.18", "psalm.19", "psalm.20", "psalm.21", "psalm.22", "psalm.23", "psalm.24", "psalm.25", "psalm.26", "psalm.27", "psalm.28", "psalm.29", "psalm.30","psalm.31", "psalm.32", "psalm.33", "psalm.34", "psalm.35", "psalm.36", "psalm.37", "psalm.38", "psalm.39", "psalm.40", "psalm.41", "psalm.42", "psalm.43", "psalm.44", "psalm.45", "psalm.46", "psalm.47", "psalm.48", "psalm.49", "psalm.50", "psalm.51", "psalm.52", "psalm.53", "psalm.54", "psalm.55", "psalm.56", "psalm.57", "psalm.58", "psalm.59", "psalm.60", "psalm.61", "psalm.62", "psalm.63", "psalm.64", "psalm.65", "psalm.66", "psalm.67", "psalm.68", "psalm.69", "psalm.70", "psalm.71", "psalm.72", "psalm.73", "psalm.74", "psalm.75", "psalm.76", "psalm.77", "psalm.78", "psalm.79", "psalm.80", "psalm.81", "psalm.82", "psalm.83", "psalm.84", "psalm.85", "psalm.86", "psalm.87", "psalm.88", "psalm.89", "psalm.90", "psalm.91", "psalm.92", "psalm.93", "psalm.94", "psalm.95", "psalm.96", "psalm.97", "psalm.98", "psalm.99", "psalm.100", "psalm.101", "psalm.102", "psalm.103", "psalm.104", "psalm.105", "psalm.106", "psalm.107", "psalm.108", "psalm.109", "psalm.110", "psalm.111", "psalm.112", "psalm.113", "psalm.114", "psalm.115", "psalm.116", "psalm.117", "psalm.118", "psalm.119", "psalm.120", "psalm.121", "psalm.122", "psalm.123", "psalm.124", "psalm.125", "psalm.126", "psalm.127", "psalm.128", "psalm.129", "psalm.130", "psalm.131", "psalm.132", "psalm.133", "psalm.134", "psalm.135", "psalm.136", "psalm.137", "psalm.138", "psalm.139", "psalm.140", "psalm.141", "psalm.142", "psalm.143", "psalm.144", "psalm.145", "psalm.146", "psalm.147", "psalm.148", "psalm.149",  "psalm.150"]
+    },
+    {
+        "id": "107",
+        "name": "Romans",
+        "badge": "",
+        "description": "",
+        "type" : "book",
+        "days": ["Romans.1:1-15", "Romans.1:16-32", "Romans.2:1-11", "Romans.2:12-29", "Romans.3:1-8", "Romans.3:9-20", "Romans.3:21-31", "Romans.4:1-12", "Romans.4:13-25", "Romans.5:1-20", "Romans.6:1-14", "Romans.6:15-23", "Romans.7:1-6", "Romans.7:7-25", "Romans.8:1-11", "Romans.8:12-30", "Romans.8:31-39", "Romans.9:1-18", "Romans.9:19-33", "Romans.10:1-21", "Romans.11:1-10", "Romans.11:11-36", "Romans.12:1-8", "Romans.12:9-21", "Romans.13:1-7", "Romans.13:8-14", "Romans.14:1-12", "Romans.14:13-23", "Romans.15:1-13", "Romans.15:14-33", "Romans.16:1-27"]
     }
-
-
-
-
-    // Remember to add circle css (styles.css line 490)
 ]
 
 function Plan(json){
@@ -200,7 +225,8 @@ function saveData(){
 }
 
 function Game(){
-    this.hideWords = function(text, memorizedCount){
+    this.hideWords = function(text, memorizedCount, scripture){
+        var scriptureText = scripture.text();
         var txttmp = text.split(/\s+/);
         var randoms = getRandom(txttmp.length, txttmp.length);
         var toPick;
@@ -210,10 +236,10 @@ function Game(){
             toPick = 3;
         }
         else if(memorizedCount == 2){
-            toPick = 4;
+            toPick = 5;
         }
         else {
-            toPick = txttmp.length / 3;
+            toPick = txttmp.length;
         }
 
         var picked = 0;
@@ -221,41 +247,77 @@ function Game(){
         while(picked < toPick && i < randoms.length){
             var currWord = txttmp[randoms[i]-1]
             if(txttmp[randoms[i]-1].length >= minCharsCount){
-                txttmp[randoms[i]-1] = ' <input style=\'width:' + (currWord.length * 18) + 'px\' class=missingWord type=text data-answer=\'' + currWord + '\' placeholder=\'' + game.maskWord(currWord, memorizedCount) + '\'>';
+                txttmp[randoms[i]-1] = game.buildInputField(currWord, '');
                 picked++;
             }
             i++;
         }
-        return txttmp.join(' ');
+
+        var book = scriptureText.substring(0,scriptureText.lastIndexOf(' '));
+        var chapter_verse = scriptureText.substring(scriptureText.lastIndexOf(' ')+1);
+        var chapter = chapter_verse.split(':')[0];
+        var verse = chapter_verse.split(':')[1];
+
+        var maskedScriptureText = '<br><br> Book: ' + game.buildInputField(book, 'book') + ' Chapter: ' + game.buildInputField(chapter, 'chapter') + ' Verse: ' + game.buildInputField(verse, 'verse');
+
+        return txttmp.join(' ') + maskedScriptureText;
+    }
+
+    this.buildInputField = function(word, wordType){
+        return ' <input style=\'width:' + (word.length * 18) + 'px\' class=missingWord type=text data-answer=\'' + word + '\' placeholder=\'' + game.maskWord(word, memorizedCount, wordType) + '\'>';
     }
 
     this.replaceOneCharacter = function(word, index, character) {
         return word.substr(0, index) + character + word.substr(index+character.length);
     }
 
-    this.maskWord = function(word, memorizedCount){
+    this.maskWord = function(word, memorizedCount, wordType){
         var wordLen = word.length;
         var maskedWord = Array(wordLen+1).join("*")
 
-        var every_n_chars_1_char_reveals = 1;
-        if(memorizedCount == 3){
-            every_n_chars_1_char_reveals = wordLen;
+        if(wordType == 'chapter' || wordType == 'verse'){
+            if(wordLen == 1){
+                return maskedWord;
+            }
+            else {
+                if(memorizedCount == 1){
+                    maskedWord = game.replaceOneCharacter(maskedWord, 0, word.charAt(0))
+                }
+                return maskedWord;
+            }
         }
-        else if(memorizedCount == 2){
-            every_n_chars_1_char_reveals = 3;
-            maskedWord = game.replaceOneCharacter(maskedWord, 0, word.charAt(0))
-        }
-        else if(memorizedCount == 1){
-            every_n_chars_1_char_reveals = 2;
-            maskedWord = game.replaceOneCharacter(maskedWord, 0, word.charAt(0))
-        }
+        else {
+            var every_n_chars_1_char_reveals = 1;
+            if (wordType == 'book'){
+                if(memorizedCount == 1){
+                    every_n_chars_1_char_reveals = 2;
+                    maskedWord = game.replaceOneCharacter(maskedWord, 0, word.charAt(0))
+                }
+                else {
+                    return maskedWord;
+                }
+            }
+            else {
+                if(memorizedCount == 3){
+                    return maskedWord;
+                }
+                else if(memorizedCount == 2){
+                    every_n_chars_1_char_reveals = 3;
+                    maskedWord = game.replaceOneCharacter(maskedWord, 0, word.charAt(0))
+                }
+                else if(memorizedCount == 1){
+                    every_n_chars_1_char_reveals = 2;
+                    maskedWord = game.replaceOneCharacter(maskedWord, 0, word.charAt(0))
+                }
+            }
 
-        var ran = getRandom(Math.floor(wordLen/every_n_chars_1_char_reveals), wordLen);
+            var ran = getRandom(Math.floor(wordLen/every_n_chars_1_char_reveals), wordLen);
 
-        for(var i=0; i<ran.length; i++){
-            maskedWord = game.replaceOneCharacter(maskedWord, ran[i]-1, word.charAt(ran[i]-1))
+            for(var i=0; i<ran.length; i++){
+                maskedWord = game.replaceOneCharacter(maskedWord, ran[i]-1, word.charAt(ran[i]-1))
+            }
+            return maskedWord;
         }
-        return maskedWord;
     }
 
     this.replaceVerses = function(data, memorizedCount){
@@ -267,8 +329,8 @@ function Game(){
             final = $p.text().replace(/\s+/g,' ');
         }
         else {
-            $p.find('.scripture').remove();
-            final = game.hideWords($p.text(), memorizedCount);
+            $scripture = $p.find('.scripture').remove();
+            final = game.hideWords($p.text(), memorizedCount, $scripture);
         }
 
         console.log('memorizedCount ' + memorizedCount);
@@ -293,7 +355,7 @@ function HTMLRender(){
             var json = JSON.parse(data);
 
             $ulPast = $('#memorized-stats-past-weekly ul').empty().addClass('text-right');
-            $ulPast.append('<li class=list-header>PAST\'S LEADERS:</li>');
+            $ulPast.append('<li class=list-header>Past Leaders:</li>');
 
             for(var i=0; i < json['weeks'].length; i++){
                 var week = json['weeks'][i];
@@ -470,7 +532,7 @@ function HTMLRender(){
             }
 
             if(plan.type == 'book'){
-                $rightCol.append("<div class='plan-subtext'>(" + plan.numOfDays + ' Days ' + ")</div>");
+                $rightCol.append("<div class='plan-subtext'>(" + plan.numOfDays + ' Days' + ")</div>");
             }
 
             $rightCol.append($meta);
@@ -478,7 +540,7 @@ function HTMLRender(){
 
             if(plan.type == 'book' && !bFirstBook){
                 bFirstBook = true;
-                $planSelector.append("<div style='text-align: center; clear: both'><h2>Add a Plan By Book <span style='font-style: italic;'>(Beta)</span></h2><div class='by-book-sub-text'>We want to help make reading God’s Word easier, so we included full books to our reading plans!  Give it a try, and let us know what you think.</div></div>");
+                $planSelector.append("<div style='text-align: center; clear: both'><h2 style='padding-top: 20px;'>Add a Plan By Book</h2></div>");
             }
 
             $planSelector.append($container);
@@ -486,17 +548,19 @@ function HTMLRender(){
         var addPlansText = '<h2>Add a Plan By Topic:</h2>';
 //        var addPlansText = '<h1><span class=username>' + userName + ',</span> Make God\'s Word Part Of Your Day!</h1><h2>By Topic:</h2>';
         $planSelector.find('#plansSelectorHeader').html(addPlansText);
-        $planSelector.append("<div style='text-align: center; clear: both'><a id='plans-close' class='myButton' href='#'>Close</a></div>");
+        $planSelector.append("<div style='text-align: center; clear: both;padding-top:15px;'><a id='plans-close' class='myButton' href='#'>Close</a></div>");
         $planSelector.show();
+
+        trackClicked('add-plan-clicked');
     }
 
     this.newGradient = function() {
-        var inside = ['ff0000', '70e1f5', '185a9d', 'BB377D'];
-        var outside = ['4776E6', 'C9FFBF', '43cea2', 'FBD3E9'];
+        var inside = ['ff0000', '70e1f5', '185a9d']//, 'BB377D'];
+        var outside = ['4776E6', '757575', '43cea2']//, 'FBD3E9'];
 
         var rand = getRandom(1, inside.length);
 
-        // rand[0] = 4;
+//        rand[0] = 2;
 
         var c1 = inside[rand[0]-1];
         var c2 = outside[rand[0]-1];
@@ -566,7 +630,7 @@ function HTMLRender(){
                 $('#message').html(msgText).show().textillate({ in: { effect: animation, delay: 30, shuffle: false}});
                 $('#reveal-button').hide().css('visibility','visible').text('Next').fadeIn('slow')
                     .data('total-parts', $paragraphies.length).data('part', partFinished + 1)
-                    .data('read-book', true);
+                    .data('read-book', true).data('start-memorize', false);
             });
         }
         else {
@@ -576,8 +640,8 @@ function HTMLRender(){
             // READ SCREEN
             if(memorizedCount == 0){
                 var animation = textAnimations[getRandom(1, textAnimations.length)[0]-1];
-    //            $('#passages').show();
-    //            $('#reveal-button').hide().css('visibility','visible').text('Memorize').data('start-memorize', true).fadeIn('slow');
+//                $('#passages').show();
+//                $('#reveal-button').hide().css('visibility','visible').text('Memorize').data('start-memorize', true).fadeIn('slow');
 
                 $('#passages').textillate({ in: { effect: animation, delay: 30, shuffle: false, callback: function(){
                     bgClear();
@@ -682,7 +746,7 @@ function versesFetch(planId, day){
 }
 
 function bgBlock(){
-    $('.bg.hidden').css('background', '').css('background-color', 'rgb(47,154,231)');
+    $('.bg.hidden').css('background', '').css('background-color', 'rgb(105, 105, 105)');
     $('.bg').removeClass('bgClear').addClass('bgBlock');
 }
 
@@ -691,7 +755,7 @@ function bgClear(){
 }
 
 function rollBg() {
-    bgImage = "bg" + (Math.floor(Math.random() * 31) + 1) + ".jpg";
+    bgImage = "bg" + (Math.floor(Math.random() * 32) + 1) + ".jpg";
     $('body').css('background-image', "url('images/" + bgImage + "')");
     $('.bg.hidden').css('background', htmlRender.newGradient());
     $('.bg').toggleClass('hidden');
@@ -729,6 +793,7 @@ function addPlanLinkClicked(event){
     $('#plans-selector').hide();
     $('.hide-in-select-plans').show();
     saveData();
+    trackClicked('add-clicked');
 }
 
 function userNameSubmitClicked(){
@@ -807,7 +872,7 @@ function revealClicked(){
         var bAllCorrect = true;
         var correct = 0, wrong = 0;
         $('.missingWord').each(function(e){
-            if($(this).val().toLowerCase().removePunctuation() == $(this).data('answer').toLowerCase().removePunctuation()){
+            if(($(this).val() + '').toLowerCase().removePunctuation() == ($(this).data('answer') + '').toLowerCase().removePunctuation()){
                 $(this).addClass('correct');
                 correct++;
             }
@@ -884,11 +949,6 @@ function menuItemClicked(){
 //        data['lastReadDate'] = $(this).data('latest-news-update');
 //        chrome.storage.sync.set(data);
 //    }
-//    else if(linkId == 'site'){
-//        var data = {};
-//        data['lastSite'] = $(this).attr('href');
-//        chrome.storage.sync.set(data);
-//    }
 }
 
 $( document ).ready(function() {
@@ -928,7 +988,6 @@ $( document ).ready(function() {
         $('.username').text(userData['userName']);
 
         lastReadDate = userData['lastReadDate'];
-        lastSite = userData['lastSite'];
         rated = userData['rated'];
     });
 

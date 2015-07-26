@@ -5,7 +5,6 @@ body {
     -webkit-font-smoothing: antialiased;
 }
 
-
 #help {
     color: #ffffff;
     text-decoration: none;
@@ -18,7 +17,6 @@ body {
 }
 
 #help:hover { text-decoration: underline; }
-
 
 #dropdown-menu {
     display: none;
@@ -90,6 +88,11 @@ body {
     z-index: 999;
 }
 
+#plansSelectorHeader h1 {
+    font-size: 22px;
+    color: #C537FF;
+}
+
 h1 {
     text-align: center;
     margin: 10px 0;
@@ -101,9 +104,9 @@ h1 {
 h2 {
     text-align: center;
     margin: 10px 0;
-    color: #3C3C3C;
+    color: #333333;
     font-weight: bold;
-    font-size: 20px;
+    font-size: 16px;
 }
 
 #plans-selector .plan-right {
@@ -119,6 +122,14 @@ h2 {
     float: left;
     background-color: rgba(255, 255, 255, 0.60);
     text-align: center;
+    -moz-border-radius:8px;
+    -webkit-border-radius:8px;
+    border-radius:8px;
+}
+
+#plans-selector .plan-container:hover
+{
+    background-color: #ffe32b;
 }
 
 .plan-right {
@@ -174,7 +185,7 @@ h2 {
 #plans-selector .plan-name {
 
     font-size: 18px;
-    color: #5E5E5E;
+    color: #444343;
     font-weight: 500;
 }
 
@@ -345,16 +356,16 @@ h2 {
 
 .myButton {
     background-color:#44c767;
-    -moz-border-radius:28px;
-    -webkit-border-radius:28px;
-    border-radius:28px;
+    -moz-border-radius:20px;
+    -webkit-border-radius:20px;
+    border-radius:20px;
     border:1px solid #18ab29;
     display:inline-block;
     cursor:pointer;
     color:#ffffff;
     /*font-family:arial;*/
     font-size:17px;
-    padding:16px 31px;
+    padding:10px 31px;
     text-decoration:none;
     text-shadow:0px 1px 0px #2f6627;
 }
@@ -539,6 +550,9 @@ h2 {
 .circle13, .circle-solid-13 { border: 2px solid #4e6ac3; }
 .circle-solid-13 { background-color: #4e6ac3; }
 
+.circle14, .circle-solid-14 { border: 2px solid #F4CC00; }
+.circle-solid-14 { background-color: #F4CC00; }
+
 .circle100, .circle-solid-100 { border: 2px solid #88eeff; }
 .circle-solid-100 { background-color: #88eeff; }
 
@@ -551,8 +565,17 @@ h2 {
 .circle103, .circle-solid-103 { border: 2px solid #ffa496; }
 .circle-solid-103 { background-color: #ffa496; }
 
-.circle104, .circle-solid-104 { border: 2px solid #ff2825; }
-.circle-solid-104 { background-color: #ff2825; }
+.circle104, .circle-solid-104 { border: 2px solid #b2e77c; }
+.circle-solid-104 { background-color: #b2e77c; }
+
+.circle105, .circle-solid-105 { border: 2px solid #ff2825; }
+.circle-solid-105 { background-color: #ff2825; }
+
+.circle106, .circle-solid-106 { border: 2px solid #eda400; }
+.circle-solid-106 { background-color: #eda400; }
+
+.circle107, .circle-solid-107 { border: 2px solid #4e6ac3; }
+.circle-solid-107 { background-color: #4e6ac3; }
 
 .circle .circle-inner {
     padding-top: 19px;
@@ -565,7 +588,7 @@ h2 {
     -webkit-transition: opacity 2s;
     -moz-transition: opacity 2s;
     transition: opacity 2s;
-    opacity: 0.9 !important;
+    opacity: 0.6 !important;
 }
 
 .bgClear {
@@ -644,14 +667,16 @@ h2 {
     position: relative !important;
     top: -2px;
     height: 29px;
+    color: #FFD500;
 }
 
 input.correct {
-    background-color: rgb(251, 255, 115) !important;
+    /*background-color: rgb(251, 255, 115) !important;*/
 }
 
 input.wrong {
-    background-color: rgb(255, 147, 147) !important;
+    color: rgb(255, 147, 147) !important;
+    /*background-color: rgb(255, 147, 147) !important;*/
 }
 
 .jmeter .outer-therm{
@@ -695,16 +720,11 @@ input.wrong {
     z-index: 10;
 }
 
-/*#users #user-header {*/
-    /*font-weight: bold;*/
-/*}*/
-
-
 ul.vertical-list {
     list-style-type: none;
     color: #fff;
-    font-size: 11px;
-    opacity: 0.5;
+    font-size: 12px;
+    opacity: 1;
     text-align: right;
     padding-left: 0;
     margin-left: 0;
@@ -713,13 +733,12 @@ ul.vertical-list {
 
 ul.vertical-list li a {
     color: white;
-    font-size: 11px;
+    font-size: 12px;
     text-decoration: none;
     line-height: 1.6em;
 }
 
 ul.vertical-list li a:hover {
-    color: #ff5a17;
     text-decoration: underline;
 }
 
@@ -821,7 +840,7 @@ ul.vertical-list li a:hover {
     text-align: center;
     color: white;
     font-size: 14px;
-    opacity: 0.7;
+    /*opacity: 0.7;*/
 }
 
 #memorized-stats-weekly p {
@@ -831,6 +850,7 @@ ul.vertical-list li a:hover {
 #memorized-stats-weekly p:last-child span {
     margin: 0 5px;
     color: #ffcd16;
+    font-weight: bold;
 }
 
 .symbol {
