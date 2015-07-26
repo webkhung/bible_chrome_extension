@@ -746,7 +746,7 @@ function versesFetch(planId, day){
 }
 
 function bgBlock(){
-    $('.bg.hidden').css('background', '').css('background-color', 'rgb(105, 105, 105)');
+    $('.bg.hidden').css('background', '').css('background-color', 'rgb(47,154,231)');
     $('.bg').removeClass('bgClear').addClass('bgBlock');
 }
 
@@ -755,7 +755,7 @@ function bgClear(){
 }
 
 function rollBg() {
-    bgImage = "bg" + (Math.floor(Math.random() * 32) + 1) + ".jpg";
+    bgImage = "bg" + (Math.floor(Math.random() * 35) + 1) + ".jpg";
     $('body').css('background-image', "url('images/" + bgImage + "')");
     $('.bg.hidden').css('background', htmlRender.newGradient());
     $('.bg').toggleClass('hidden');

@@ -588,7 +588,7 @@ h2 {
     -webkit-transition: opacity 2s;
     -moz-transition: opacity 2s;
     transition: opacity 2s;
-    opacity: 0.6 !important;
+    opacity: 0.8 !important;
 }
 
 .bgClear {
