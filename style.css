@@ -117,8 +117,8 @@ h2 {
 #plans-selector .plan-container {
     width: 165px;
     border: 1px solid rgba(255,255,255,0.28);
-    padding: 5px;
-    margin: 6px;
+    padding: 4px;
+    margin: 4px;
     float: left;
     background-color: rgba(255, 255, 255, 0.60);
     text-align: center;
@@ -134,7 +134,7 @@ h2 {
 
 .plan-right {
     margin-left: 34px;
-    padding-top: 3px;
+    padding-top: 0px;
 }
 
 .plan-right .inner-therm span {
@@ -184,7 +184,7 @@ h2 {
 
 #plans-selector .plan-name {
 
-    font-size: 18px;
+    font-size: 15px;
     color: #444343;
     font-weight: 500;
 }
@@ -203,7 +203,7 @@ h2 {
 
 .plan-meta {
     color: #0BB87D;
-    font-size: 13px;
+    font-size: 12px;
     font-weight: bold;
     text-transform: uppercase;
 }
@@ -552,6 +552,15 @@ h2 {
 
 .circle14, .circle-solid-14 { border: 2px solid #F4CC00; }
 .circle-solid-14 { background-color: #F4CC00; }
+
+.circle15, .circle-solid-15 { border: 2px solid #ffa496; }
+.circle-solid-15 { background-color: #ffa496; }
+
+.circle16, .circle-solid-16 { border: 2px solid #b2e77c; }
+.circle-solid-16 { background-color: #b2e77c; }
+
+.circle17, .circle-solid-17 { border: 2px solid #ff65f0; }
+.circle-solid-17 { background-color: #ff65f0; }
 
 .circle100, .circle-solid-100 { border: 2px solid #88eeff; }
 .circle-solid-100 { background-color: #88eeff; }
