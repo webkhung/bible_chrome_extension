@@ -445,6 +445,7 @@ function HTMLRender(){
 
             $('.responsive-menu').append(json['menu']);
             $('#sotw').attr('href', json['site_of_the_week']);
+            htmlRender.showGratitudes(json['gratitudes']);
 
 //            $('.responsive-menu').append(data);
 
@@ -454,6 +455,27 @@ function HTMLRender(){
 //                $('#news').addClass('has-news');
 //                $('#menu-notification').show();
 //            }
+        });
+    }
+
+    this.showGratitudes = function(data){
+        var gratitudes = JSON.parse(data);
+        $ul = $("<ul class='newsticker' />");
+        gratitudes.forEach(function(g){
+            $li = $('<li />').text(g['text'].substring(0,200) + ' - ' + g['user_name'].substring(0,15));
+            $ul.append($li);
+        });
+
+        $('#gratitude-list').append($ul);
+
+        $('.newsticker').newsTicker({
+            row_height: 20,
+            max_rows: 1,
+            speed: 600,
+            direction: 'up',
+            duration: 3000,
+            autostart: 1,
+            pauseOnHover: 0
         });
     }
 
@@ -664,7 +686,8 @@ function HTMLRender(){
 //                $('#passages').show();
 //                $('#reveal-button').hide().css('visibility','visible').text('Memorize').data('start-memorize', true).fadeIn('slow');
 
-                $('#passages').textillate({ in: { effect: animation, delay: 30, shuffle: false, callback: function(){
+                ;
+                $('#passages').textillate({ in: { effect: animation, delay: 15, shuffle: getRandom(1,2)[0]==1, callback: function(){
                     bgClear();
                     $('#reveal-button').hide().css('visibility','visible').text('Memorize').data('start-memorize', true).fadeIn('slow');
                     $('#memorized-stats-weekly').fadeIn();
@@ -777,6 +800,7 @@ function bgClear(){
 
 function rollBg() {
     bgImage = "bg" + (Math.floor(Math.random() * 38) + 1) + ".jpg";
+//    bgImage = 'bg28.jpg'
     $('body').css('background-image', "url('images/" + bgImage + "')");
     $('.bg.hidden').css('background', htmlRender.newGradient());
     $('.bg').toggleClass('hidden');
@@ -963,14 +987,17 @@ function menuClicked(){
 function menuItemClicked(){
     var linkId = $(this).attr('id');
     trackClicked(linkId + '-clicked');
-
-//    if(linkId == 'news'){
-//        $('#menu-notification').hide();
-//        var data = {};
-//        data['lastReadDate'] = $(this).data('latest-news-update');
-//        chrome.storage.sync.set(data);
-//    }
 }
+
+function add_gratitude(text){
+    $.get('http://' + HOST + '/add_gratitude', { text: text, user_id: userId, user_name: userName }, function(data){
+        $('#gratitude-input').val('I am grateful for ');
+        $('#gratitude-thank-you').show();
+        $('#gratitude-intro').hide();
+        $('#gratitude-thank-you span').text(data);
+    });
+}
+
 
 $( document ).ready(function() {
     readingPlans.forEach(function(jsonPlan){
@@ -1048,4 +1075,28 @@ $( document ).ready(function() {
     });
 
     rollBg();
+
+    $('#gratitude-input').focus(function(){
+        this.placeholder='';
+        $('#gratitude-input').val('I am grateful for ');
+    });
+
+    $("#gratitude-input").keyup(function (e) {
+        if (e.keyCode == 13 && $(this).val().length > 0) {
+            add_gratitude($(this).val());
+        }
+    });
+
+    $('#gratitude-input').hover(
+        function(){
+            if(!$('#gratitude-thank-you').is(":visible")){
+                $('#gratitude-intro').show();
+            }
+        }
+    )
+
+    $('#post-link').hover(function(){
+        $('#gratitude-list, #post-link').hide();
+       $('#gratitude-input, #gratitude-intro').show();
+    });
 });

@@ -9,6 +9,7 @@
     <script src="jqmeter.min.js" type="text/javascript"></script>
     <script src="jquery.lettering.js" type="text/javascript"></script>
     <script src="jquery.textillate.js" type="text/javascript"></script>
+    <script src="jquery.newsTicker.min.js" type="text/javascript"></script>
     <script src="circle-progress.js"></script>
     <title>Daily Bible Verse</title>
 </head>
@@ -64,17 +65,30 @@
 
     <div id='memorized-stats-past-weekly'><ul class='vertical-list text-left'></ul></div>
     <div id='memorized-verses-container'><ul class='vertical-list text-left'></ul></div>
+    <div id='gratitude-container'>
+        <div id='gratitude-intro'>
+            <strong>What are you grateful for today? Post for a chance to win!</strong>
+            <div style='text-align:center;padding: 10px 0;'>"Praise the Lord; for the Lord is good: sing praises unto his name; for it is pleasant” (Psalms 135:3).</div>
+            By praising the Lord in all occasions you will experience the power of gratitude - happier, healthier, and more energetic, less lonely, stressed, anxious and depressed.<br>
+            Only by being grateful for the most basic things, you can then see God’s loving presence.<br>
+            To help motivate you starting this habit, I will be giving out 2 Amazon $5 gift cards every month.  Details coming soon.
+        </div>
+        <div id='gratitude-thank-you'>
+            Thank You For Your Post! You have posted <span></span> times!
+        </div>
+        <input id='gratitude-input' maxlength="200" placeholder='I am grateful for......'  name='gratitude-input' style='width:350px;padding:5px' />
+        <a id='post-link' href='#'>Yours?</a><div id='gratitude-list'></div>
+    </div>
 
     <div id='bottom' class='hide-in-memorize'>
-        <a id='sotw' href='#' target="_blank"><img src='images/heart.png'><span>Site of the Week</span></a>
+        <!--<a id='sotw' href='#' target="_blank"><img src='images/heart.png'><span>Site of the Week</span></a>-->
         <div id='added-plans'></div>
-        <!--<div id='completed-plans'></div>-->
         <!--<p class='debug'>-->
             <!--<a id='clean-storage' href='#'>Clean storage</a>-->
             <!--<a id='show-storage' href='#'>Show storage</a>-->
             <!--<a id='add-day' href='#'>Add day</a>-->
         <!--</p>-->
-        <p id='copyright'>Scripture quotations marked (ESV) are from The Holy Bible, English Standard Version®, copyright © 2001 by Crossway Bibles, a publishing ministry of Good News Publishers.</p>
+        <!--<p id='copyright'>Scripture quotations marked (ESV) are from The Holy Bible, English Standard Version®, copyright © 2001 by Crossway Bibles, a publishing ministry of Good News Publishers.</p>-->
     </div>
 </div>
 </body>
