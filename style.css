@@ -1137,7 +1137,7 @@ ul.vertical-list li a:hover {
 
 #gratitude-list ul {
     list-style-type: none;
-    color: #fff;
+    color: yellow;
     font-size: 12px;
     opacity: 1;
     text-align: right;
@@ -1151,5 +1151,8 @@ ul.vertical-list li a:hover {
     font-size: 12px;
     color: white;
     float: right;
-    padding: 7px 0 0 10px;
+    padding: 0 4px 0 4px;
+    margin: 7px 0 0 10px;
+    background-color: #ffdb27;
+    color: #333;
 }
