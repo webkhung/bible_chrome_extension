@@ -1096,7 +1096,7 @@ $( document ).ready(function() {
     )
 
     $('#post-link').hover(function(){
-        $('#gratitude-list, #post-link').hide();
+        $('#gratitude-list, #post-link, #gratitudes-link').hide();
        $('#gratitude-input, #gratitude-intro').show();
     });
 });

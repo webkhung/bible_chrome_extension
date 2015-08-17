@@ -1147,12 +1147,18 @@ ul.vertical-list li a:hover {
     margin-bottom: 5px;
 }
 
-#gratitude-container a#post-link {
+#gratitude-container a#post-link, #gratitude-container a#gratitudes-link {
     font-size: 12px;
-    color: white;
     float: right;
     padding: 0 4px 0 4px;
     margin: 7px 0 0 10px;
+}
+
+a#post-link {
     background-color: #ffdb27;
     color: #333;
+}
+
+a#gratitudes-link {
+    color: #fff;
 }
