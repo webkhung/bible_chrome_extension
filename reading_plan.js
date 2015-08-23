@@ -45,7 +45,7 @@ var readingPlans = [
     },
     {
         "id": "5",
-        "name": "Do Not Worry",
+        "name": "Need Not Worry",
         "badge": "",
         "description": "",
         "days": ["Proverbs.3:5-6", "Philippians.4:6-7", "Matthew.11:28-30", "John.14:27", "Jeremiah.17:5-8", "Colossians.3:15", "2Thessalonians.3:16", "Psalm.55:22", "Proverbs.12:25", "1Peter.5:6-8", "Psalm.23:4", "Hebrews.13:5-6"]
@@ -66,7 +66,7 @@ var readingPlans = [
     },
     {
         "id": "8",
-        "name": "Do Not Anger",
+        "name": "Need Not Anger",
         "badge": "",
         "description": "",
         "days": ["James.1:19-20","Proverbs.29:11","James.1:20","Proverbs.19:11","Ecclesiastes.7:9","Proverbs.15:1","Proverbs.15:18","Colossians.3:8","James.4:1-2","Proverbs.16:32","Proverbs.22:24","Matthew.5:22","Psalm.37:8-9","Psalm.7:11","2 Kings.11:9-10","2 Kings.17:18","Proverbs.14:29"]
@@ -94,7 +94,7 @@ var readingPlans = [
     },
     {
         "id": "12",
-        "name": "Do Not Stress",
+        "name": "Need Not Stress",
         "badge": "",
         "description": "",
         "days": ["1Timothy.6:17","Matthew.6:8","Psalm.56:6","Psalm.23:4","Exodus.34:21"]
@@ -439,7 +439,7 @@ function HTMLRender(){
     }
 
     this.fetchStartupData = function(){
-        $.get('http://' + HOST + '/startup_data', function(data){
+        $.get('http://' + HOST + '/startup_data', { user_id: userId}, function(data){
 
             var json = JSON.parse(data);
 
@@ -447,6 +447,13 @@ function HTMLRender(){
             $('#sotw').attr('href', json['site_of_the_week']);
             htmlRender.showGratitudes(json['gratitudes']);
 
+            var count = json['your-gratitudes-count']
+            if (count == 0){
+                $('#post-link').text('Post Your First Praise');
+            }
+            else {
+                $('#post-link').text('You Praised ' + json['your-gratitudes-count'] + ' Times');
+            }
 //            $('.responsive-menu').append(data);
 
 //            var latestNewsDate = $('.responsive-menu').find('#news').data('latest-news-update')
@@ -460,10 +467,23 @@ function HTMLRender(){
 
     this.showGratitudes = function(data){
         var gratitudes = JSON.parse(data);
+        var random = 0;
+
+        var verse = [
+            'Praise the LORD, for the LORD is good ~ Psalms 135:3',
+            'Let everything that has breath praise the LORD. Praise the LORD. - Psalm 150:6',
+            'I will praise you, Lord my God, with all my heart - Psalm 86:12'
+        ]
+
         $ul = $("<ul class='newsticker' />");
         gratitudes.forEach(function(g){
             $li = $('<li />').text(g['text'].substring(0,200) + ' - ' + g['user_name'].substring(0,15));
             $ul.append($li);
+            if (random % 3 == 0){
+                $li = $('<li />').html('<span style="color:#6dfff8;font-style:normal">' + verse[getRandom(1,3)[0]-1]+ ' </span>');
+                $ul.append($li);
+            }
+            random++;
         });
 
         $('#gratitude-list').append($ul);
@@ -770,8 +790,8 @@ function versesFetch(planId, day){
     chrome.storage.sync.get(key, function (data) {
         if (data !== undefined && data[key] !== undefined){
             versesProcess(data[key], planId, day);
-            $.get('http://' + HOST + '/usage', { usage_type: 'OPEN', plan_id: planId, day: day, user_id: userId, user_name: userName }, function(){
-            });
+//            $.get('http://' + HOST + '/usage', { usage_type: 'OPEN', plan_id: planId, day: day, user_id: userId, user_name: userName }, function(){
+//            });
         }
         else {
             $.get('http://' + HOST + '/verses', { plan_id: planId, day: day, user_id: userId, user_name: userName }, function(verses){
@@ -1082,7 +1102,7 @@ $( document ).ready(function() {
     });
 
     $("#gratitude-input").keyup(function (e) {
-        if (e.keyCode == 13 && $(this).val().length > 0) {
+        if (e.keyCode == 13  && ($(this).val() != 'I am grateful for ') && $(this).val().length > 0) {
             add_gratitude($(this).val());
         }
     });
@@ -1098,5 +1118,9 @@ $( document ).ready(function() {
     $('#post-link').hover(function(){
         $('#gratitude-list, #post-link, #gratitudes-link').hide();
        $('#gratitude-input, #gratitude-intro').show();
+    });
+
+    $('#gratitudes-link').click(function(){
+        trackClicked($(this).attr('id') + '-clicked');
     });
 });

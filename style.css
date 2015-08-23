@@ -1075,30 +1075,6 @@ ul.vertical-list li a:hover {
     margin-left: 3px;
 }
 
-
-#gratitude-container {
-    right: 10px;
-    position: absolute;
-    overflow: hidden;
-    bottom: 0px;
-    text-align: right;
-    z-index: 1;
-}
-
-#gratitude-input {
-    background-color: transparent;
-    width: 200px;
-    color: white;
-    margin-bottom: 5px;
-    display: none;
-}
-
-#gratitude-container div {
-    font-size: 13px;
-    text-align: left;
-    color: #333;
-}
-
 ::-webkit-input-placeholder { /* WebKit, Blink, Edge */
     color:    #fff;
     /*text-align: center;*/
@@ -1118,6 +1094,28 @@ ul.vertical-list li a:hover {
     /*text-align: center;*/
 }
 
+
+#gratitude-container {
+    right: 10px;
+    position: absolute;
+    overflow: hidden;
+    bottom: 0px;
+    text-align: right;
+    z-index: 1;
+
+    /*background-image: url('images/gratitude_bg.png');*/
+    /*background-position: right;*/
+    /*background-repeat: repeat;*/
+}
+
+#gratitude-input {
+    background-color: transparent;
+    width: 200px;
+    color: white;
+    margin-bottom: 5px;
+    display: none;
+}
+
 #gratitude-intro, #gratitude-thank-you {
     display: none;
     padding: 10px;
@@ -1128,11 +1126,18 @@ ul.vertical-list li a:hover {
     -webkit-border-radius:7px;
     border-radius:7px;
     margin-bottom: 5px;
+
+    font-size: 13px;
+    text-align: left;
+    color: #333;
 }
 
 #gratitude-list {
     margin-top: 7px;
     float:right;
+    width: 600px;
+    overflow: hidden;
+    white-space: nowrap;
 }
 
 #gratitude-list ul {
@@ -1145,6 +1150,7 @@ ul.vertical-list li a:hover {
     margin-left: 0;
     margin-top: 0;
     margin-bottom: 5px;
+    font-style: italic;
 }
 
 #gratitude-container a#post-link, #gratitude-container a#gratitudes-link {
@@ -1152,6 +1158,7 @@ ul.vertical-list li a:hover {
     float: right;
     padding: 0 4px 0 4px;
     margin: 7px 0 0 10px;
+    font-style: italic;
 }
 
 a#post-link {
