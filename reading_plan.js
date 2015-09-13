@@ -697,6 +697,11 @@ function HTMLRender(){
             });
         }
         else {
+            var colors = ['#c6f7f3', '#feffca', '#defcd4', '#ffffff'];
+            var fonts = ['Lucida Sans Unicode', 'Comic Sans MS', 'Verdana', 'Architects Daughter', 'Indie Flower'];
+            $('#passages, #passage-header').css('color', colors[getRandom(1, colors.length)[0]-1]);
+            $('#passages, #passage-header').css('font-family', fonts[getRandom(1, fonts.length)[0]-1]);
+
             verses = game.replaceVerses(verses, memorizedCount);
             $('#passages').empty().append(verses);
 
@@ -819,8 +824,8 @@ function bgClear(){
 }
 
 function rollBg() {
-    bgImage = "bg" + (Math.floor(Math.random() * 38) + 1) + ".jpg";
-//    bgImage = 'bg28.jpg'
+    bgImage = "bg" + (Math.floor(Math.random() * 46) + 1) + ".jpg";
+//    bgImage = 'bg46.jpg'
     $('body').css('background-image', "url('images/" + bgImage + "')");
     $('.bg.hidden').css('background', htmlRender.newGradient());
     $('.bg').toggleClass('hidden');
