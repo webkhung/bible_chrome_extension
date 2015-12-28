@@ -445,7 +445,7 @@ function HTMLRender(){
 
             $('.responsive-menu').append(json['menu']);
             $('#sotw').attr('href', json['site_of_the_week']);
-            htmlRender.showGratitudes(json['gratitudes']);
+//            htmlRender.showGratitudes(json['gratitudes']);
 
             var count = json['your-gratitudes-count']
             if (count == 0){
@@ -454,50 +454,42 @@ function HTMLRender(){
             else {
                 $('#post-link').text('You Praised ' + json['your-gratitudes-count'] + ' Times');
             }
-//            $('.responsive-menu').append(data);
+        });
+    }
 
-//            var latestNewsDate = $('.responsive-menu').find('#news').data('latest-news-update')
+//    this.showGratitudes = function(data){
+//        var gratitudes = JSON.parse(data);
+//        var random = 0;
 //
-//            if(lastReadDate === undefined || (new Date(lastReadDate)) < (new Date(latestNewsDate))){
-//                $('#news').addClass('has-news');
-//                $('#menu-notification').show();
+//        var verse = [
+//            'Praise the LORD, for the LORD is good ~ Psalms 135:3',
+//            'Let everything that has breath praise the LORD. Praise the LORD. - Psalm 150:6',
+//            'I will praise you, Lord my God, with all my heart - Psalm 86:12'
+//        ]
+//
+//        $ul = $("<ul class='newsticker' />");
+//        gratitudes.forEach(function(g){
+//            $li = $('<li />').text(g['text'].substring(0,200) + ' - ' + g['user_name'].substring(0,15));
+//            $ul.append($li);
+//            if (random % 3 == 0){
+//                $li = $('<li />').html('<span style="color:#6dfff8;font-style:normal">' + verse[getRandom(1,3)[0]-1]+ ' </span>');
+//                $ul.append($li);
 //            }
-        });
-    }
-
-    this.showGratitudes = function(data){
-        var gratitudes = JSON.parse(data);
-        var random = 0;
-
-        var verse = [
-            'Praise the LORD, for the LORD is good ~ Psalms 135:3',
-            'Let everything that has breath praise the LORD. Praise the LORD. - Psalm 150:6',
-            'I will praise you, Lord my God, with all my heart - Psalm 86:12'
-        ]
-
-        $ul = $("<ul class='newsticker' />");
-        gratitudes.forEach(function(g){
-            $li = $('<li />').text(g['text'].substring(0,200) + ' - ' + g['user_name'].substring(0,15));
-            $ul.append($li);
-            if (random % 3 == 0){
-                $li = $('<li />').html('<span style="color:#6dfff8;font-style:normal">' + verse[getRandom(1,3)[0]-1]+ ' </span>');
-                $ul.append($li);
-            }
-            random++;
-        });
-
-        $('#gratitude-list').append($ul);
-
-        $('.newsticker').newsTicker({
-            row_height: 20,
-            max_rows: 1,
-            speed: 600,
-            direction: 'up',
-            duration: 3000,
-            autostart: 1,
-            pauseOnHover: 0
-        });
-    }
+//            random++;
+//        });
+//
+//        $('#gratitude-list').append($ul);
+//
+//        $('.newsticker').newsTicker({
+//            row_height: 20,
+//            max_rows: 1,
+//            speed: 600,
+//            direction: 'up',
+//            duration: 3000,
+//            autostart: 1,
+//            pauseOnHover: 0
+//        });
+//    }
 
     this.showAddedPlans = function(selectedPlanId, day){
         $plan = $('#added-plans');
@@ -507,38 +499,12 @@ function HTMLRender(){
             if(plan.added){
                 $container = $("<div class='plan-container'>")
                 $container.attr('id', 'added-plan-' + plan.id);
-
-//                if(plan.completed()) {
-//                    $container.append("<div class='plan-badge'><span class='circle circle-solid-" + planId + "'><span class='currentDay'>&#x2713;</span></span></div>");
-//                }
-//                else {
-//                    var days = plan.completedOn.length;
-//                    if (plan.type == 'book' && !plan.todayCompleted())
-//                        days++;
-//                    $container.append("<div class='plan-badge'><span class='circle circle-solid-" + planId + "'><span class='currentDay'>" + days + "</span></span></div>");
-//                }
-
                 $container.append("<div class='plan-badge'><span class='circle circle-solid-" + planId + "'></span></div>");
-
                 $rightCol = $("<div class='plan-right'>");
-
                 $addedPlan = $('<div>');
                 $addedPlan.text(plan.name);
                 $addedPlan.attr('class', 'added-plan');
                 $rightCol.append($addedPlan);
-
-                $jqmeter = $("<div id='jmeter" + plan.id + "' class='jmeter'>");
-                $jqmeter.jQMeter({
-                    goal : plan.days.length.toString(),
-                    raised : plan.completedOn.length.toString(),
-                    width : '150px',
-                    height : '7px',
-                    bgColor : '#dadada',
-                    barColor : '#f09246',
-                    displayTotal: false
-                });
-//                $rightCol.append($jqmeter);
-
                 $container.append($rightCol);
                 $plan.append($container);
             }
@@ -547,8 +513,8 @@ function HTMLRender(){
         if(selectedPlanId !== undefined){
             $('#added-plan-' + selectedPlanId + ' .circle').addClass('blink_me');
             var fadeInTime = objPlans[selectedPlanId].type == 'book' ? 0 : 2000;
-            var strCompleted = (objPlans[selectedPlanId].completed()) ? ' (Completed)' : '';
-            var strDays = '<div>Day ' + day + ' of ' + objPlans[selectedPlanId].numOfDays + strCompleted + '</div>';
+            var strCompleted = (objPlans[selectedPlanId].type == 'book' && objPlans[selectedPlanId].completed()) ? ' (Completed)' : '';
+            var strDays = '<div>No ' + day + ' of ' + objPlans[selectedPlanId].numOfDays + strCompleted + '</div>';
             var header = objPlans[selectedPlanId].name + strDays;
             $('#passage-header').hide().html(header).fadeIn(fadeInTime);
         }
@@ -577,16 +543,9 @@ function HTMLRender(){
             $meta = $("<span class='plan-meta'>");
             if(plan.added){
                 numPlansAdded++;
-                if(plan.completed()){
-                    $meta.append(" Completed!");
-                }
-                else {
-                    $meta.append(' Added');
-
-                    var removePlanLink = $('<a />').attr({ class: 'myButtonSmallLink removeClick', href: '#' }).text('Remove');
-                    removePlanLink.click({ param1: planId, param2: false }, addPlanLinkClicked)
-                    $meta.append(removePlanLink);
-                }
+                var removePlanLink = $('<a />').attr({ class: 'myButtonSmallLink removeClick', href: '#' }).text('Remove');
+                removePlanLink.click({ param1: planId, param2: false }, addPlanLinkClicked)
+                $meta.append(' Added').append(removePlanLink);
             }
             else {
                 var addPlanLink = $('<a />').attr({ class: 'myButtonSmallLink', href: '#' }).text('Add');
@@ -609,7 +568,6 @@ function HTMLRender(){
             $planSelector.append($container);
         }
         var addPlansText = '<h2>Add a Plan By Topic:</h2>';
-//        var addPlansText = '<h1><span class=username>' + userName + ',</span> Make God\'s Word Part Of Your Day!</h1><h2>By Topic:</h2>';
         $planSelector.find('#plansSelectorHeader').html(addPlansText);
         $planSelector.append("<div style='text-align: center; clear: both;padding-top:15px;'><a id='plans-close' class='myButton' href='#'>Close</a></div>");
         $planSelector.show();
@@ -690,7 +648,7 @@ function HTMLRender(){
 //                $('#message').html(msgText).show();
                 var animation = textAnimations[getRandom(1, textAnimations.length)[0]-1];
 //                $('#message').empty().hide();
-                $('#message').html(msgText).show().textillate({ in: { effect: animation, delay: 30, shuffle: false}});
+                $('#message').html(msgText).show().textillate({ in: { effect: animation, delay: 10, shuffle: false}});
                 $('#reveal-button').hide().css('visibility','visible').text('Next').fadeIn('slow')
                     .data('total-parts', $paragraphies.length).data('part', partFinished + 1)
                     .data('read-book', true).data('start-memorize', false);
@@ -716,8 +674,8 @@ function HTMLRender(){
                     bgClear();
                     $('#reveal-button').hide().css('visibility','visible').text('Memorize').data('start-memorize', true).fadeIn('slow');
                     $('#memorized-stats-weekly').fadeIn();
-                    usageType = 'VIEWED-LIKE';
-                    $.get('http://' + HOST + '/usage', { usage_type: usageType, plan_id: planId, day: day, user_id: userId, user_name: userName, details: verses.length });
+//                    usageType = 'VIEWED-LIKE';
+//                    $.get('http://' + HOST + '/usage', { usage_type: usageType, plan_id: planId, day: day, user_id: userId, user_name: userName, details: verses.length });
                 }}});
 
                 $('#hint-button, #ticks').hide();
@@ -753,29 +711,16 @@ function versesNext(planId, day){
         // Fetch a verse that is not shown today first.
         for(var planId in objPlans){
             var plan = objPlans[planId];
-            if(plan.added && !plan.completed() && plan.lastCompletedDate() != today) {
-                if(objPlans[planId].type == 'book'){
-                    var day = plan.numDaysFinished() + 1;
-                    versesFetch(planId, day);
-                }
-                else {
-                    versesTodayCompleted(planId);
-                    var day = plan.numDaysFinished();
-                    versesFetch(planId, day);
-                }
+            if(plan.type == 'book' && plan.added && !plan.completed() && plan.lastCompletedDate() != today) {
+                var day = plan.numDaysFinished() + 1;
+                versesFetch(planId, day);
                 return;
             }
         }
 
         var randomPlan = randomAddedPlan();
         if(randomPlan){
-            var day;
-            if(randomPlan.completed()){
-                day = getRandom(1, randomPlan.numDaysFinished())[0];
-            }
-            else {
-                day = randomPlan.numDaysFinished();
-            }
+            var day = getRandom(1, randomPlan.numDaysFinished())[0];
             console.log('versesNext from random plan');
             versesFetch(randomPlan.id, day);
             return;
@@ -824,7 +769,7 @@ function bgClear(){
 }
 
 function rollBg() {
-    bgImage = "bg" + (Math.floor(Math.random() * 46) + 1) + ".jpg";
+    bgImage = "bg" + (Math.floor(Math.random() * 45) + 1) + ".jpg";
 //    bgImage = 'bg46.jpg'
     $('body').css('background-image', "url('images/" + bgImage + "')");
     $('.bg.hidden').css('background', htmlRender.newGradient());
@@ -1014,14 +959,14 @@ function menuItemClicked(){
     trackClicked(linkId + '-clicked');
 }
 
-function add_gratitude(text){
-    $.get('http://' + HOST + '/add_gratitude', { text: text, user_id: userId, user_name: userName }, function(data){
-        $('#gratitude-input').val('I am grateful for ');
-        $('#gratitude-thank-you').show();
-        $('#gratitude-intro').hide();
-        $('#gratitude-thank-you span').text(data);
-    });
-}
+//function add_gratitude(text){
+//    $.get('http://' + HOST + '/add_gratitude', { text: text, user_id: userId, user_name: userName }, function(data){
+//        $('#gratitude-input').val('I am grateful for ');
+//        $('#gratitude-thank-you').show();
+//        $('#gratitude-intro').hide();
+//        $('#gratitude-thank-you span').text(data);
+//    });
+//}
 
 
 $( document ).ready(function() {
@@ -1101,24 +1046,24 @@ $( document ).ready(function() {
 
     rollBg();
 
-    $('#gratitude-input').focus(function(){
-        this.placeholder='';
-        $('#gratitude-input').val('I am grateful for ');
-    });
-
-    $("#gratitude-input").keyup(function (e) {
-        if (e.keyCode == 13  && ($(this).val() != 'I am grateful for ') && $(this).val().length > 0) {
-            add_gratitude($(this).val());
-        }
-    });
-
-    $('#gratitude-input').hover(
-        function(){
-            if(!$('#gratitude-thank-you').is(":visible")){
-                $('#gratitude-intro').show();
-            }
-        }
-    )
+//    $('#gratitude-input').focus(function(){
+//        this.placeholder='';
+//        $('#gratitude-input').val('I am grateful for ');
+//    });
+//
+//    $("#gratitude-input").keyup(function (e) {
+//        if (e.keyCode == 13  && ($(this).val() != 'I am grateful for ') && $(this).val().length > 0) {
+//            add_gratitude($(this).val());
+//        }
+//    });
+//
+//    $('#gratitude-input').hover(
+//        function(){
+//            if(!$('#gratitude-thank-you').is(":visible")){
+//                $('#gratitude-intro').show();
+//            }
+//        }
+//    )
 
     $('#post-link').hover(function(){
         $('#gratitude-list, #post-link, #gratitudes-link').hide();

@@ -66,7 +66,7 @@ function getRandom(pick, max) {
 function randomAddedPlan(){
     var allPlanIds = [];
     for(var planId in objPlans){
-        if(objPlans[planId].added && objPlans[planId].lastCompletedDate() == today && objPlans[planId].type != 'book') {
+        if(objPlans[planId].added && objPlans[planId].type != 'book') {
             allPlanIds[allPlanIds.length] = planId;
         }
     }

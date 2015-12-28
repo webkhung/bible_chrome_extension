@@ -282,7 +282,7 @@ h2 {
 
 #bottom {
     position: absolute;
-    bottom: 20px;
+    bottom: 5px;
     left: 0px;
     width: 100%;
 }
@@ -1095,18 +1095,18 @@ ul.vertical-list li a:hover {
 }
 
 
-#gratitude-container {
-    right: 10px;
-    position: absolute;
-    overflow: hidden;
-    bottom: 0px;
-    text-align: right;
-    z-index: 1;
+/*#gratitude-container {*/
+    /*right: 10px;*/
+    /*position: absolute;*/
+    /*overflow: hidden;*/
+    /*bottom: 0px;*/
+    /*text-align: right;*/
+    /*z-index: 1;*/
 
     /*background-image: url('images/gratitude_bg.png');*/
     /*background-position: right;*/
     /*background-repeat: repeat;*/
-}
+/*}*/
 
 #gratitude-input {
     background-color: transparent;
@@ -1132,34 +1132,34 @@ ul.vertical-list li a:hover {
     color: #333;
 }
 
-#gratitude-list {
-    margin-top: 7px;
-    float:right;
-    width: 600px;
-    overflow: hidden;
-    white-space: nowrap;
-}
+/*#gratitude-list {*/
+    /*margin-top: 7px;*/
+    /*float:right;*/
+    /*width: 600px;*/
+    /*overflow: hidden;*/
+    /*white-space: nowrap;*/
+/*}*/
 
-#gratitude-list ul {
-    list-style-type: none;
-    color: yellow;
-    font-size: 12px;
-    opacity: 1;
-    text-align: right;
-    padding-left: 0;
-    margin-left: 0;
-    margin-top: 0;
-    margin-bottom: 5px;
-    font-style: italic;
-}
+/*#gratitude-list ul {*/
+    /*list-style-type: none;*/
+    /*color: yellow;*/
+    /*font-size: 12px;*/
+    /*opacity: 1;*/
+    /*text-align: right;*/
+    /*padding-left: 0;*/
+    /*margin-left: 0;*/
+    /*margin-top: 0;*/
+    /*margin-bottom: 5px;*/
+    /*font-style: italic;*/
+/*}*/
 
-#gratitude-container a#post-link, #gratitude-container a#gratitudes-link {
-    font-size: 12px;
-    float: right;
-    padding: 0 4px 0 4px;
-    margin: 7px 0 0 10px;
-    font-style: italic;
-}
+/*#gratitude-container a#post-link, #gratitude-container a#gratitudes-link {*/
+    /*font-size: 12px;*/
+    /*float: right;*/
+    /*padding: 0 4px 0 4px;*/
+    /*margin: 7px 0 0 10px;*/
+    /*font-style: italic;*/
+/*}*/
 
 a#post-link {
     background-color: #ffdb27;
