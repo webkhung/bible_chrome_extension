@@ -11,7 +11,7 @@
     "scripts": ["background.js"],
     "persistent": false
   },
-  "version": "0.9.26",
+  "version": "0.9.3",
   "chrome_url_overrides": {
     "newtab": "main.html"
   },

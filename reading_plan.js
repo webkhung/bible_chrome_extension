@@ -10,9 +10,8 @@ var memorizedCount = 0;
 var game = new Game();
 var textAnimations = ['rotateIn', 'rotateInDownLeft', 'rotateInDownRight', 'fadeIn', 'fadeInUp', 'fadeInDown',
     'fadeInLeft', 'fadeInRight', 'fadeInDownBig', 'bounceIn', 'bounceInDown']; // pulse, flip, 'fadeInLeftBig', 'fadeInRightBig'
-var rated = false;
 var bgImage;
-var lastReadDate;
+var favorite = new Favorite();
 
 var readingPlans = [
     {
@@ -445,6 +444,7 @@ function HTMLRender(){
 
             $('.responsive-menu').append(json['menu']);
             $('#sotw').attr('href', json['site_of_the_week']);
+//            htmlRender.showRecentFavorites(json['favorites']);
 //            htmlRender.showGratitudes(json['gratitudes']);
 
             var count = json['your-gratitudes-count']
@@ -456,6 +456,34 @@ function HTMLRender(){
             }
         });
     }
+
+//    this.showRecentFavorites = function(data){
+//        var gratitudes = JSON.parse(data);
+//        var random = 0;
+//
+//        $ul = $("<ul class='newsticker' />");
+//        gratitudes.forEach(function(g){
+//            $li = $('<li />');
+//            $a = $('<a />').text(g['user_name'].substring(0,15) + ' favorited ').attr({
+//                href: '#'
+//            }).attr('plan-id', g.plan_id).attr('day', g.day);
+//            $li.append($a);
+//
+//            $ul.append($li);
+//        });
+//
+//        $('#gratitude-list').append($ul);
+//
+//        $('.newsticker').newsTicker({
+//            row_height: 20,
+//            max_rows: 1,
+//            speed: 600,
+//            direction: 'up',
+//            duration: 3000,
+//            autostart: 1,
+//            pauseOnHover: 0
+//        });
+//    }
 
 //    this.showGratitudes = function(data){
 //        var gratitudes = JSON.parse(data);
@@ -521,8 +549,36 @@ function HTMLRender(){
     }
 
     this.screenUserName = function() {
-        $('#new-plan-link').hide();
+        $('#new-plan-link, #my-fav-link').hide();
         $('#user-name-container').show();
+    }
+
+    this.screenFavorites = function(){
+        $('#passages-container, #new-plan-link').hide();
+        $selector = $('#favorites-selector');
+        $selector.empty();
+
+        if(favorite.myFavorites) {
+            favorite.myFavorites.forEach(function(f){
+                var key = 'planId' + f[0] + '-' + f[1];
+                chrome.storage.sync.get(key, function (data) {
+                    if (data !== undefined && data[key] !== undefined){
+                        $selector.append(cleanVerse(data[key]));
+                        $selector.append('<hr>');
+                    }
+                    else {
+                        $.get('http://' + HOST + '/verses', { plan_id: planId, day: day, user_id: userId, user_name: userName }, function(verses){
+                            $selector.append('<hr>');
+                            $selector.append(cleanVerse(verses));
+                        });
+                    }
+                });
+            });
+        }
+
+        $selector.append("<div style='text-align: center; clear: both;padding-top:15px;'><a class='myButton popup-close' href='#'>Close</a></div><h2>Your Favorite Verses</h2><hr>");
+        $selector.show();
+        trackClicked('my-favorite-clicked');
     }
 
     this.screenPlanSelector = function(){
@@ -569,7 +625,7 @@ function HTMLRender(){
         }
         var addPlansText = '<h2>Add a Plan By Topic:</h2>';
         $planSelector.find('#plansSelectorHeader').html(addPlansText);
-        $planSelector.append("<div style='text-align: center; clear: both;padding-top:15px;'><a id='plans-close' class='myButton' href='#'>Close</a></div>");
+        $planSelector.append("<div style='text-align: center; clear: both;padding-top:15px;'><a class='popup-close myButton' href='#'>Close</a></div>");
         $planSelector.show();
 
         trackClicked('add-plan-clicked');
@@ -601,7 +657,7 @@ function HTMLRender(){
 
     this.screenTodayVerses = function(verses, planId, day){
         console.log('screenTodayVerses ' + planId + ',' + day);
-        $('#reveal-button').removeClass('no-link').data('planId', planId).data('day', day);
+        $('#reveal-button, #fav-button').removeClass('no-link').data('planId', planId).data('day', day);
 
         if(objPlans[planId].type == 'book'){
             var dayFinished = objPlans[planId].numDaysFinished();
@@ -649,33 +705,34 @@ function HTMLRender(){
                 var animation = textAnimations[getRandom(1, textAnimations.length)[0]-1];
 //                $('#message').empty().hide();
                 $('#message').html(msgText).show().textillate({ in: { effect: animation, delay: 10, shuffle: false}});
-                $('#reveal-button').hide().css('visibility','visible').text('Next').fadeIn('slow')
+                $('#reveal-button').hide().css('visibility','visible').css('border', '1px solid white').text('Next').fadeIn('slow')
                     .data('total-parts', $paragraphies.length).data('part', partFinished + 1)
                     .data('read-book', true).data('start-memorize', false);
+                $('#fav-container').hide();
             });
         }
         else {
-            var colors = ['#c6f7f3', '#feffca', '#defcd4', '#ffffff'];
             var fonts = ['Lucida Sans Unicode', 'Comic Sans MS', 'Verdana', 'Architects Daughter', 'Indie Flower'];
-            $('#passages, #passage-header').css('color', colors[getRandom(1, colors.length)[0]-1]);
+            $('#passages, #passage-header').css('color', '#ffffff');
             $('#passages, #passage-header').css('font-family', fonts[getRandom(1, fonts.length)[0]-1]);
 
             verses = game.replaceVerses(verses, memorizedCount);
             $('#passages').empty().append(verses);
+//            $('#fav-container').hide();
 
             // READ SCREEN
             if(memorizedCount == 0){
                 var animation = textAnimations[getRandom(1, textAnimations.length)[0]-1];
-//                $('#passages').show();
-//                $('#reveal-button').hide().css('visibility','visible').text('Memorize').data('start-memorize', true).fadeIn('slow');
+                favorite.checkFavorite(planId, day);
 
-                ;
+//                $('#passages').show();
                 $('#passages').textillate({ in: { effect: animation, delay: 15, shuffle: getRandom(1,2)[0]==1, callback: function(){
                     bgClear();
-                    $('#reveal-button').hide().css('visibility','visible').text('Memorize').data('start-memorize', true).fadeIn('slow');
                     $('#memorized-stats-weekly').fadeIn();
-//                    usageType = 'VIEWED-LIKE';
-//                    $.get('http://' + HOST + '/usage', { usage_type: usageType, plan_id: planId, day: day, user_id: userId, user_name: userName, details: verses.length });
+                    $('#fav-button').fadeIn();
+
+                    usageType = 'VIEWED-LIKE';
+                    $.get('http://' + HOST + '/usage', { usage_type: usageType, plan_id: planId, day: day, user_id: userId, user_name: userName, details: verses.length });
                 }}});
 
                 $('#hint-button, #ticks').hide();
@@ -685,7 +742,7 @@ function HTMLRender(){
                 htmlRender.fetchMemorized();
                 htmlRender.fetchMemorizedStatsWeekly();
                 $('#memorized-verses-container, #memorized-stats-past-weekly').slideDown(2000);
-                $('#reveal-button').css('visibility','visible').show().text('Done').data('start-memorize', false);
+                $('#reveal-button').css('visibility','visible').css('border', '1px solid white').show().text('Done').data('start-memorize', false);
                 $('#hint-button').show().removeClass('no-link').data('planId', planId).data('day', day);
                 $('#ticks').show();
                 $('.hide-in-memorize').fadeOut();
@@ -708,7 +765,7 @@ function versesNext(planId, day){
         return;
     }
     else {
-        // Fetch a verse that is not shown today first.
+        // For Book only. Fetch a verse that is not shown today first.
         for(var planId in objPlans){
             var plan = objPlans[planId];
             if(plan.type == 'book' && plan.added && !plan.completed() && plan.lastCompletedDate() != today) {
@@ -720,7 +777,7 @@ function versesNext(planId, day){
 
         var randomPlan = randomAddedPlan();
         if(randomPlan){
-            var day = getRandom(1, randomPlan.numDaysFinished())[0];
+            var day = getRandom(1, randomPlan.numOfDays)[0];
             console.log('versesNext from random plan');
             versesFetch(randomPlan.id, day);
             return;
@@ -740,8 +797,8 @@ function versesFetch(planId, day){
     chrome.storage.sync.get(key, function (data) {
         if (data !== undefined && data[key] !== undefined){
             versesProcess(data[key], planId, day);
-//            $.get('http://' + HOST + '/usage', { usage_type: 'OPEN', plan_id: planId, day: day, user_id: userId, user_name: userName }, function(){
-//            });
+            $.get('http://' + HOST + '/usage', { usage_type: 'OPEN', plan_id: planId, day: day, user_id: userId, user_name: userName }, function(){
+            });
         }
         else {
             $.get('http://' + HOST + '/verses', { plan_id: planId, day: day, user_id: userId, user_name: userName }, function(verses){
@@ -757,6 +814,86 @@ function versesFetch(planId, day){
     htmlRender.showAddedPlans(planId, day);
     $('#rate-background').fadeIn('slow');
     $('#passages').html('Loading');
+}
+
+function Favorite(){
+
+    this.myFavorites;
+
+    this.checkFavorite = function(planId, day){
+        $.get('http://' + HOST + '/is_favorite', { plan_id: planId, day: day, user_id: userId, user_name: userName }, function(data){
+            favorite.updateFavoriteCount(data);
+        });
+    }
+
+    this.addFavorite = function(planId, day){
+        $.get('http://' + HOST + '/add_favorite', { plan_id: planId, day: day, user_id: userId, user_name: userName }, function(data){
+            favorite.updateFavoriteCount(data);
+        });
+    }
+
+    this.removeFavorite = function(planId, day){
+        $.get('http://' + HOST + '/remove_favorite', { plan_id: planId, day: day, user_id: userId, user_name: userName }, function(data){
+            favorite.updateFavoriteCount(data);
+        });
+    }
+
+    this.updateFavoriteCount = function(data) {
+        var json = JSON.parse(data);
+
+        // Update my favorite count
+        favorite.myFavorites = json['all'];
+        $('#my-fav-link div').html(favorite.myFavorites.length + '<br>Favorites');
+
+        var count = json['count'];
+
+        // Set the heart online icon
+        var isFav = json['is_fav'];
+        if(isFav !== undefined) {
+            if(isFav == true){ // Current user's favorite
+                $('#fav-button').attr('class', 'fav');
+                $('#reveal-button').hide().css('visibility','visible').text('Memorize').data('start-memorize', true).fadeIn('slow');
+
+                if(count == 1) {
+                    $('#fav-count').text('Favorited by you');
+                }
+                else if(count > 1) {
+                    $('#fav-count').text('Favorited by you and ' + (count - 1) + ' others');
+                }
+            }
+            else { // Not the current user's favorite
+                $('#fav-button').attr('class', 'not-fav');
+                $('#reveal-button').hide();
+
+                if(count == 0){
+                    $('#fav-count').text('Add to favorites');
+                }
+                else if(count > 0) {
+                    $('#fav-count').text('Favorited by ' + count);
+                }
+            }
+            $('#fav-button').fadeIn();
+        }
+    }
+
+    this.favClicked = function(){
+        trackClicked('fav-clicked');
+        var planId, day;
+        planId = parseInt($('#fav-button').data('planId'));
+        day = parseInt($('#fav-button').data('day'));
+        favorite.toggleFavorite(planId, day)
+    }
+
+    this.toggleFavorite = function(planId, day){
+        if($('#fav-button').hasClass('fav')){
+            favorite.removeFavorite(planId, day);
+            $('#fav-button').attr('class', 'not-fav');
+        }
+        else if($('#fav-button').hasClass('not-fav')){
+            favorite.addFavorite(planId, day);
+            $('#fav-button').attr('class', 'fav');
+        }
+    }
 }
 
 function bgBlock(){
@@ -790,7 +927,6 @@ function incrementMemorizedCount(){
         $('#hint-button, #ticks').hide();
         showTicks(memorizedCount);
         memorizedCount = 0;
-
     }
 }
 
@@ -806,7 +942,7 @@ function addPlanLinkClicked(event){
     htmlRender.showAddedPlans();
     versesNext();
     $('#plans-selector').hide();
-    $('.hide-in-select-plans').show();
+    $('.hide-in-screen-popup').show();
     saveData();
     trackClicked('add-clicked');
 }
@@ -824,7 +960,7 @@ function userNameSubmitClicked(){
         saveData();
         $('#user-name-container').fadeOut('slow', function(){
             versesNext();
-            $('#new-plan-link').show();
+            $('#new-plan-link, #my-fav-link').show();
             htmlRender.fetchStartupData();
         });
     }
@@ -946,8 +1082,26 @@ function trackClicked(usage_type, details) {
 //    else
 //        greet = 'Good Evening';
 //
-//    $('#home span').text(greet + ', ' + userName.substring(0,30) + '!')
+//    $('#greeting').text(greet + ', ' + userName.substring(0,30) + '!')
 //}
+
+function time(){
+    var d = new Date();
+    var hh = d.getHours();
+    var m = d.getMinutes();
+    var dd = "AM";
+    var h = hh;
+    if (h >= 12) {
+        h = hh-12;
+        dd = "PM";
+    }
+    if (h == 0) {
+        h = 12;
+    }
+    m = m<10?"0"+m:m;
+
+    $('#greeting').text(h+":"+m+" "+dd)
+}
 
 function menuClicked(){
     trackClicked('menu-clicked');
@@ -1005,8 +1159,7 @@ $( document ).ready(function() {
 
         $('.username').text(userData['userName']);
 
-        lastReadDate = userData['lastReadDate'];
-        rated = userData['rated'];
+        time();
     });
 
     $('#reveal-button, #hint-button').click(revealClicked);
@@ -1014,15 +1167,23 @@ $( document ).ready(function() {
     $('.responsive-menu').on('click', 'a', menuItemClicked);
     $('#sotw').click(menuItemClicked);
     $('.menu-btn').click(menuClicked)
+    $('#fav-button').click(function(e){
+        favorite.favClicked(e);
+    })
 
     $('.maincontainer').on('click', '#new-plan-link', function(){
         htmlRender.screenPlanSelector();
-        $('.hide-in-select-plans').hide();
+        $('.hide-in-screen-popup').hide();
     });
 
-    $('#plans-selector').on('click', '#plans-close', function(){
+    $('.maincontainer').on('click', '#my-fav-link', function(){
+        htmlRender.screenFavorites();
+        $('.hide-in-screen-popup').hide();
+    });
+
+    $('#plans-selector, #favorites-selector').on('click', '.popup-close', function(){
         $('.popup').hide();
-        $('.hide-in-select-plans').show();
+        $('.hide-in-screen-popup').show();
     });
 
     // Debug stuffs
@@ -1067,7 +1228,7 @@ $( document ).ready(function() {
 
     $('#post-link').hover(function(){
         $('#gratitude-list, #post-link, #gratitudes-link').hide();
-       $('#gratitude-input, #gratitude-intro').show();
+        $('#gratitude-input, #gratitude-intro').show();
     });
 
     $('#gratitudes-link').click(function(){

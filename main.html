@@ -6,11 +6,9 @@
     <script src="jquery.js" type="text/javascript"></script>
     <script src="utils.js" type="text/javascript"></script>
     <script src="reading_plan.js" type="text/javascript"></script>
-    <script src="jqmeter.min.js" type="text/javascript"></script>
     <script src="jquery.lettering.js" type="text/javascript"></script>
     <script src="jquery.textillate.js" type="text/javascript"></script>
     <script src="jquery.newsTicker.min.js" type="text/javascript"></script>
-    <script src="circle-progress.js"></script>
     <title>Daily Bible Verse</title>
 </head>
 <body style="zoom: 1; position: relative;">
@@ -18,16 +16,24 @@
 <div class="bg hidden"></div>
 <div class='maincontainer'>
 
-    <a id='new-plan-link' class='hide-in-memorize hide-in-select-plans' href='#'>
+    <a id='new-plan-link' class='hide-in-memorize hide-in-screen-popup' href='#'>
         <img src='images/add.png' style='width:50px;height:50px;vertical-align:middle'>
-        <div style='font-size: 12px'> Add Plan</div>
+        <div style='font-size: 12px'>Plans</div>
     </a>
 
-    <div id='memorized-stats-weekly' class='hide-in-select-plans'></div>
+    <a id='my-fav-link' class='hide-in-memorize hide-in-screen-popup' href='#'>
+        <img src='images/heart-outline.png'>
+        <div style='font-size: 12px;line-height: 14px;'>Favorites</div>
+    </a>
+
+    <div id='memorized-stats-weekly' class='hide-in-screen-popup'></div>
 
     <div id='plans-selector' class='popup hide-in-memorize'></div>
 
+    <div id='favorites-selector' class='popup hide-in-memorize'></div>
+
     <div class="mobile-nav">
+        <div id='greeting'></div>
         <img id='menu-notification' src='images/1.png'>
         <div class="menu-btn" id="menu-btn">
             <div></div>
@@ -46,10 +52,16 @@
         <div style='text-align: center'><a id='user-name-submit' class='myButton' href='#'>Next</a></div>
     </div>
 
-    <div id='passages-container' class='hide-in-select-plans'>
+    <div id='passages-container' class='hide-in-screen-popup'>
         <div id='passage-header'></div>
         <div id='passages'></div>
         <div id='message'></div>
+
+        <div id='fav-container' class='hide-in-memorize'>
+            <a id='fav-button' href='#'></a>
+            <div id='fav-count'></div>
+        </div>
+
         <div style='text-align:center;'>
             <div class='buttons-container'>
                 <a id='reveal-button' class='wide' href='#'></a>
@@ -88,7 +100,6 @@
             <!--<a id='show-storage' href='#'>Show storage</a>-->
             <!--<a id='add-day' href='#'>Add day</a>-->
         <!--</p>-->
-        <!--<p id='copyright'>Scripture quotations marked (ESV) are from The Holy Bible, English Standard Version®, copyright © 2001 by Crossway Bibles, a publishing ministry of Good News Publishers.</p>-->
     </div>
 </div>
 </body>

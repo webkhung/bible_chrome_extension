@@ -42,15 +42,28 @@ body {
 #dropdown-menu a:hover { text-decoration: underline; }
 
 #new-plan-link {
+    top: 10px;
+}
+#my-fav-link {
+    top: 100px;
+}
+
+#my-fav-link img {
+    width:50px;
+    height:50px;
+    vertical-align:middle;
+}
+
+#new-plan-link, #my-fav-link {
     color: #ffffff;
     text-decoration: none;
     font-size:30px;
     position: absolute;
-    top: 10px;
     left: 10px;
     font-weight: 300;
     text-shadow: 1px 1px 1px #333;
     z-index: 10;
+    text-align: center;
 }
 
 
@@ -74,7 +87,7 @@ body {
 }
 
 /* Plan */
-#plans-selector, #user-name-container {
+#plans-selector, #user-name-container, #favorites-selector {
     position: absolute;
     top: 20px;
     left: 10px;
@@ -235,7 +248,7 @@ h2 {
     font-size: 22px;
     color: white;
     text-align: center;
-    width: 85%;
+    width: 75%;
     margin: 0 auto 60px auto;
 }
 
@@ -381,11 +394,11 @@ h2 {
     cursor:pointer;
     color:#ffffff;
     /*font-family:arial;*/
-    font-size:16px;
+    font-size:14px;
     text-decoration:none;
     /*text-shadow:0px 1px 0px #2f6627;*/
     border: 1px solid white;
-    padding: 10px 25px;
+    padding: 5px 20px;
     display: inline-block;
     margin: 0 4px;
 }
@@ -1045,6 +1058,31 @@ ul.vertical-list li a:hover {
     background-repeat: no-repeat;
 }
 
+#fav-button {
+    width: 100px;
+    height: 100px;
+    display: inline-block !important;
+    opacity: 0.9;
+}
+
+#fav-button.not-fav {
+    background-image: url('images/heart-outline-big.png');
+}
+
+#fav-button.fav {
+    background-image: url('images/heart-filled.png');
+}
+
+#fav-button {
+    display: none;
+}
+
+#fav-count {
+    color: rgba(255,255,255,0.8);
+    font-size: 13px;
+    opacity: 0.8;
+}
+
 #menu-notification {
     position: absolute;
     top: 8px;
@@ -1168,4 +1206,17 @@ a#post-link {
 
 a#gratitudes-link {
     color: #fff;
+}
+
+#fav-container {
+    text-align:center;
+    padding-bottom:20px;
+}
+
+#greeting {
+    position: absolute;
+    right: 54px;
+    top: 15px;
+    color: rgba(255,255,255,0.8);
+    font-size: 13px;
 }
