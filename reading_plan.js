@@ -439,13 +439,10 @@ function HTMLRender(){
 
     this.fetchStartupData = function(){
         $.get('http://' + HOST + '/startup_data', { user_id: userId}, function(data){
-
             var json = JSON.parse(data);
-
             $('.responsive-menu').append(json['menu']);
             $('#sotw').attr('href', json['site_of_the_week']);
-//            htmlRender.showRecentFavorites(json['favorites']);
-//            htmlRender.showGratitudes(json['gratitudes']);
+            htmlRender.showActivities(json['activities']);
 
             var count = json['your-gratitudes-count']
             if (count == 0){
@@ -457,67 +454,17 @@ function HTMLRender(){
         });
     }
 
-//    this.showRecentFavorites = function(data){
-//        var gratitudes = JSON.parse(data);
-//        var random = 0;
-//
-//        $ul = $("<ul class='newsticker' />");
-//        gratitudes.forEach(function(g){
-//            $li = $('<li />');
-//            $a = $('<a />').text(g['user_name'].substring(0,15) + ' favorited ').attr({
-//                href: '#'
-//            }).attr('plan-id', g.plan_id).attr('day', g.day);
-//            $li.append($a);
-//
-//            $ul.append($li);
-//        });
-//
-//        $('#gratitude-list').append($ul);
-//
-//        $('.newsticker').newsTicker({
-//            row_height: 20,
-//            max_rows: 1,
-//            speed: 600,
-//            direction: 'up',
-//            duration: 3000,
-//            autostart: 1,
-//            pauseOnHover: 0
-//        });
-//    }
-
-//    this.showGratitudes = function(data){
-//        var gratitudes = JSON.parse(data);
-//        var random = 0;
-//
-//        var verse = [
-//            'Praise the LORD, for the LORD is good ~ Psalms 135:3',
-//            'Let everything that has breath praise the LORD. Praise the LORD. - Psalm 150:6',
-//            'I will praise you, Lord my God, with all my heart - Psalm 86:12'
-//        ]
-//
-//        $ul = $("<ul class='newsticker' />");
-//        gratitudes.forEach(function(g){
-//            $li = $('<li />').text(g['text'].substring(0,200) + ' - ' + g['user_name'].substring(0,15));
-//            $ul.append($li);
-//            if (random % 3 == 0){
-//                $li = $('<li />').html('<span style="color:#6dfff8;font-style:normal">' + verse[getRandom(1,3)[0]-1]+ ' </span>');
-//                $ul.append($li);
-//            }
-//            random++;
-//        });
-//
-//        $('#gratitude-list').append($ul);
-//
-//        $('.newsticker').newsTicker({
-//            row_height: 20,
-//            max_rows: 1,
-//            speed: 600,
-//            direction: 'up',
-//            duration: 3000,
-//            autostart: 1,
-//            pauseOnHover: 0
-//        });
-//    }
+    this.showActivities = function(data) {
+        var activities = JSON.parse(data);
+        activities.forEach(function(activity){
+            $li = $('<li />');
+            var verse = objPlans[activity.plan_id].days[activity.day -1].replace('.',' ');
+            var activityLink = $('<a />').attr({href: '#'}).text(verse);
+            activityLink.click({ param1: activity.plan_id, param2: activity.day }, activityLinkClicked)
+            $li.html(activity.user_name + ' &hearts; ').append(activityLink).append(' ' + activity.time + ' ago');
+            $('#activities ul').append($li);
+        });
+    }
 
     this.showAddedPlans = function(selectedPlanId, day){
         $plan = $('#added-plans');
@@ -858,7 +805,15 @@ function Favorite(){
                     $('#fav-count').text('Favorited by you');
                 }
                 else if(count > 1) {
-                    $('#fav-count').text('Favorited by you and ' + (count - 1) + ' others');
+                    $('#fav-count').text('Favorited by you');
+                    var otherUsers = json['users'];
+                    for(var i=0; i<otherUsers.length && i <3; i++){
+                        $('#fav-count').append(', ' + otherUsers[i]);
+                    }
+                    var remaining = otherUsers.length - 3;
+                    if(remaining > 0){
+                        $('#fav-count').append(' and ' + remaining + ' others');
+                    }
                 }
             }
             else { // Not the current user's favorite
@@ -1059,6 +1014,13 @@ function revealClicked(){
     }, timeoutLength);
 }
 
+function activityLinkClicked(event){
+    var planId = event.data.param1;
+    var day  = event.data.param2;
+    versesNext(planId, day);
+    trackClicked('activity-link-clicked');
+}
+
 function memorizedVersesClicked(){
     $('#memorized-verses-container').hide();
     versesFetch($(this).data('plan-id'), $(this).data('plan-day'));
@@ -1068,22 +1030,6 @@ function memorizedVersesClicked(){
 function trackClicked(usage_type, details) {
     $.get('http://' + HOST + '/usage', { usage_type: usage_type, user_id: userId, user_name: userName, details: details});
 }
-
-//function greeting(){
-//    var myDate = new Date();
-//    var hrs = myDate.getHours();
-//
-//    var greet;
-//
-//    if (hrs >= 4 && hrs < 12)
-//        greet = 'Good Morning';
-//    else if (hrs >= 12 && hrs <= 18)
-//        greet = 'Good Afternoon';
-//    else
-//        greet = 'Good Evening';
-//
-//    $('#greeting').text(greet + ', ' + userName.substring(0,30) + '!')
-//}
 
 function time(){
     var d = new Date();
@@ -1112,15 +1058,6 @@ function menuItemClicked(){
     var linkId = $(this).attr('id');
     trackClicked(linkId + '-clicked');
 }
-
-//function add_gratitude(text){
-//    $.get('http://' + HOST + '/add_gratitude', { text: text, user_id: userId, user_name: userName }, function(data){
-//        $('#gratitude-input').val('I am grateful for ');
-//        $('#gratitude-thank-you').show();
-//        $('#gratitude-intro').hide();
-//        $('#gratitude-thank-you span').text(data);
-//    });
-//}
 
 
 $( document ).ready(function() {
@@ -1206,32 +1143,4 @@ $( document ).ready(function() {
     });
 
     rollBg();
-
-//    $('#gratitude-input').focus(function(){
-//        this.placeholder='';
-//        $('#gratitude-input').val('I am grateful for ');
-//    });
-//
-//    $("#gratitude-input").keyup(function (e) {
-//        if (e.keyCode == 13  && ($(this).val() != 'I am grateful for ') && $(this).val().length > 0) {
-//            add_gratitude($(this).val());
-//        }
-//    });
-//
-//    $('#gratitude-input').hover(
-//        function(){
-//            if(!$('#gratitude-thank-you').is(":visible")){
-//                $('#gratitude-intro').show();
-//            }
-//        }
-//    )
-
-    $('#post-link').hover(function(){
-        $('#gratitude-list, #post-link, #gratitudes-link').hide();
-        $('#gratitude-input, #gratitude-intro').show();
-    });
-
-    $('#gratitudes-link').click(function(){
-        trackClicked($(this).attr('id') + '-clicked');
-    });
 });

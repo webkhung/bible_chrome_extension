@@ -248,7 +248,7 @@ h2 {
     font-size: 22px;
     color: white;
     text-align: center;
-    width: 75%;
+    width: 68%;
     margin: 0 auto 60px auto;
 }
 
@@ -1219,4 +1219,33 @@ a#gratitudes-link {
     top: 15px;
     color: rgba(255,255,255,0.8);
     font-size: 13px;
+}
+
+#activities {
+    z-index: 200;
+    position: absolute;
+    top: 70px;
+    right: 0;
+    width: 150px;
+    height: 250px;
+    overflow-y: scroll;
+    border-left: solid 2px rgba(255,255,255,0.4);
+    padding-left: 8px;
+}
+
+#activities ul {
+    text-align: left;
+}
+
+#activities ul li {
+    line-height: 1.1em;
+    padding-bottom: 10px;
+}
+
+#activities ul li a {
+    text-decoration: underline;
+}
+
+#activities ul li a:hover {
+    color: #ededed;
 }
