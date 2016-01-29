@@ -600,7 +600,7 @@ function HTMLRender(){
 
             $planSelector.append($container);
         }
-        var addPlansText = '<h2>What areas of life do you need God\'s wisdom?</h2>';
+        var addPlansText = '<h2>What Areas Of Life Do You Want To Apply God\'s Wisdom?</h2>';
         $planSelector.find('#plansSelectorHeader').html(addPlansText);
         $planSelector.append("<div style='text-align: center; clear: both;padding-top:15px;'><a class='popup-close myButton' href='#'>Finish</a></div>");
         $planSelector.show();
