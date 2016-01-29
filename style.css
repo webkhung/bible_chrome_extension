@@ -142,7 +142,22 @@ h2 {
 
 #plans-selector .plan-container:hover
 {
+    border: 1px solid rgba(255,0,0,0.8);
+    color: red;
+}
+
+
+#plans-selector .plan-container.added
+{
     background-color: #ffe32b;
+}
+
+#plans-selector .plan-container.added .addClick {
+    display: none;
+}
+
+#plans-selector .plan-container.not-added .removeClick {
+    display: none;
 }
 
 .plan-right {

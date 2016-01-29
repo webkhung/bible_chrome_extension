@@ -134,6 +134,34 @@ var readingPlans = [
         "days": ["Isaiah.41:10","Isaiah.40:31","Psalm.73:26","Isaiah.40:29","Philippians.4:13","2Timothy.1:7","2Thessalonians.3:3","Psalm.59:16","Jeremiah.32:17","1Chronicles.16:11","Psalm.18:1-2","Ephesians.3:20-21","Habakkuk.3:19","Psalm.18:31","Job.37:23","2Corinthians.12:10"]
     },
     {
+        "id": "18",
+        "name": "Hope",
+        "badge": "",
+        "description": "",
+        "days": ["Genesis.8:1","Psalm.3:2-6","Joshua.10:25","Job.17:15","John.5:6","1Chronicles.29:15","Job.5:16","Job.6:8","Job.11:18-19","Psalm.147:11","Proverbs.13:12"]
+    },
+    {
+        "id": "19",
+        "name": "Friendship",
+        "badge": "",
+        "description": "",
+        "days": ["Proverbs.18:24","Proverbs.22:24-25","Proverbs.13:20","Proverbs.27:5-6","Ecclesiastes.4:9-10","Proverbs.17:17","Proverbs.27:17","Proverbs.12:26","James.4:4","Job.16:20-21"]
+    },
+    {
+        "id": "20",
+        "name": "Addiction",
+        "badge": "",
+        "description": "",
+        "days": ["1Corinthians.10:13-14","1John.2:16","1Corinthians.15:33","James.4:7","1Corinthians.6:12","1Peter.5:10","Romans.5:3-5","Titus.2:12","James.1:2-3","John.3:16-17","Philippians.4:13","Psalm.95:8","Matthew.6:13", "Matthew.26:41"]
+    },
+    {
+        "id": "21",
+        "name": "Family",
+        "badge": "",
+        "description": "",
+        "days": ["Exodus.20:12", "Joshua.24:15", "Proverbs.6:20", "Matthew.15:4", "Proverbs.15:20", "Proverbs.1:8", "Colossians.3:20", "Ephesians.6:1-2", "Psalm.103:17", "Deuteronomy.5:16", "Proverbs.11:29", "Proverbs.15:27"]
+    },
+    {
         "id": "100",
         "name": "Genesis",
         "badge": "",
@@ -535,25 +563,27 @@ function HTMLRender(){
         $planSelector.empty();
         $planSelector.append('<div id="plansSelectorHeader"></div>');
 
-        var numPlansAdded = 0;
         var bFirstBook = false;
         for(var planId in objPlans){
             var plan = objPlans[planId];
             $container = $("<div class='plan-container'>")
             $rightCol = $("<div class='plan-right'>");
             $rightCol.append("<div class='plan-name'>" + plan.name + "</div>");
-            // $rightCol.append("<div class='plan-subtext'>" + plan.numOfDays + ' Days ' + "</div>");
             $meta = $("<span class='plan-meta'>");
+
+            var removePlanLink = $('<a />').attr({ class: 'myButtonSmallLink removeClick', href: '#' }).text('Remove');
+            removePlanLink.click({ param1: planId, param2: false }, addPlanLinkClicked)
+            $meta.append(removePlanLink);
+
+            var addPlanLink = $('<a />').attr({ class: 'myButtonSmallLink addClick', href: '#' }).text('Add');
+            addPlanLink.click({ param1: planId, param2: true }, addPlanLinkClicked)
+            $meta.append(addPlanLink);
+
             if(plan.added){
-                numPlansAdded++;
-                var removePlanLink = $('<a />').attr({ class: 'myButtonSmallLink removeClick', href: '#' }).text('Remove');
-                removePlanLink.click({ param1: planId, param2: false }, addPlanLinkClicked)
-                $meta.append(' Added').append(removePlanLink);
+                $container.addClass('added');
             }
             else {
-                var addPlanLink = $('<a />').attr({ class: 'myButtonSmallLink', href: '#' }).text('Add');
-                addPlanLink.click({ param1: planId, param2: true }, addPlanLinkClicked)
-                $meta.append(addPlanLink);
+                $container.addClass('not-added');
             }
 
             if(plan.type == 'book'){
@@ -565,14 +595,14 @@ function HTMLRender(){
 
             if(plan.type == 'book' && !bFirstBook){
                 bFirstBook = true;
-                $planSelector.append("<div style='text-align: center; clear: both'><h2 style='padding-top: 20px;'>Add a Plan By Book</h2></div>");
+                $planSelector.append("<div style='text-align: center; clear: both'><h2 style='padding-top: 20px;'>Or Add a Plan By Book</h2></div>");
             }
 
             $planSelector.append($container);
         }
-        var addPlansText = '<h2>Add a Plan By Topic:</h2>';
+        var addPlansText = '<h2>What areas of life do you need God\'s wisdom?</h2>';
         $planSelector.find('#plansSelectorHeader').html(addPlansText);
-        $planSelector.append("<div style='text-align: center; clear: both;padding-top:15px;'><a class='popup-close myButton' href='#'>Close</a></div>");
+        $planSelector.append("<div style='text-align: center; clear: both;padding-top:15px;'><a class='popup-close myButton' href='#'>Finish</a></div>");
         $planSelector.show();
 
         trackClicked('add-plan-clicked');
@@ -895,9 +925,18 @@ function addPlanLinkClicked(event){
     var planId = event.data.param1;
     objPlans[planId].added = event.data.param2;
     htmlRender.showAddedPlans();
-    versesNext();
-    $('#plans-selector').hide();
-    $('.hide-in-screen-popup').show();
+
+    $container = $(this).parents('.plan-container');
+    if($container.hasClass('not-added')){
+        $container.removeClass('not-added').addClass('added');
+    }
+    else {
+        $container.removeClass('added').addClass('not-added');
+    }
+
+//    versesNext();
+//    $('#plans-selector').hide();
+//    $('.hide-in-screen-popup').show();
     saveData();
     trackClicked('add-clicked');
 }
@@ -1121,6 +1160,7 @@ $( document ).ready(function() {
     $('#plans-selector, #favorites-selector').on('click', '.popup-close', function(){
         $('.popup').hide();
         $('.hide-in-screen-popup').show();
+        versesNext();
     });
 
     // Debug stuffs
