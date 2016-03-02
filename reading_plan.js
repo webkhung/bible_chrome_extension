@@ -12,6 +12,7 @@ var textAnimations = ['rotateIn', 'rotateInDownLeft', 'rotateInDownRight', 'fade
     'fadeInLeft', 'fadeInRight', 'fadeInDownBig', 'bounceIn', 'bounceInDown']; // pulse, flip, 'fadeInLeftBig', 'fadeInRightBig'
 var bgImage;
 var favorite = new Favorite();
+var lastChatTimestamp;
 
 var readingPlans = [
     {
@@ -471,6 +472,7 @@ function HTMLRender(){
             $('.responsive-menu').append(json['menu']);
             $('#sotw').attr('href', json['site_of_the_week']);
             htmlRender.showActivities(json['activities']);
+            htmlRender.showTop10Favorites(json['favorites_3_days'], json['favorites_all_time']);
 
             var count = json['your-gratitudes-count']
             if (count == 0){
@@ -486,11 +488,46 @@ function HTMLRender(){
         var activities = JSON.parse(data);
         activities.forEach(function(activity){
             $li = $('<li />');
+            var planName = objPlans[activity.plan_id].name;
             var verse = objPlans[activity.plan_id].days[activity.day -1].replace('.',' ');
             var activityLink = $('<a />').attr({href: '#'}).text(verse);
             activityLink.click({ param1: activity.plan_id, param2: activity.day }, activityLinkClicked)
-            $li.html(activity.user_name + ' &hearts; ').append(activityLink).append(' ' + activity.time + ' ago');
+            $li.html(activity.user_name + ' &hearts; ').append(activityLink).append(' ' + planName + ' <span class=time-ago>(' + activity.time + ' ago)</span>');
             $('#activities ul').append($li);
+        });
+    }
+
+    this.showTop10Favorites = function(data3Days, dataAllTime) {
+        var activities = JSON.parse(data3Days);
+        activities.forEach(function(activity){
+            $li = $('<li />');
+            var planName = objPlans[activity.plan_id].name;
+            var verse = objPlans[activity.plan_id].days[activity.day -1].replace('.',' ');
+            var activityLink = $('<a />').attr({href: '#'}).text(verse);
+            activityLink.click({ param1: activity.plan_id, param2: activity.day }, activityLinkClicked)
+            $li.html(planName + '<br>').append(activityLink).append(' x ' + activity.count);
+            $('#fav-top10-3-days ul').append($li);
+        });
+    }
+
+    this.showChats = function() {
+        $.get('http://' + HOST + '/get_chats', { last_chat: lastChatTimestamp }, function(data){
+            var chats = JSON.parse(data);
+            chats.forEach(function(chat){
+                $li = $('<li />');
+                $li.append('<span class=chat-user-name>' + chat.user_name.substring(0,10) + ' </span>').append(chat.text.substring(0,1000)).append('<div class=time-ago>(' + chat.time_ago + ' ago)</div>');
+                $('#chat ul').append($li);
+                lastChatTimestamp = chat.time;
+            });
+
+            if(chats.length > 0) {
+                var chatList = $("#chat.side-list");
+                chatList.animate({ scrollTop: chatList.prop("scrollHeight") - chatList.height() });
+            }
+
+            setTimeout(function(){
+                htmlRender.showChats();
+            }, 2000);
         });
     }
 
@@ -1098,6 +1135,11 @@ function menuItemClicked(){
     trackClicked(linkId + '-clicked');
 }
 
+function add_chat(text){
+    $.get('http://' + HOST + '/add_chat', { text: text, user_id: userId, user_name: userName }, function(data){
+        $('#chat-input').val('');
+    });
+}
 
 $( document ).ready(function() {
     readingPlans.forEach(function(jsonPlan){
@@ -1136,6 +1178,8 @@ $( document ).ready(function() {
         $('.username').text(userData['userName']);
 
         time();
+
+        htmlRender.showChats();
     });
 
     $('#reveal-button, #hint-button').click(revealClicked);
@@ -1161,6 +1205,12 @@ $( document ).ready(function() {
         $('.popup').hide();
         $('.hide-in-screen-popup').show();
         versesNext();
+    });
+
+    $("#chat-input").keyup(function (e) {
+        if (e.keyCode == 13  && $(this).val().length > 0) {
+            add_chat($(this).val());
+        }
     });
 
     // Debug stuffs

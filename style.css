@@ -263,7 +263,7 @@ h2 {
     font-size: 22px;
     color: white;
     text-align: center;
-    width: 68%;
+    width: 65%;
     margin: 0 auto 60px auto;
 }
 
@@ -1249,30 +1249,72 @@ a#gratitudes-link {
 }
 
 #activities {
+    top: 70px;
+    height: 200px;
+    opacity: 0.8;
+}
+
+#fav-top10-3-days {
+    top: 270px;
+    height: 170px;
+}
+
+#chat {
+    bottom: 30px;
+    height: 250px;
+}
+
+#chat-input{
+    position: absolute;
+    bottom: 10px;
+    width: 169px;
+    right: 10px;
+    z-index: 201;
+}
+
+.side-list {
     z-index: 200;
     position: absolute;
-    top: 70px;
-    right: 0;
-    width: 150px;
-    height: 250px;
+    right: 10px;
+    width: 160px;
     overflow-y: scroll;
     border-left: solid 2px rgba(255,255,255,0.4);
     padding-left: 8px;
 }
 
-#activities ul {
+.side-list  ul {
     text-align: left;
 }
 
-#activities ul li {
+.side-list  ul li {
     line-height: 1.1em;
     padding-bottom: 10px;
 }
 
-#activities ul li a {
+.side-list  ul li a {
     text-decoration: underline;
 }
 
-#activities ul li a:hover {
+.side-list  ul li a:hover {
     color: #ededed;
+}
+
+.chat-user-name {
+    font-weight: bold;
+    margin-right: 3px;
+}
+
+.time-ago{
+    margin-left: 3px;
+    font-size: 9px;
+}
+
+#chat-title {
+    position: absolute;
+    bottom: 290px;
+    right: 10px;
+    font-size: 17px;
+    color: deepskyblue;
+    width: 181px;
+    text-align: center;
 }
