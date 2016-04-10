@@ -294,7 +294,7 @@ function Game(){
         var picked = 0;
         var i=0;
         while(picked < toPick && i < randoms.length){
-            var currWord = txttmp[randoms[i]-1]
+            var currWord = txttmp[randoms[i]-1  ]
             if(txttmp[randoms[i]-1].length >= minCharsCount){
                 txttmp[randoms[i]-1] = game.buildInputField(currWord, '');
                 picked++;
@@ -511,23 +511,56 @@ function HTMLRender(){
     }
 
     this.showChats = function() {
-        $.get('http://' + HOST + '/get_chats', { last_chat: lastChatTimestamp }, function(data){
+        var planId = $('#chat-input').data('planId');
+        var day = $('#chat-input').data('day');
+
+        $.get('http://' + HOST + '/get_chats', { last_chat: lastChatTimestamp, planId: planId, day: day }, function(data){
+
+            $('#verse-chat ul, #chat ul').empty();
+
             var chats = JSON.parse(data);
             chats.forEach(function(chat){
                 $li = $('<li />');
-                $li.append('<span class=chat-user-name>' + chat.user_name.substring(0,10) + ' </span>').append(chat.text.substring(0,1000)).append('<div class=time-ago>(' + chat.time_ago + ' ago)</div>');
-                $('#chat ul').append($li);
-                lastChatTimestamp = chat.time;
+                $li.append('<span class=chat-user-name>' + chat.user_name.substring(0,10) + ' </span>').append(chat.text.substring(0,1000));
+
+                if(chat.plan_id == planId && chat.day == day) {
+                    $li.append('<div class=small-list><span class=time-ago>(' + chat.time_ago + ' ago)</span></div>');
+                    $('#verse-chat ul').append($li);
+                }
+                else {
+
+                    var planName = objPlans[chat.plan_id].name;
+                    var verse = objPlans[chat.plan_id].days[chat.day -1].replace('.',' ');
+                    var activityLink = $('<a class=verse-link />').attr({href: '#'}).text(verse);
+                    activityLink.css('font-size', '9px');
+                    activityLink.css('margin-right', '7px');
+                    activityLink.click({ param1: chat.plan_id, param2: chat.day }, activityLinkClicked)
+                    $smallDiv = $('<div class=small-list />');
+                    $li.append($smallDiv);
+                    $smallDiv.append(activityLink).append('' + planName + ' <span class=time-ago>(' + chat.time_ago + ' ago)</span>');
+
+
+                    $('#chat ul').append($li);
+                }
+
+//                lastChatTimestamp = chat.time;
             });
+
+
+            // Process verse first
+            if(chats.length > 0) {
+                var chatList = $("#verse-chat.side-list");
+                chatList.animate({ scrollTop: chatList.prop("scrollHeight") - chatList.height() }, 0);
+            }
 
             if(chats.length > 0) {
                 var chatList = $("#chat.side-list");
-                chatList.animate({ scrollTop: chatList.prop("scrollHeight") - chatList.height() });
+                chatList.animate({ scrollTop: chatList.prop("scrollHeight") - chatList.height() }, 0);
             }
 
-            setTimeout(function(){
-                htmlRender.showChats();
-            }, 2000);
+//            setTimeout(function(){
+//                htmlRender.showChats(planId, day);
+//            }, 2000);
         });
     }
 
@@ -671,7 +704,7 @@ function HTMLRender(){
 
     this.screenTodayVerses = function(verses, planId, day){
         console.log('screenTodayVerses ' + planId + ',' + day);
-        $('#reveal-button, #fav-button').removeClass('no-link').data('planId', planId).data('day', day);
+        $('#reveal-button, #fav-button, #chat-input').removeClass('no-link').data('planId', planId).data('day', day);
 
         if(objPlans[planId].type == 'book'){
             var dayFinished = objPlans[planId].numDaysFinished();
@@ -750,6 +783,8 @@ function HTMLRender(){
                 }}});
 
                 $('#hint-button, #ticks').hide();
+
+                htmlRender.showChats();
             }
             // GAME SCREEN
             else {
@@ -1136,8 +1171,9 @@ function menuItemClicked(){
 }
 
 function add_chat(text){
-    $.get('http://' + HOST + '/add_chat', { text: text, user_id: userId, user_name: userName }, function(data){
+    $.get('http://' + HOST + '/add_chat', { text: text, user_id: userId, user_name: userName, plan_id: $('#chat-input').data('planId'), day: $('#chat-input').data('day') }, function(data){
         $('#chat-input').val('');
+        htmlRender.showChats();
     });
 }
 
@@ -1179,7 +1215,7 @@ $( document ).ready(function() {
 
         time();
 
-        htmlRender.showChats();
+//        htmlRender.showChats();
     });
 
     $('#reveal-button, #hint-button').click(revealClicked);

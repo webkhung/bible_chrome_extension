@@ -26,25 +26,28 @@
         <div style='font-size: 12px;line-height: 14px;'>Favorites</div>
     </a>
 
+
+    <div id='added-plans'></div>
+
     <div id='memorized-stats-weekly' class='hide-in-screen-popup'></div>
 
     <div id='plans-selector' class='popup hide-in-memorize'></div>
 
     <div id='favorites-selector' class='popup hide-in-memorize'></div>
 
-    <div id='activities' class='side-list hide-in-memorize hide-in-screen-popup'><ul class='vertical-list'></ul></div>
+    <!--<div id='activities' class='side-list hide-in-memorize hide-in-screen-popup'><ul class='vertical-list'></ul></div>-->
 
     <!--<div id='fav-top10-3-days' class='side-list hide-in-memorize hide-in-screen-popup'><ul class='vertical-list'><li style='color: #ADD'>Top Verses Last 3 Days</li></ul></div>-->
 
+    <div id='chat-title' class='hide-in-memorize'>Comments on other verses</div>
+    <div id='chat' class='side-list'>
+        <ul class='vertical-list'></ul>
+    </div>
 
-    <div class='hide-in-memorize hide-in-screen-popup'>
-        <div id='chat-title'>Hangouts</div>
+    <div style='position: absolute; bottom: 0px; width: 100%;text-align: center' class='hide-in-memorize hide-in-screen-popup'>
 
-        <div id='chat' class='side-list'>
-            <ul class='vertical-list'></ul>
-        </div>
 
-        <input id='chat-input' type='text'>
+
     </div>
 
     <div class="mobile-nav">
@@ -75,6 +78,13 @@
         <div id='fav-container' class='hide-in-memorize'>
             <a id='fav-button' href='#'></a>
             <div id='fav-count'></div>
+
+            <div style='padding-top:30px'>
+                <input id='chat-input' type='text' placeholder="Please Add a Comment">
+                <div id='verse-chat' class='side-list'>
+                    <ul class='vertical-list'></ul>
+                </div>
+            </div>
         </div>
 
         <div style='text-align:center;'>
@@ -109,7 +119,7 @@
 
     <div id='bottom' class='hide-in-memorize'>
         <!--<a id='sotw' href='#' target="_blank"><img src='images/heart.png'><span>Site of the Week</span></a>-->
-        <div id='added-plans'></div>
+
         <!--<p class='debug'>-->
             <!--<a id='clean-storage' href='#'>Clean storage</a>-->
             <!--<a id='show-storage' href='#'>Show storage</a>-->
