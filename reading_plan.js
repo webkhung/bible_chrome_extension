@@ -309,7 +309,7 @@ function Game(){
 
         var maskedScriptureText = '<br><br> Book: ' + game.buildInputField(book, 'book') + ' Chapter: ' + game.buildInputField(chapter, 'chapter') + ' Verse: ' + game.buildInputField(verse, 'verse');
 
-        return txttmp.join(' ') + maskedScriptureText;
+        return txttmp.join(' '); // + maskedScriptureText;
     }
 
     this.buildInputField = function(word, wordType){
@@ -510,59 +510,6 @@ function HTMLRender(){
         });
     }
 
-    this.showChats = function() {
-        var planId = $('#chat-input').data('planId');
-        var day = $('#chat-input').data('day');
-
-        $.get('http://' + HOST + '/get_chats', { last_chat: lastChatTimestamp, planId: planId, day: day }, function(data){
-
-            $('#verse-chat ul, #chat ul').empty();
-
-            var chats = JSON.parse(data);
-            chats.forEach(function(chat){
-                $li = $('<li />');
-                $li.append('<span class=chat-user-name>' + chat.user_name.substring(0,10) + ' </span>').append(chat.text.substring(0,1000));
-
-                if(chat.plan_id == planId && chat.day == day) {
-                    $li.append('<div class=small-list><span class=time-ago>(' + chat.time_ago + ' ago)</span></div>');
-                    $('#verse-chat ul').append($li);
-                }
-                else {
-
-                    var planName = objPlans[chat.plan_id].name;
-                    var verse = objPlans[chat.plan_id].days[chat.day -1].replace('.',' ');
-                    var activityLink = $('<a class=verse-link />').attr({href: '#'}).text(verse);
-                    activityLink.css('font-size', '9px');
-                    activityLink.css('margin-right', '7px');
-                    activityLink.click({ param1: chat.plan_id, param2: chat.day }, activityLinkClicked)
-                    $smallDiv = $('<div class=small-list />');
-                    $li.append($smallDiv);
-                    $smallDiv.append(activityLink).append('' + planName + ' <span class=time-ago>(' + chat.time_ago + ' ago)</span>');
-
-
-                    $('#chat ul').append($li);
-                }
-
-//                lastChatTimestamp = chat.time;
-            });
-
-
-            // Process verse first
-            if(chats.length > 0) {
-                var chatList = $("#verse-chat.side-list");
-                chatList.animate({ scrollTop: chatList.prop("scrollHeight") - chatList.height() }, 0);
-            }
-
-            if(chats.length > 0) {
-                var chatList = $("#chat.side-list");
-                chatList.animate({ scrollTop: chatList.prop("scrollHeight") - chatList.height() }, 0);
-            }
-
-//            setTimeout(function(){
-//                htmlRender.showChats(planId, day);
-//            }, 2000);
-        });
-    }
 
     this.showAddedPlans = function(selectedPlanId, day){
         $plan = $('#added-plans');
@@ -773,7 +720,7 @@ function HTMLRender(){
                 favorite.checkFavorite(planId, day);
 
 //                $('#passages').show();
-                $('#passages').textillate({ in: { effect: animation, delay: 15, shuffle: getRandom(1,2)[0]==1, callback: function(){
+                $('#passages').textillate({ in: { effect: animation, delay: 2, shuffle: getRandom(1,2)[0]==1, callback: function(){
                     bgClear();
                     $('#memorized-stats-weekly').fadeIn();
                     $('#fav-button').fadeIn();
@@ -784,7 +731,7 @@ function HTMLRender(){
 
                 $('#hint-button, #ticks').hide();
 
-                htmlRender.showChats();
+//                htmlRender.showChats();
             }
             // GAME SCREEN
             else {
@@ -963,7 +910,7 @@ function bgClear(){
 }
 
 function rollBg() {
-    bgImage = "bg" + (Math.floor(Math.random() * 45) + 1) + ".jpg";
+    bgImage = "bg" + (Math.floor(Math.random() * 54) + 1) + ".jpg";
 //    bgImage = 'bg46.jpg'
     $('body').css('background-image', "url('images/" + bgImage + "')");
     $('.bg.hidden').css('background', htmlRender.newGradient());
@@ -1170,12 +1117,12 @@ function menuItemClicked(){
     trackClicked(linkId + '-clicked');
 }
 
-function add_chat(text){
-    $.get('http://' + HOST + '/add_chat', { text: text, user_id: userId, user_name: userName, plan_id: $('#chat-input').data('planId'), day: $('#chat-input').data('day') }, function(data){
-        $('#chat-input').val('');
-        htmlRender.showChats();
-    });
-}
+//function add_chat(text){
+//    $.get('http://' + HOST + '/add_chat', { text: text, user_id: userId, user_name: userName, plan_id: $('#chat-input').data('planId'), day: $('#chat-input').data('day') }, function(data){
+//        $('#chat-input').val('');
+//        htmlRender.showChats();
+//    });
+//}
 
 $( document ).ready(function() {
     readingPlans.forEach(function(jsonPlan){
@@ -1213,7 +1160,7 @@ $( document ).ready(function() {
 
         $('.username').text(userData['userName']);
 
-        time();
+//        time();
 
 //        htmlRender.showChats();
     });
@@ -1243,11 +1190,11 @@ $( document ).ready(function() {
         versesNext();
     });
 
-    $("#chat-input").keyup(function (e) {
-        if (e.keyCode == 13  && $(this).val().length > 0) {
-            add_chat($(this).val());
-        }
-    });
+//    $("#chat-input").keyup(function (e) {
+//        if (e.keyCode == 13  && $(this).val().length > 0) {
+//            add_chat($(this).val());
+//        }
+//    });
 
     // Debug stuffs
     $('#clean-storage').click(function(){
